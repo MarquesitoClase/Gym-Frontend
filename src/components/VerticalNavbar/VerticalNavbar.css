@@ -1,0 +1,8 @@
+.verticalNavBar {
+  width: 200px;
+  height: 100vh;
+  background-color: #333;
+  display: flex;
+  flex-direction: column;
+  flex: left;
+}
