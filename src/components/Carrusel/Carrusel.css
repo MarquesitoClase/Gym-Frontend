@@ -1,0 +1,17 @@
+.carrusel {
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #e6e6e6;
+}
+
+.carrusel__title {
+  margin: 0;
+}
+
+.carrusel__desc {
+  margin: 8px 0 0;
+  color: #444;
+}
+

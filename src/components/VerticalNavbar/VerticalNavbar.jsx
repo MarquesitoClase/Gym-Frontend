@@ -1,27 +1,30 @@
-import React from 'react';
-import './VerticalNavbar.css';
+import "./VerticalNavbar.css";
 
 export default function VerticalNavbar() {
   return (
     <nav className="verticalNavbar">
       <section>
         <h1>TITAN GYM</h1>
-        <p class="subtitle">Admin terminal</p>
-      </section>
-
-      <section>  
-        <a href="#Dashboard">Dashboard</a>
-        <a href="#Members">Miembros</a>
-        <a href="#Teachers">Profesores</a>
-        <a href="#Activities">Actividades</a>
+        <p className="subtitle">Admin terminal</p>
       </section>
 
       <section>
-        <button>Registro rápido</button>
+        <ul>
+          <li><a href="#Dashboard">Dashboard</a></li>
+          <li><a href="#Members">Miembros</a></li>
+          <li><a href="#Teachers">Profesores</a></li>
+          <li><a href="#Activities">Actividades</a></li>
+        </ul>
+        
       </section>
+
       <section>
-        <a href="#Settings">Configuración</a>
-        <a href="#Logout">Cerrar sesión</a>
+        <button type="button">Registro rápido</button>
+      </section>
+
+      <section className="footer">
+        <a href="#Settings" id="settings-link">{/*magen de rawpixel.com en Freepik*/}⚙️Configuración</a><br></br>
+        <a href="#Logout" id="logout-link">{/**/}<img src="src/resources/img/logout.png" title="icono logout" alt="Cerrar sesión"></img>Cerrar sesión</a>
       </section>
     </nav>
   );
