@@ -35,7 +35,7 @@ const statusMap = {
   }
 };
 
-export function UsersTableSection() {
+export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -77,7 +77,7 @@ export function UsersTableSection() {
     return () => {
       ignore = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, refreshToken]);
 
   const summaryMetrics = useMemo(
     () => buildUsersSummaryMetrics(rows, requestState),
@@ -166,7 +166,7 @@ export function UsersTableSection() {
           <button
             aria-label={`Editar a ${row.name}`}
             className="users-action-button"
-            disabled
+            onClick={() => onEditRequest?.(row.id)}
             type="button"
           >
             <Icon name="edit" size={16} />
