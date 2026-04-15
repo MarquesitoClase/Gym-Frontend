@@ -835,6 +835,14 @@ img {
   background-repeat: no-repeat;
 }
 
+.activity-card__cover-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
 .activity-card__cover-tag {
   display: inline-flex;
   align-items: center;
@@ -846,6 +854,24 @@ img {
   font-size: 12px;
   font-weight: 700;
   backdrop-filter: blur(8px);
+}
+
+.activity-card__edit-button {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.activity-card__edit-button:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .activity-card__cover--spinning {

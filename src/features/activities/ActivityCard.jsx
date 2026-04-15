@@ -15,7 +15,7 @@ const activityStatusMap = {
   }
 };
 
-export function ActivityCard({ activity }) {
+export function ActivityCard({ activity, onEditRequest }) {
   const status = activityStatusMap[activity.status];
   const coverStyle = activity.imageUrl
     ? {
@@ -34,7 +34,17 @@ export function ActivityCard({ activity }) {
         style={coverStyle}
       >
         <StatusBadge label={status.label} tone={status.tone} />
-        <span className="activity-card__cover-tag">{activity.category}</span>
+        <div className="activity-card__cover-actions">
+          <span className="activity-card__cover-tag">{activity.category}</span>
+          <button
+            aria-label={`Editar ${activity.title}`}
+            className="activity-card__edit-button"
+            onClick={() => onEditRequest?.(activity.id)}
+            type="button"
+          >
+            <Icon name="edit" size={16} />
+          </button>
+        </div>
       </div>
 
       <div className="activity-card__body">
