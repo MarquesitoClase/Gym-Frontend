@@ -394,6 +394,13 @@ img {
   transform: translateY(-1px);
 }
 
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .button--sm {
   min-height: 40px;
   padding: 0 14px;
@@ -805,6 +812,10 @@ img {
   gap: 24px;
 }
 
+.activities-feedback-card {
+  grid-column: 1 / -1;
+}
+
 .activity-card {
   overflow: hidden;
   padding: 0;
@@ -816,7 +827,12 @@ img {
   align-items: flex-start;
   justify-content: space-between;
   background-size: cover;
+  background-position: center;
   padding: 16px;
+}
+
+.activity-card__cover--image {
+  background-repeat: no-repeat;
 }
 
 .activity-card__cover-tag {
@@ -901,6 +917,10 @@ img {
   gap: 8px;
   color: var(--ink-soft);
   font-size: 14px;
+}
+
+.activities-fab:disabled {
+  opacity: 0.55;
 }
 
 .enrollment-layout {

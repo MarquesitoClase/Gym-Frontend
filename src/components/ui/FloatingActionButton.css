@@ -12,6 +12,12 @@
   box-shadow: var(--shadow-primary);
 }
 
+.floating-action-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .floating-action-button--fixed {
   position: fixed;
   right: 32px;
