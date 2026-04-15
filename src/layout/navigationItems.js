@@ -19,10 +19,5 @@ export const navigationItems = [
     path: "/actividades",
     label: "Actividades",
     icon: "activities"
-  },
-  {
-    path: "/inscripciones",
-    label: "Inscripciones",
-    icon: "enrollments"
   }
 ];
