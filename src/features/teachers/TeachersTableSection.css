@@ -65,6 +65,11 @@
   font-weight: 700;
 }
 
+.teachers-chip--muted {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+}
+
 .teachers-action-button {
   display: inline-flex;
   width: 36px;
@@ -75,6 +80,11 @@
   border-radius: 10px;
   background: transparent;
   color: var(--ink-soft);
+}
+
+.teachers-action-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
 }
 
 .teachers-action-button:hover {
