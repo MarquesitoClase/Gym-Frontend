@@ -66,6 +66,11 @@
   color: var(--ink-soft);
 }
 
+.users-action-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
 .users-action-button:hover {
   background: var(--surface-muted);
   color: var(--ink-strong);
