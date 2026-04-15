@@ -1,0 +1,31 @@
+.floating-action-button {
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  border-radius: 16px;
+  background: var(--brand-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-primary);
+}
+
+.floating-action-button--fixed {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 30;
+}
+
+.floating-action-button__icon {
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.floating-action-button__label {
+  font-size: 14px;
+  font-weight: 700;
+}

@@ -1,0 +1,74 @@
+.selectable-card {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  background: var(--surface-card);
+  padding: 20px;
+  text-align: left;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.selectable-card:hover {
+  border-color: rgba(29, 77, 255, 0.3);
+}
+
+.selectable-card.is-selected {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(29, 77, 255, 0.08);
+}
+
+.selectable-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.selectable-card__icon {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(29, 77, 255, 0.08);
+  color: var(--brand-primary);
+}
+
+.selectable-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.selectable-card__title {
+  color: var(--ink-strong);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.selectable-card__subtitle {
+  color: var(--brand-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.selectable-card__meta {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.selectable-card__content,
+.selectable-card__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
