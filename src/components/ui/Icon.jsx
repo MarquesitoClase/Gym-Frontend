@@ -157,6 +157,29 @@ export function Icon({ className, name, size = 20 }) {
           <path d="M12 17h.01" />
         </svg>
       );
+    case "filter":
+      return (
+        <svg {...sharedProps}>
+          <path d="M4 6h16" />
+          <path d="M7 12h10" />
+          <path d="M10 18h4" />
+        </svg>
+      );
+    case "download":
+      return (
+        <svg {...sharedProps}>
+          <path d="M12 4v10" />
+          <path d="m8.5 10.5 3.5 3.5 3.5-3.5" />
+          <path d="M5 19h14" />
+        </svg>
+      );
+    case "edit":
+      return (
+        <svg {...sharedProps}>
+          <path d="m4 20 4.5-1 9-9a2.1 2.1 0 1 0-3-3l-9 9L4 20Z" />
+          <path d="m13.5 7.5 3 3" />
+        </svg>
+      );
     default:
       return (
         <svg {...sharedProps}>

@@ -12,64 +12,67 @@ function renderCell(column, row) {
 
 export function DataTable({
   caption,
+  className,
   columns,
   emptyState,
+  footer,
+  header,
   rowKey = "id",
   rows
 }) {
-  if (!rows.length) {
-    return (
-      <SurfaceCard className="table-shell">
-        {emptyState ?? (
-          <EmptyState
-            description="Todavía no hay datos disponibles para este bloque."
-            title="Sin registros"
-          />
-        )}
-      </SurfaceCard>
-    );
-  }
-
-  return (
-    <SurfaceCard className="table-shell">
-      <div className="table-shell__scroll">
-        <table className="data-table">
-          {caption ? <caption>{caption}</caption> : null}
-          <thead>
-            <tr>
+  const content = rows.length ? (
+    <div className="table-shell__scroll">
+      <table className="data-table">
+        {caption ? <caption>{caption}</caption> : null}
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th
+                className={classNames(
+                  "data-table__head",
+                  column.align === "end" && "data-table__head--end"
+                )}
+                key={column.key}
+                style={column.width ? { width: column.width } : undefined}
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr className="data-table__row" key={row[rowKey]}>
               {columns.map((column) => (
-                <th
+                <td
                   className={classNames(
-                    "data-table__head",
-                    column.align === "end" && "data-table__head--end"
+                    "data-table__cell",
+                    column.align === "end" && "data-table__cell--end"
                   )}
                   key={column.key}
-                  style={column.width ? { width: column.width } : undefined}
                 >
-                  {column.label}
-                </th>
+                  {renderCell(column, row)}
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr className="data-table__row" key={row[rowKey]}>
-                {columns.map((column) => (
-                  <td
-                    className={classNames(
-                      "data-table__cell",
-                      column.align === "end" && "data-table__cell--end"
-                    )}
-                    key={column.key}
-                  >
-                    {renderCell(column, row)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    emptyState ?? (
+      <EmptyState
+        description="Todavia no hay datos disponibles para este bloque."
+        title="Sin registros"
+      />
+    )
+  );
+
+  return (
+    <SurfaceCard className={classNames("table-shell", className)}>
+      {header ? <div className="table-shell__header">{header}</div> : null}
+      {content}
+      {footer ? <div className="table-shell__footer">{footer}</div> : null}
     </SurfaceCard>
   );
 }
