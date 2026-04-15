@@ -30,7 +30,7 @@ const statusMap = {
   }
 };
 
-export function TeachersTableSection() {
+export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -84,7 +84,7 @@ export function TeachersTableSection() {
     return () => {
       ignore = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, refreshToken]);
 
   const summaryMetrics = useMemo(
     () => buildTeachersSummaryMetrics(rows, requestState),
@@ -186,7 +186,7 @@ export function TeachersTableSection() {
         <button
           aria-label={`Editar a ${row.name}`}
           className="teachers-action-button"
-          disabled
+          onClick={() => onEditRequest?.(row.id)}
           type="button"
         >
           <Icon name="edit" size={16} />
