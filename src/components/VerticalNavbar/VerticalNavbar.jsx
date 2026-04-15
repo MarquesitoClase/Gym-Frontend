@@ -10,12 +10,12 @@ export default function VerticalNavbar() {
 
       <section>
         <ul>
-          <li><a href="#Dashboard">Dashboard</a></li>
-          <li><a href="#Members">Miembros</a></li>
-          <li><a href="#Teachers">Profesores</a></li>
-          <li><a href="#Activities">Actividades</a></li>
+          <li><a href="/Dashboard">Dashboard</a></li>
+          <li><a href="/Members">Miembros</a></li>
+          <li><a href="/Teachers">Profesores</a></li>
+          <li><a href="/Activities">Actividades</a></li>
         </ul>
-        
+
       </section>
 
       <section>
@@ -23,9 +23,26 @@ export default function VerticalNavbar() {
       </section>
 
       <section className="footer">
-        <a href="#Settings" id="settings-link">{/*magen de rawpixel.com en Freepik*/}⚙️Configuración</a><br></br>
-        <a href="#Logout" id="logout-link">{/**/}<img src="src/resources/img/logout.png" title="icono logout" alt="Cerrar sesión"></img>Cerrar sesión</a>
+        {/* 
+    Iconos generados por ChatGPT.
+    Licencia: uso libre sin restricciones (puedes usarlos, modificarlos y distribuirlos incluso con fines comerciales).
+    No requieren atribución.
+  */}
+
+        <a href="/Settings" id="settings-link">
+          ⚙️ Configuración
+        </a>
+        <br />
+
+        <a href="/Logout" id="logout-link">
+          🚪 Cerrar sesión
+        </a><br></br>
+
+        <a href="/SignUp" id="singUp-link">
+          📝 Registrarse
+        </a>
       </section>
     </nav>
   );
 }
+
