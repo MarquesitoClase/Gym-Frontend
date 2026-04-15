@@ -11,7 +11,11 @@ import {
 } from "../../services/mappers/activitiesMapper";
 import { ActivityCard } from "./ActivityCard";
 
-export function ActivityCatalog() {
+export function ActivityCatalog({
+  onCreateRequest,
+  onEditRequest,
+  refreshToken = 0
+}) {
   const [activities, setActivities] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
@@ -57,7 +61,7 @@ export function ActivityCatalog() {
     return () => {
       ignore = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, refreshToken]);
 
   const catalogHighlights = useMemo(
     () => buildCatalogHighlights(activities, teachers, requestState),
@@ -96,7 +100,11 @@ export function ActivityCatalog() {
       </SurfaceCard>
     ) : activitiesCatalog.length ? (
       activitiesCatalog.map((activity) => (
-        <ActivityCard activity={activity} key={activity.id} />
+        <ActivityCard
+          activity={activity}
+          key={activity.id}
+          onEditRequest={onEditRequest}
+        />
       ))
     ) : (
       <SurfaceCard className="activities-feedback-card">
@@ -134,9 +142,9 @@ export function ActivityCatalog() {
 
       <FloatingActionButton
         className="activities-fab"
-        disabled
         fixed
         label="Nueva actividad"
+        onClick={onCreateRequest}
       />
     </div>
   );
