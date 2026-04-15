@@ -10,16 +10,20 @@ export function ActivitiesPage() {
       <SectionHeader
         actions={
           <>
-            <Button iconLeft={<Icon name="search" size={16} />} variant="secondary">
+            <Button
+              disabled
+              iconLeft={<Icon name="search" size={16} />}
+              variant="secondary"
+            >
               Filtrar
             </Button>
-            <Button iconLeft={<Icon name="plus" size={16} />}>
+            <Button disabled iconLeft={<Icon name="plus" size={16} />}>
               Nueva actividad
             </Button>
           </>
         }
-        description="Gestiona el catálogo, revisa horarios y prepara el flujo para futuras operaciones CRUD."
-        eyebrow="Catálogo"
+        description="Consulta el catalogo futuro real del backend y prepara la siguiente fase de CRUD."
+        eyebrow="Catalogo"
         title="Actividades"
       />
 

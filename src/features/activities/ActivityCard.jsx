@@ -17,14 +17,21 @@ const activityStatusMap = {
 
 export function ActivityCard({ activity }) {
   const status = activityStatusMap[activity.status];
+  const coverStyle = activity.imageUrl
+    ? {
+        backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.16) 0%, rgba(15, 23, 42, 0.5) 100%), url("${activity.imageUrl}")`
+      }
+    : undefined;
 
   return (
     <SurfaceCard className="activity-card">
       <div
         className={classNames(
           "activity-card__cover",
+          activity.imageUrl && "activity-card__cover--image",
           `activity-card__cover--${activity.coverTone}`
         )}
+        style={coverStyle}
       >
         <StatusBadge label={status.label} tone={status.tone} />
         <span className="activity-card__cover-tag">{activity.category}</span>
