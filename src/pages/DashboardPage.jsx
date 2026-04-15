@@ -10,15 +10,15 @@ export function DashboardPage() {
       <SectionHeader
         actions={
           <>
-            <Button iconLeft={<Icon name="spark" size={16} />} variant="secondary">
+            <Button disabled iconLeft={<Icon name="spark" size={16} />} variant="secondary">
               Resumen diario
             </Button>
-            <Button iconLeft={<Icon name="plus" size={16} />}>
+            <Button disabled iconLeft={<Icon name="plus" size={16} />}>
               Abrir inscripciones
             </Button>
           </>
         }
-        description="Visión operativa del gimnasio con foco en recepción, actividad diaria e integración futura."
+        description="Vision operativa del gimnasio construida con usuarios, profesores y actividades reales del backend."
         eyebrow="Titan Gym"
         title="Panel principal"
       />
