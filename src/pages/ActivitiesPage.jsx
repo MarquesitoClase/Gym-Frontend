@@ -43,20 +43,11 @@ export function ActivitiesPage() {
     <PageContainer>
       <SectionHeader
         actions={
-          <>
-            <Button
-              disabled
-              iconLeft={<Icon name="search" size={16} />}
-              variant="secondary"
-            >
-              Filtrar
-            </Button>
-            <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
-              Nueva actividad
-            </Button>
-          </>
+          <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
+            Nueva actividad
+          </Button>
         }
-        description="Consulta el catalogo futuro real del backend y prepara la siguiente fase de CRUD."
+        description="Gestiona el catalogo futuro real del backend y manten las sesiones publicadas."
         eyebrow="Catalogo"
         title="Actividades"
       />
