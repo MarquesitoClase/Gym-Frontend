@@ -5,7 +5,7 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
     <header className="topbar">
       <div className="topbar__search-group">
         <button
-          aria-label="Abrir navegación"
+          aria-label="Abrir navegacion"
           className="topbar__menu-button"
           onClick={onMenuOpen}
           type="button"
@@ -23,19 +23,19 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
       </div>
 
       <div className="topbar__actions">
-        <button aria-label="Avisos" className="topbar__icon-button" type="button">
-          <span className="topbar__notification-dot" />
-          <Icon name="bell" size={18} />
-        </button>
         <button
-          aria-label="Accesos rápidos"
+          aria-label="Notificaciones"
           className="topbar__icon-button"
           type="button"
         >
-          <Icon name="spark" size={18} />
+          <span className="topbar__notification-dot" />
+          <Icon name="bell" size={18} />
+        </button>
+        <button aria-label="Ayuda" className="topbar__icon-button" type="button">
+          <Icon name="help" size={18} />
         </button>
         <button
-          aria-label="Configuración"
+          aria-label="Configuracion"
           className="topbar__icon-button"
           type="button"
         >
@@ -43,10 +43,10 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
         </button>
 
         <div className="topbar__profile">
-          <div className="topbar__avatar">TG</div>
+          <div className="topbar__avatar">AU</div>
           <div className="topbar__profile-text">
-            <span className="topbar__profile-name">Recepción</span>
-            <span className="topbar__profile-role">Titan Gym</span>
+            <span className="topbar__profile-name">Admin User</span>
+            <span className="topbar__profile-role">Panel central</span>
           </div>
         </div>
       </div>

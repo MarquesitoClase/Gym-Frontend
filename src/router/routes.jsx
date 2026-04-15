@@ -15,21 +15,21 @@ export const routes = [
         index: true,
         element: <DashboardPage />,
         handle: {
-          searchPlaceholder: "Buscar métricas, actividades o incidencias..."
+          searchPlaceholder: "Buscar usuarios o clases..."
         }
       },
       {
         path: "actividades",
         element: <ActivitiesPage />,
         handle: {
-          searchPlaceholder: "Buscar actividades, franjas o profesores..."
+          searchPlaceholder: "Buscar actividades o profesores..."
         }
       },
       {
         path: "usuarios",
         element: <UsersPage />,
         handle: {
-          searchPlaceholder: "Buscar usuarios por nombre, correo o DNI..."
+          searchPlaceholder: "Buscar usuarios por nombre o DNI..."
         }
       },
       {
@@ -43,7 +43,7 @@ export const routes = [
         path: "inscripciones",
         element: <EnrollmentsPage />,
         handle: {
-          searchPlaceholder: "Buscar inscripciones, usuarios o actividades..."
+          searchPlaceholder: "Buscar usuarios o actividades..."
         }
       },
       {

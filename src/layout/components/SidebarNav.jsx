@@ -7,14 +7,14 @@ export function SidebarNav({ isOpen, onClose }) {
   return (
     <>
       <button
-        aria-label="Cerrar navegación"
+        aria-label="Cerrar navegacion"
         className={classNames("app-overlay", isOpen && "is-visible")}
         onClick={onClose}
         type="button"
       />
       <aside className={classNames("sidebar", isOpen && "is-open")}>
         <button
-          aria-label="Cerrar navegación"
+          aria-label="Cerrar navegacion"
           className="sidebar__close"
           onClick={onClose}
           type="button"
@@ -25,7 +25,7 @@ export function SidebarNav({ isOpen, onClose }) {
         <div className="sidebar__content">
           <div className="sidebar__brand">
             <div className="sidebar__brand-title">Titan Gym</div>
-            <div className="sidebar__brand-subtitle">Panel de administración</div>
+            <div className="sidebar__brand-subtitle">Terminal de administracion</div>
           </div>
 
           <nav className="sidebar__nav">
@@ -49,15 +49,15 @@ export function SidebarNav({ isOpen, onClose }) {
         <div className="sidebar__footer">
           <NavLink className="sidebar__quick-link" onClick={onClose} to="/inscripciones">
             <Icon name="plus" size={18} />
-            <span>Inscripción rápida</span>
+            <span>Inscripcion rapida</span>
           </NavLink>
           <button className="sidebar__footer-link" type="button">
             <Icon name="settings" size={18} />
-            <span>Configuración</span>
+            <span>Configuracion</span>
           </button>
           <button className="sidebar__footer-link" type="button">
             <Icon name="logout" size={18} />
-            <span>Cerrar sesión</span>
+            <span>Cerrar sesion</span>
           </button>
         </div>
       </aside>
