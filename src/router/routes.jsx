@@ -1,15 +1,26 @@
+import { Navigate } from "react-router-dom";
+import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { AppShell } from "../layout/AppShell";
 import { ActivitiesPage } from "../pages/ActivitiesPage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { EnrollmentsPage } from "../pages/EnrollmentsPage";
+import { LoginPage } from "../pages/LoginPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { TeachersPage } from "../pages/TeachersPage";
 import { UsersPage } from "../pages/UsersPage";
 
 export const routes = [
   {
+    path: "/login",
+    element: <LoginPage />
+  },
+  {
     path: "/",
-    element: <AppShell />,
+    element: (
+      <ProtectedRoute>
+        <AppShell />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -54,5 +65,9 @@ export const routes = [
         }
       }
     ]
+  },
+  {
+    path: "*",
+    element: <Navigate replace to="/login" />
   }
 ];

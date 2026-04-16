@@ -1,6 +1,25 @@
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "../../components/ui/Icon";
 
-export function TopBar({ onMenuOpen, searchPlaceholder }) {
+export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!isProfileOpen) {
+      return undefined;
+    }
+
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isProfileOpen]);
+
   return (
     <header className="topbar">
       <div className="topbar__search-group">
@@ -25,33 +44,50 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
       </div>
 
       <div className="topbar__actions">
-        <button
-          aria-label="Notificaciones"
-          className="topbar__icon-button"
-          type="button"
-        >
-          <span className="topbar__notification-dot" />
-          <Icon name="bell" size={18} />
-        </button>
-        <button aria-label="Ayuda" className="topbar__icon-button" type="button">
-          <Icon name="help" size={18} />
-        </button>
-        <button
-          aria-label="Configuración"
-          className="topbar__icon-button"
-          type="button"
-        >
-          <Icon name="settings" size={18} />
-        </button>
+        <div className="topbar__profile-wrapper" ref={dropdownRef}>
+          <button
+            aria-expanded={isProfileOpen}
+            aria-haspopup="true"
+            className="topbar__profile"
+            onClick={() => setIsProfileOpen((prev) => !prev)}
+            type="button"
+          >
+            <div className="topbar__avatar">
+              <span>{admin?.initials ?? "AT"}</span>
+            </div>
+            <div className="topbar__profile-text">
+              <span className="topbar__profile-name">{admin?.name ?? "Admin"}</span>
+              <span className="topbar__profile-role">{admin?.role ?? "Administrador"}</span>
+            </div>
+            <Icon name="chevron" size={14} />
+          </button>
 
-        <div className="topbar__profile">
-          <div className="topbar__avatar">
-            <span>AU</span>
-          </div>
-          <div className="topbar__profile-text">
-            <span className="topbar__profile-name">Usuario admin</span>
-            <span className="topbar__profile-role">Administrador principal</span>
-          </div>
+          {isProfileOpen ? (
+            <div className="topbar__dropdown">
+              <div className="topbar__dropdown-header">
+                <div className="topbar__dropdown-avatar">
+                  <span>{admin?.initials ?? "AT"}</span>
+                </div>
+                <div>
+                  <strong className="topbar__dropdown-name">{admin?.name}</strong>
+                  <span className="topbar__dropdown-email">{admin?.email}</span>
+                  <span className="topbar__dropdown-role">{admin?.role}</span>
+                </div>
+              </div>
+              <div className="topbar__dropdown-divider" />
+              <button
+                className="topbar__dropdown-logout"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  onLogout?.();
+                }}
+                type="button"
+              >
+                <Icon name="logout" size={16} />
+                Cerrar sesion
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </header>

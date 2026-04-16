@@ -73,7 +73,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
               activity.price === null || activity.price === undefined
                 ? ""
                 : String(activity.price),
-            teacherId: String(activity.teacher?.id ?? ""),
+            teacherId: String(activity.teacherId ?? ""),
             title: activity.title ?? ""
           });
           setImageFile(null);

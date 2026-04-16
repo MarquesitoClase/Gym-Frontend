@@ -2,8 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../components/ui/Button";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { Modal } from "../../components/ui/Modal";
-import { usersService } from "../../services";
+import {
+  activitiesService,
+  enrollmentsService,
+  usersService
+} from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
+import { formatDateTime } from "../../utils/formatters";
 
 const initialFormState = {
   active: true,
@@ -22,6 +27,14 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
+
+  // Inscripciones (solo modo edicion)
+  const [enrollments, setEnrollments] = useState([]);
+  const [enrollActivities, setEnrollActivities] = useState([]);
+  const [selectedEnrollId, setSelectedEnrollId] = useState("");
+  const [isLoadingEnrollments, setIsLoadingEnrollments] = useState(false);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [enrollMessage, setEnrollMessage] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -81,6 +94,39 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
   }, [mode, userId]);
 
   useEffect(() => {
+    if (mode !== "edit" || !userId) {
+      return undefined;
+    }
+
+    let ignore = false;
+    setIsLoadingEnrollments(true);
+
+    Promise.all([
+      enrollmentsService.listByUser(userId),
+      activitiesService.list()
+    ])
+      .then(([enrollResponse, activitiesResponse]) => {
+        if (ignore) {
+          return;
+        }
+        setEnrollments(enrollResponse);
+        setEnrollActivities(activitiesResponse);
+      })
+      .catch(() => {
+        // no bloquear el modal si falla la carga de inscripciones
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoadingEnrollments(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [mode, userId]);
+
+  useEffect(() => {
     if (!imageFile) {
       return undefined;
     }
@@ -90,6 +136,16 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
 
     return () => URL.revokeObjectURL(objectUrl);
   }, [imageFile]);
+
+  const enrolledIds = useMemo(
+    () => new Set(enrollments.map((e) => e.id)),
+    [enrollments]
+  );
+
+  const availableActivities = useMemo(
+    () => enrollActivities.filter((a) => !enrolledIds.has(a.id)),
+    [enrollActivities, enrolledIds]
+  );
 
   const modalCopy = useMemo(() => {
     if (mode === "edit") {
@@ -199,6 +255,33 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
     }
   };
 
+  const handleEnroll = async () => {
+    if (!selectedEnrollId || !userId) {
+      return;
+    }
+
+    setIsEnrolling(true);
+    setEnrollMessage(null);
+
+    try {
+      await enrollmentsService.register(Number(selectedEnrollId), userId);
+      const updated = await enrollmentsService.listByUser(userId);
+      setEnrollments(updated);
+      setSelectedEnrollId("");
+      setEnrollMessage({
+        tone: "success",
+        text: "Inscripcion realizada correctamente."
+      });
+    } catch (error) {
+      setEnrollMessage({
+        tone: "error",
+        text: getApiErrorMessage(error, "No se pudo completar la inscripcion.")
+      });
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
+
   return (
     <Modal
       description={modalCopy.description}
@@ -298,6 +381,81 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
                   Quitar imagen
                 </Button>
               </div>
+            </div>
+          ) : null}
+
+          {mode === "edit" && userId ? (
+            <div className="entity-form__enrollments">
+              <div className="entity-form__section-divider" />
+              <strong className="entity-form__section-title">
+                Inscripciones en actividades
+              </strong>
+
+              {isLoadingEnrollments ? (
+                <LoadingState lines={2} />
+              ) : (
+                <>
+                  {enrollments.length ? (
+                    <ul className="entity-form__enrollment-list">
+                      {enrollments.map((activity) => (
+                        <li className="entity-form__enrollment-item" key={activity.id}>
+                          <span className="entity-form__enrollment-name">
+                            {activity.title}
+                          </span>
+                          <span className="entity-form__enrollment-date">
+                            {formatDateTime(activity.date)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="entity-form__helper">
+                      Este socio no tiene inscripciones en actividades futuras.
+                    </p>
+                  )}
+
+                  {availableActivities.length ? (
+                    <div className="entity-form__enroll-row">
+                      <select
+                        className="entity-form__control"
+                        onChange={(e) => setSelectedEnrollId(e.target.value)}
+                        value={selectedEnrollId}
+                      >
+                        <option value="">Selecciona una actividad...</option>
+                        {availableActivities.map((activity) => (
+                          <option key={activity.id} value={activity.id}>
+                            {activity.title} — {formatDateTime(activity.date)}
+                          </option>
+                        ))}
+                      </select>
+                      <Button
+                        disabled={!selectedEnrollId || isEnrolling}
+                        onClick={handleEnroll}
+                        size="sm"
+                        type="button"
+                      >
+                        {isEnrolling ? "Inscribiendo..." : "Inscribir"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="entity-form__helper">
+                      No hay actividades futuras disponibles para inscribir.
+                    </p>
+                  )}
+
+                  {enrollMessage ? (
+                    <div
+                      className={
+                        enrollMessage.tone === "success"
+                          ? "entity-form__enroll-success"
+                          : "entity-form__error"
+                      }
+                    >
+                      {enrollMessage.text}
+                    </div>
+                  ) : null}
+                </>
+              )}
             </div>
           ) : null}
 

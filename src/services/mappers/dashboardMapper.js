@@ -96,32 +96,19 @@ export function buildDashboardMetrics(data, status = "success") {
 
 export function buildUpcomingActivities(activities, teachers) {
   const teacherNameById = buildTeacherNameById(teachers);
-  const bookingTemplates = [
-    { booked: 24, total: 30 },
-    { booked: 12, total: 15 },
-    { booked: 5, total: 8 },
-    { booked: 30, total: 30 },
-    { booked: 9, total: 14 }
-  ];
 
   return [...activities]
     .sort((left, right) => new Date(left.date) - new Date(right.date))
     .slice(0, 5)
-    .map((activity, index) => {
-      const booking = bookingTemplates[index % bookingTemplates.length];
-      const occupancyPercent = booking.total
-        ? Math.round((booking.booked / booking.total) * 100)
-        : 0;
+    .map((activity) => {
+      const enrolled = activity.enrolledCount ?? 0;
 
       return {
+        enrolled,
+        enrolledLabel: enrolled === 1 ? "1 inscrito" : `${enrolled} inscritos`,
         id: activity.id,
         metric: formatCurrency(activity.price),
         name: activity.title,
-        occupancyLabel:
-          occupancyPercent >= 100
-            ? "Completo"
-            : `${booking.booked}/${booking.total} plazas`,
-        occupancyPercent,
         schedule: formatDateTime(activity.date),
         teacher:
           teacherNameById.get(activity.teacherId) ??

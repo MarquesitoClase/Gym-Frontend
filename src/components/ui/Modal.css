@@ -222,6 +222,74 @@
   color: #8f1d39;
 }
 
+.entity-form__enrollments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-form__section-divider {
+  border: none;
+  border-top: 1px solid var(--border-soft, #e2e8f0);
+  margin: 4px 0;
+}
+
+.entity-form__section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #0a1220);
+}
+
+.entity-form__enrollment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entity-form__enrollment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--surface-sunken, #f1f5f9);
+  font-size: 13px;
+  gap: 12px;
+}
+
+.entity-form__enrollment-name {
+  font-weight: 600;
+  color: var(--text-primary, #0a1220);
+}
+
+.entity-form__enrollment-date {
+  color: var(--text-secondary, #64748b);
+  white-space: nowrap;
+}
+
+.entity-form__enroll-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.entity-form__enroll-row .entity-form__control {
+  flex: 1;
+}
+
+.entity-form__enroll-success {
+  border-radius: 14px;
+  background: #d1fae5;
+  padding: 14px 16px;
+  color: #065f46;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 @media (max-width: 760px) {
   .modal {
     align-items: stretch;

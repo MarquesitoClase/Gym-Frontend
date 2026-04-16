@@ -192,13 +192,11 @@ export function DashboardOverview() {
                   </div>
                   <div className="dashboard-agenda__side">
                     <span className="dashboard-agenda__occupancy">
-                      {activity.occupancyLabel}
+                      {activity.enrolledLabel}
                     </span>
-                    <ProgressBar
-                      className="dashboard-agenda__progress"
-                      tone={activity.occupancyPercent >= 100 ? "warning" : "accent"}
-                      value={activity.occupancyPercent}
-                    />
+                    <span className="dashboard-agenda__metric">
+                      {activity.metric}
+                    </span>
                   </div>
                   <button
                     aria-label={`Abrir ${activity.name}`}

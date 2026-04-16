@@ -132,6 +132,12 @@ export function Icon({ className, name, size = 20 }) {
           <path d="M21 12H9" />
         </svg>
       );
+    case "chevron":
+      return (
+        <svg {...sharedProps}>
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      );
     case "calendar":
       return (
         <svg {...sharedProps}>
