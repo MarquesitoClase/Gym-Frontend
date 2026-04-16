@@ -35,9 +35,11 @@ const initialFormState = {
 export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
   const [activeTeachers, setActiveTeachers] = useState([]);
   const [formValues, setFormValues] = useState(initialFormState);
+  const [imageFile, setImageFile] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
@@ -74,11 +76,15 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
             teacherId: String(activity.teacher?.id ?? ""),
             title: activity.title ?? ""
           });
+          setImageFile(null);
+          setPreviewUrl(activity.imageUrl ?? "");
         } else {
           setFormValues({
             ...initialFormState,
             teacherId: teachers[0]?.id ? String(teachers[0].id) : ""
           });
+          setImageFile(null);
+          setPreviewUrl("");
         }
       } catch (error) {
         if (ignore) {
@@ -105,6 +111,17 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
     };
   }, [activityId, mode]);
 
+  useEffect(() => {
+    if (!imageFile) {
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(imageFile);
+    setPreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imageFile]);
+
   const modalCopy = useMemo(() => {
     if (mode === "edit") {
       return {
@@ -130,20 +147,41 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
     }));
   };
 
+  const handleImageChange = (event) => {
+    const nextFile = event.target.files?.[0] ?? null;
+    setImageFile(nextFile);
+
+    if (!nextFile && !formValues.imageUrl) {
+      setPreviewUrl("");
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setPreviewUrl("");
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      imageUrl: ""
+    }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
-      const payload = {
-        date: normalizeDateTimeValue(formValues.date),
-        description: formValues.description.trim(),
-        imageUrl: formValues.imageUrl.trim(),
-        price: Number(formValues.price),
-        teacherId: Number(formValues.teacherId),
-        title: formValues.title.trim()
-      };
+      const payload = new FormData();
+      payload.append("title", formValues.title.trim());
+      payload.append("description", formValues.description.trim());
+      payload.append("date", normalizeDateTimeValue(formValues.date));
+      payload.append("price", formValues.price);
+      payload.append("teacherId", formValues.teacherId);
+      payload.append("imageUrl", formValues.imageUrl.trim());
+
+      if (imageFile) {
+        payload.append("image", imageFile);
+      }
 
       if (mode === "edit" && activityId) {
         await activitiesService.update(activityId, payload);
@@ -272,26 +310,32 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
             </label>
 
             <label className="entity-form__field entity-form__field--full">
-              <span className="entity-form__label">URL de imagen</span>
+              <span className="entity-form__label">Imagen</span>
               <input
+                accept="image/*"
                 className="entity-form__control"
-                onChange={handleChange("imageUrl")}
-                placeholder="https://..."
-                type="url"
-                value={formValues.imageUrl}
+                onChange={handleImageChange}
+                type="file"
               />
-              <span className="entity-form__helper">
-                El backend espera una URL directa de imagen para actividades.
+              <span className="entity-form__file-name">
+                {imageFile ? imageFile.name : "Puedes dejarlo vacio si no quieres subir imagen."}
               </span>
             </label>
           </div>
 
-          {formValues.imageUrl ? (
+          {previewUrl ? (
             <div className="entity-form__preview">
-              <img alt="Vista previa de la actividad" src={formValues.imageUrl} />
+              <img alt="Vista previa de la actividad" src={previewUrl} />
               <div className="entity-form__preview-copy">
-                <strong>Portada configurada</strong>
-                <span>Se mostrara en la tarjeta del catalogo.</span>
+                <strong>Portada preparada</strong>
+                <span>
+                  {imageFile
+                    ? "Se subira una nueva imagen al guardar."
+                    : "Se mantendra la imagen actual de la actividad."}
+                </span>
+                <Button onClick={handleRemoveImage} size="sm" variant="ghost">
+                  Quitar imagen
+                </Button>
               </div>
             </div>
           ) : null}
@@ -309,7 +353,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
                 </button>
               ) : (
                 <span className="entity-form__helper">
-                  Elige un monitor activo antes de guardar.
+                  La imagen se sube a traves del backend.
                 </span>
               )}
             </div>

@@ -830,8 +830,10 @@ img {
   min-height: 190px;
   align-items: flex-start;
   justify-content: space-between;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--surface-sunken, #0d1520);
   padding: 16px;
 }
 

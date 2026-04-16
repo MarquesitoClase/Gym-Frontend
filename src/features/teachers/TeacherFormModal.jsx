@@ -17,24 +17,24 @@ const initialFormState = {
 export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
   const [formValues, setFormValues] = useState(initialFormState);
   const [imageFile, setImageFile] = useState(null);
-const [previewUrl, setPreviewUrl] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFetching, setIsFetching] = useState(mode === "edit");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     let ignore = false;
 
     async function loadTeacher() {
-    if (mode !== "edit" || !teacherId) {
-  setFormValues(initialFormState);
-  setImageFile(null);       // añadir
-  setIsFetching(false);
-  setPreviewUrl("");        // añadir
-  setSubmitError("");
-  return;
-}
+      if (mode !== "edit" || !teacherId) {
+        setFormValues(initialFormState);
+        setImageFile(null);
+        setIsFetching(false);
+        setPreviewUrl("");
+        setSubmitError("");
+        return;
+      }
 
       setIsFetching(true);
       setSubmitError("");
@@ -54,6 +54,8 @@ const [previewUrl, setPreviewUrl] = useState("");
           imageUrl: teacher.imageUrl ?? "",
           lastName: teacher.lastName ?? ""
         });
+        setImageFile(null);
+        setPreviewUrl(teacher.imageUrl ?? "");
       } catch (error) {
         if (ignore) {
           return;
@@ -78,6 +80,17 @@ const [previewUrl, setPreviewUrl] = useState("");
       ignore = true;
     };
   }, [mode, teacherId]);
+
+  useEffect(() => {
+    if (!imageFile) {
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(imageFile);
+    setPreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imageFile]);
 
   const modalCopy = useMemo(() => {
     if (mode === "edit") {
@@ -107,20 +120,41 @@ const [previewUrl, setPreviewUrl] = useState("");
     }));
   };
 
+  const handleImageChange = (event) => {
+    const nextFile = event.target.files?.[0] ?? null;
+    setImageFile(nextFile);
+
+    if (!nextFile && !formValues.imageUrl) {
+      setPreviewUrl("");
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setPreviewUrl("");
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      imageUrl: ""
+    }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
-      const payload = {
-        active: formValues.active,
-        contractYear: Number(formValues.contractYear),
-        dni: formValues.dni.trim(),
-        firstName: formValues.firstName.trim(),
-        imageUrl: formValues.imageUrl.trim(),
-        lastName: formValues.lastName.trim()
-      };
+      const payload = new FormData();
+      payload.append("firstName", formValues.firstName.trim());
+      payload.append("lastName", formValues.lastName.trim());
+      payload.append("dni", formValues.dni.trim());
+      payload.append("contractYear", formValues.contractYear);
+      payload.append("active", String(formValues.active));
+      payload.append("imageUrl", formValues.imageUrl.trim());
+
+      if (imageFile) {
+        payload.append("image", imageFile);
+      }
 
       if (mode === "edit" && teacherId) {
         await teachersService.update(teacherId, payload);
@@ -227,16 +261,15 @@ const [previewUrl, setPreviewUrl] = useState("");
             </label>
 
             <label className="entity-form__field entity-form__field--full">
-              <span className="entity-form__label">URL de imagen</span>
+              <span className="entity-form__label">Imagen</span>
               <input
+                accept="image/*"
                 className="entity-form__control"
-                onChange={handleChange("imageUrl")}
-                placeholder="https://..."
-                type="url"
-                value={formValues.imageUrl}
+                onChange={handleImageChange}
+                type="file"
               />
-              <span className="entity-form__helper">
-                En monitores el backend espera una URL de imagen en JSON.
+              <span className="entity-form__file-name">
+                {imageFile ? imageFile.name : "Puedes dejarlo vacio si no quieres subir imagen."}
               </span>
             </label>
 
@@ -252,12 +285,19 @@ const [previewUrl, setPreviewUrl] = useState("");
             </label>
           </div>
 
-          {formValues.imageUrl ? (
+          {previewUrl ? (
             <div className="entity-form__preview">
-              <img alt="Vista previa del monitor" src={formValues.imageUrl} />
+              <img alt="Vista previa del monitor" src={previewUrl} />
               <div className="entity-form__preview-copy">
-                <strong>Imagen configurada</strong>
-                <span>Se enviara como URL dentro del payload JSON.</span>
+                <strong>Imagen preparada</strong>
+                <span>
+                  {imageFile
+                    ? "Se subira una nueva imagen al guardar."
+                    : "Se mantendra la imagen actual del monitor."}
+                </span>
+                <Button onClick={handleRemoveImage} size="sm" variant="ghost">
+                  Quitar imagen
+                </Button>
               </div>
             </div>
           ) : null}
@@ -275,7 +315,7 @@ const [previewUrl, setPreviewUrl] = useState("");
                 </button>
               ) : (
                 <span className="entity-form__helper">
-                  Puedes dejar la imagen vacia y completarla mas tarde.
+                  La imagen se sube a traves del backend.
                 </span>
               )}
             </div>

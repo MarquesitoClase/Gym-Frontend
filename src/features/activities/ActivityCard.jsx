@@ -36,7 +36,10 @@ export function ActivityCard({ activity, className, onEditRequest }) {
   const coverImage = activity.imageUrl || fallbackImage;
   const coverStyle = coverImage
     ? {
-        backgroundImage: `linear-gradient(180deg, rgba(10, 18, 32, 0.08) 0%, rgba(10, 18, 32, 0.18) 100%), url("${coverImage}")`
+        backgroundImage: `linear-gradient(180deg, rgba(10, 18, 32, 0.08) 0%, rgba(10, 18, 32, 0.18) 100%), url("${coverImage}")`,
+        backgroundSize: "contain",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
       }
     : undefined;
 
