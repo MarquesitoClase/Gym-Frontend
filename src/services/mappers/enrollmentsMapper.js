@@ -31,7 +31,7 @@ export function mapEnrollmentActivityOptions(activities, teachers, enrolledIds) 
     schedule: formatDateTime(activity.date),
     teacher:
       teacherNameById.get(activity.teacherId) ??
-      `Profesor #${activity.teacherId}`,
+      `Monitor #${activity.teacherId}`,
     title: activity.title
   }));
 }
@@ -46,6 +46,6 @@ export function mapUserActivityRows(activities, teachers) {
     status: "confirmed",
     teacher:
       teacherNameById.get(activity.teacherId) ??
-      `Profesor #${activity.teacherId}`
+      `Monitor #${activity.teacherId}`
   }));
 }
