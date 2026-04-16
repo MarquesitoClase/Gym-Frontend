@@ -91,7 +91,7 @@ export function mapActivityDtoToCard(activity, teacherNameById) {
     status: "active",
     teacher:
       teacherNameById.get(activity.teacherId) ??
-      `Profesor #${activity.teacherId}`,
+      `Monitor #${activity.teacherId}`,
     title: activity.title
   };
 }
@@ -117,7 +117,7 @@ function createPlaceholderHighlights(meta) {
     },
     {
       id: "highlight-03",
-      label: "Profesores con clases",
+      label: "Monitores con clases",
       meta,
       value: "--"
     }
@@ -149,7 +149,7 @@ export function buildCatalogHighlights(activities, teachers, status = "success")
       },
       {
         id: "highlight-03",
-        label: "Profesores con clases",
+        label: "Monitores con clases",
         meta: "Esperando actividad en el sistema",
         value: "0"
       }
@@ -168,7 +168,7 @@ export function buildCatalogHighlights(activities, teachers, status = "success")
     {
       id: "highlight-01",
       label: "Actividad premium",
-      meta: teacherNameById.get(mostExpensive.teacherId) ?? "Profesor asignado",
+      meta: teacherNameById.get(mostExpensive.teacherId) ?? "Monitor asignado",
       value: mostExpensive.title
     },
     {
@@ -179,7 +179,7 @@ export function buildCatalogHighlights(activities, teachers, status = "success")
     },
     {
       id: "highlight-03",
-      label: "Profesores con clases",
+      label: "Monitores con clases",
       meta: "Equipo con sesiones programadas",
       value: String(activeTeacherCount)
     }

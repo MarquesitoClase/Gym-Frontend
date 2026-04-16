@@ -71,6 +71,8 @@ export function ActivityCatalog({
     () => mapActivitiesCatalog(activities, teachers),
     [activities, teachers]
   );
+  const primaryActivities = activitiesCatalog.slice(0, 4);
+  const secondaryActivities = activitiesCatalog.slice(4, 6);
 
   const handleRetry = () => {
     setReloadKey((currentValue) => currentValue + 1);
@@ -116,29 +118,53 @@ export function ActivityCatalog({
     );
 
   return (
-    <div className="activities-layout">
-      <SurfaceCard className="activities-summary">
-        <div className="panel-header">
-          <div>
-            <h2 className="panel-title">Informacion del catalogo</h2>
-            <p className="panel-description">
-              Indicadores rapidos conectados a las actividades futuras del backend.
-            </p>
-          </div>
-        </div>
+    <div className="activities-catalog">
+      <div className="activities-catalog__top">
+        {primaryActivities.length
+          ? primaryActivities.map((activity) => (
+              <ActivityCard
+                activity={activity}
+                className="activity-card--catalog-top"
+                key={activity.id}
+                onEditRequest={onEditRequest}
+              />
+            ))
+          : gridContent}
+      </div>
 
-        <div className="activities-summary__grid">
-          {catalogHighlights.map((item) => (
-            <div className="highlight-card" key={item.id}>
-              <span className="highlight-card__label">{item.label}</span>
-              <strong className="highlight-card__value">{item.value}</strong>
-              <span className="highlight-card__meta">{item.meta}</span>
+      {requestState === "success" && activitiesCatalog.length ? (
+        <div className="activities-catalog__bottom">
+          <SurfaceCard className="activities-insights">
+            <div className="panel-header">
+              <div>
+                <h2 className="panel-title">Insights del catalogo</h2>
+                <p className="panel-description">
+                  Indicadores operativos sincronizados con las actividades futuras del backend.
+                </p>
+              </div>
             </div>
+
+            <div className="activities-summary__grid">
+              {catalogHighlights.map((item) => (
+                <div className="highlight-card" key={item.id}>
+                  <span className="highlight-card__label">{item.label}</span>
+                  <strong className="highlight-card__value">{item.value}</strong>
+                  <span className="highlight-card__meta">{item.meta}</span>
+                </div>
+              ))}
+            </div>
+          </SurfaceCard>
+
+          {secondaryActivities.map((activity) => (
+            <ActivityCard
+              activity={activity}
+              className="activity-card--catalog-bottom"
+              key={activity.id}
+              onEditRequest={onEditRequest}
+            />
           ))}
         </div>
-      </SurfaceCard>
-
-      <div className="activities-layout__grid">{gridContent}</div>
+      ) : null}
 
       <FloatingActionButton
         className="activities-fab"

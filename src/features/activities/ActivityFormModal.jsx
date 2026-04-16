@@ -109,7 +109,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
     if (mode === "edit") {
       return {
         description:
-          "Actualiza los datos visibles de la sesion y su profesor asignado.",
+          "Actualiza los datos visibles de la sesion y su monitor asignado.",
         submitLabel: "Guardar cambios",
         title: "Editar actividad"
       };
@@ -216,14 +216,14 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
             </label>
 
             <label className="entity-form__field">
-              <span className="entity-form__label">Profesor</span>
+              <span className="entity-form__label">Monitor</span>
               <select
                 className="entity-form__control"
                 onChange={handleChange("teacherId")}
                 required
                 value={formValues.teacherId}
               >
-                <option value="">Selecciona un profesor</option>
+                <option value="">Selecciona un monitor</option>
                 {activeTeachers.map((teacher) => (
                   <option key={teacher.id} value={teacher.id}>
                     {[teacher.firstName, teacher.lastName].filter(Boolean).join(" ")}
@@ -309,7 +309,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
                 </button>
               ) : (
                 <span className="entity-form__helper">
-                  Elige un profesor activo antes de guardar.
+                  Elige un monitor activo antes de guardar.
                 </span>
               )}
             </div>

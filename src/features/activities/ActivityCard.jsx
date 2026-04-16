@@ -4,6 +4,21 @@ import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import { classNames } from "../../utils/classNames";
 import { formatCurrency } from "../../utils/formatters";
 
+const fallbackImageByTone = {
+  boxing:
+    "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=80",
+  hiit:
+    "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80",
+  pilates:
+    "https://images.unsplash.com/photo-1518310383802-640c2de311b2?auto=format&fit=crop&w=1200&q=80",
+  spinning:
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80",
+  strength:
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
+  yoga:
+    "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=1200&q=80"
+};
+
 const activityStatusMap = {
   active: {
     label: "Activa",
@@ -15,27 +30,29 @@ const activityStatusMap = {
   }
 };
 
-export function ActivityCard({ activity, onEditRequest }) {
+export function ActivityCard({ activity, className, onEditRequest }) {
   const status = activityStatusMap[activity.status];
-  const coverStyle = activity.imageUrl
+  const fallbackImage = fallbackImageByTone[activity.coverTone] ?? fallbackImageByTone.strength;
+  const coverImage = activity.imageUrl || fallbackImage;
+  const coverStyle = coverImage
     ? {
-        backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.16) 0%, rgba(15, 23, 42, 0.5) 100%), url("${activity.imageUrl}")`
+        backgroundImage: `linear-gradient(180deg, rgba(10, 18, 32, 0.08) 0%, rgba(10, 18, 32, 0.18) 100%), url("${coverImage}")`
       }
     : undefined;
 
   return (
-    <SurfaceCard className="activity-card">
+    <SurfaceCard className={classNames("activity-card", className)}>
       <div
         className={classNames(
           "activity-card__cover",
-          activity.imageUrl && "activity-card__cover--image",
+          coverImage && "activity-card__cover--image",
           `activity-card__cover--${activity.coverTone}`
         )}
         style={coverStyle}
       >
         <StatusBadge label={status.label} tone={status.tone} />
         <div className="activity-card__cover-actions">
-          <span className="activity-card__cover-tag">{activity.category}</span>
+          <span />
           <button
             aria-label={`Editar ${activity.title}`}
             className="activity-card__edit-button"
@@ -48,12 +65,14 @@ export function ActivityCard({ activity, onEditRequest }) {
       </div>
 
       <div className="activity-card__body">
-        <div className="activity-card__heading">
-          <h3>{activity.title}</h3>
-          <strong>{formatCurrency(activity.price)}</strong>
-        </div>
+        <div className="activity-card__copy">
+          <div className="activity-card__heading">
+            <h3>{activity.title}</h3>
+            <strong>{formatCurrency(activity.price)}</strong>
+          </div>
 
-        <p className="activity-card__description">{activity.description}</p>
+          <p className="activity-card__description">{activity.description}</p>
+        </div>
 
         <div className="activity-card__meta">
           <div className="activity-card__meta-item">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/Button";
 import { Icon } from "../components/ui/Icon";
 import { PageContainer } from "../components/ui/PageContainer";
-import { SectionHeader } from "../components/ui/SectionHeader";
+import { PageHeader } from "../components/ui/PageHeader";
 import { ActivityCatalog } from "../features/activities/ActivityCatalog";
 import { ActivityFormModal } from "../features/activities/ActivityFormModal";
 
@@ -41,15 +41,19 @@ export function ActivitiesPage() {
 
   return (
     <PageContainer>
-      <SectionHeader
+      <PageHeader
         actions={
-          <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
-            Nueva actividad
-          </Button>
+          <>
+            <Button iconLeft={<Icon name="filter" size={16} />} variant="ghost">
+              Filtrar
+            </Button>
+            <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
+              Nueva actividad
+            </Button>
+          </>
         }
-        description="Gestiona el catalogo futuro real del backend y manten las sesiones publicadas."
-        eyebrow="Catalogo"
-        title="Actividades"
+        description="Gestiona y programa el catálogo real de clases y talleres del gimnasio."
+        title="Catálogo de actividades"
       />
 
       <ActivityCatalog
