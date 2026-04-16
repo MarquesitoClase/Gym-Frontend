@@ -15,15 +15,15 @@
   margin: 0;
   color: var(--ink-strong);
   font-family: var(--font-heading);
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .table-toolbar__description {
   margin: 0;
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
 }
 

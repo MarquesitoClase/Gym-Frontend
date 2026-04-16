@@ -5,7 +5,7 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
     <header className="topbar">
       <div className="topbar__search-group">
         <button
-          aria-label="Abrir navegacion"
+          aria-label="Abrir navegación"
           className="topbar__menu-button"
           onClick={onMenuOpen}
           type="button"
@@ -14,7 +14,9 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
         </button>
 
         <label className="topbar__search">
-          <Icon name="search" size={18} />
+          <span className="topbar__search-icon">
+            <Icon name="search" size={18} />
+          </span>
           <input
             placeholder={searchPlaceholder ?? "Buscar en Titan Gym..."}
             type="search"
@@ -35,7 +37,7 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
           <Icon name="help" size={18} />
         </button>
         <button
-          aria-label="Configuracion"
+          aria-label="Configuración"
           className="topbar__icon-button"
           type="button"
         >
@@ -43,10 +45,12 @@ export function TopBar({ onMenuOpen, searchPlaceholder }) {
         </button>
 
         <div className="topbar__profile">
-          <div className="topbar__avatar">AU</div>
+          <div className="topbar__avatar">
+            <span>AU</span>
+          </div>
           <div className="topbar__profile-text">
-            <span className="topbar__profile-name">Admin User</span>
-            <span className="topbar__profile-role">Panel central</span>
+            <span className="topbar__profile-name">Usuario admin</span>
+            <span className="topbar__profile-role">Administrador principal</span>
           </div>
         </div>
       </div>

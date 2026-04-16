@@ -22,7 +22,7 @@ export const routes = [
         path: "actividades",
         element: <ActivitiesPage />,
         handle: {
-          searchPlaceholder: "Buscar actividades o profesores..."
+          searchPlaceholder: "Buscar actividades o monitores..."
         }
       },
       {
@@ -36,7 +36,7 @@ export const routes = [
         path: "profesores",
         element: <TeachersPage />,
         handle: {
-          searchPlaceholder: "Buscar profesores por nombre o especialidad..."
+          searchPlaceholder: "Buscar monitores por nombre o especialidad..."
         }
       },
       {

@@ -16,7 +16,9 @@ function renderBadge(badge) {
 
 export function StatCard({
   badge,
+  children,
   className,
+  footer,
   icon,
   label,
   meta,
@@ -37,6 +39,10 @@ export function StatCard({
         {value ? <strong className="stat-card__value">{value}</strong> : null}
         {meta ? <span className="stat-card__meta">{meta}</span> : null}
       </div>
+
+      {children || footer ? (
+        <div className="stat-card__footer">{children ?? footer}</div>
+      ) : null}
     </SurfaceCard>
   );
 }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 28px;
 }
 
 .page-header__main {
@@ -41,24 +41,25 @@
 .page-header__content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .page-header__title {
   margin: 0;
   color: var(--ink-strong);
   font-family: var(--font-heading);
-  font-size: 28px;
+  font-size: 54px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
 }
 
 .page-header__description {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0;
   color: var(--ink-soft);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.55;
 }
 
 .page-header__actions {
@@ -76,5 +77,13 @@
 
   .page-header__actions {
     width: 100%;
+  }
+
+  .page-header__title {
+    font-size: 38px;
+  }
+
+  .page-header__description {
+    font-size: 16px;
   }
 }

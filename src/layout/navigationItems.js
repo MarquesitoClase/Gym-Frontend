@@ -12,7 +12,7 @@ export const navigationItems = [
   },
   {
     path: "/profesores",
-    label: "Profesores",
+    label: "Monitores",
     icon: "teachers"
   },
   {
