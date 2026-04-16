@@ -58,7 +58,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
         setSubmitError(
           getApiErrorMessage(
             error,
-            "No se pudo cargar el profesor para editarlo."
+            "No se pudo cargar el monitor para editarlo."
           )
         );
       } finally {
@@ -79,17 +79,17 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
     if (mode === "edit") {
       return {
         description:
-          "Actualiza la situacion contractual y los datos visibles del profesor.",
+          "Actualiza la situacion contractual y los datos visibles del monitor.",
         submitLabel: "Guardar cambios",
-        title: "Editar profesor"
+        title: "Editar monitor"
       };
     }
 
     return {
       description:
-        "Crea un nuevo profesor en el backend usando el contrato JSON real.",
-      submitLabel: "Crear profesor",
-      title: "Nuevo profesor"
+        "Crea un nuevo monitor en el backend usando el contrato JSON real.",
+      submitLabel: "Crear monitor",
+      title: "Nuevo monitor"
     };
   }, [mode]);
 
@@ -127,7 +127,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
       onSuccess?.();
     } catch (error) {
       setSubmitError(
-        getApiErrorMessage(error, "No se pudo guardar el profesor.")
+        getApiErrorMessage(error, "No se pudo guardar el monitor.")
       );
     } finally {
       setIsSubmitting(false);
@@ -140,7 +140,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
     }
 
     const shouldDelete = window.confirm(
-      "Se va a eliminar este profesor de forma permanente. ¿Quieres continuar?"
+      "Se va a eliminar este monitor de forma permanente. ¿Quieres continuar?"
     );
 
     if (!shouldDelete) {
@@ -155,7 +155,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
       onSuccess?.();
     } catch (error) {
       setSubmitError(
-        getApiErrorMessage(error, "No se pudo eliminar el profesor.")
+        getApiErrorMessage(error, "No se pudo eliminar el monitor.")
       );
     } finally {
       setIsDeleting(false);
@@ -232,7 +232,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
                 value={formValues.imageUrl}
               />
               <span className="entity-form__helper">
-                En profesores el backend espera una URL de imagen en JSON.
+                En monitores el backend espera una URL de imagen en JSON.
               </span>
             </label>
 
@@ -243,14 +243,14 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
                   onChange={handleChange("active")}
                   type="checkbox"
                 />
-                Profesor activo
+                Monitor activo
               </span>
             </label>
           </div>
 
           {formValues.imageUrl ? (
             <div className="entity-form__preview">
-              <img alt="Vista previa del profesor" src={formValues.imageUrl} />
+              <img alt="Vista previa del monitor" src={formValues.imageUrl} />
               <div className="entity-form__preview-copy">
                 <strong>Imagen configurada</strong>
                 <span>Se enviara como URL dentro del payload JSON.</span>
@@ -267,7 +267,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
                   onClick={handleDelete}
                   type="button"
                 >
-                  {isDeleting ? "Eliminando..." : "Eliminar profesor"}
+                  {isDeleting ? "Eliminando..." : "Eliminar monitor"}
                 </button>
               ) : (
                 <span className="entity-form__helper">

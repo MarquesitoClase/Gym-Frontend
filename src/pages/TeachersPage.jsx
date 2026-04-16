@@ -47,12 +47,12 @@ export function TeachersPage() {
             iconLeft={<Icon name="plus" size={16} />}
             onClick={openCreateModal}
           >
-            Nuevo profesor
+            Nuevo monitor
           </Button>
         }
-        breadcrumb={["Admin", "Profesores"]}
-        description="Controla disponibilidad, certificaciones y asignaciones del equipo docente."
-        title="Profesores"
+        breadcrumb={["Admin", "Monitores"]}
+        description="Supervisa disponibilidad, certificaciones y asignaciones del equipo de monitores."
+        title="Monitores"
       />
 
       <TeachersTableSection

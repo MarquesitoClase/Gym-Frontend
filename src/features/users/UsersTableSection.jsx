@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { AvatarCell } from "../../components/ui/AvatarCell";
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";
 import { EmptyState } from "../../components/ui/EmptyState";
@@ -124,15 +123,28 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
   const columns = [
     {
       key: "member",
-      label: "Socio",
+      label: "Foto",
       render: (row) => (
-        <AvatarCell
-          imageUrl={row.avatarUrl}
-          subtitle={row.subtitle}
-          title={row.name}
-        />
+        <div className="table-avatar-only">
+          {row.avatarUrl ? (
+            <img alt={row.name} src={row.avatarUrl} />
+          ) : (
+            <span>{row.name.slice(0, 2).toUpperCase()}</span>
+          )}
+        </div>
       ),
-      width: "36%"
+      width: "8%"
+    },
+    {
+      key: "name",
+      label: "Nombre",
+      render: (row) => (
+        <div className="table-identity">
+          <strong>{row.name}</strong>
+          <span>{row.subtitle}</span>
+        </div>
+      ),
+      width: "28%"
     },
     {
       key: "identifier",
@@ -231,8 +243,7 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
                 </Button>
               </div>
             }
-            description="Listado conectado al backend real de Spring Boot."
-            title="Listado de socios"
+            title="Directorio de socios"
           />
         }
         rows={requestState === "success" ? paginatedRows : []}

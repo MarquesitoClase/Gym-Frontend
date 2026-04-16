@@ -12,28 +12,28 @@ function createPlaceholderMetrics(meta) {
   return [
     {
       id: "total-members",
-      label: "Total socios",
+      label: "Socios totales",
       meta,
       tone: "primary",
       value: "--"
     },
     {
       id: "active-members",
-      label: "Socios activos",
+      label: "Activos ahora",
       meta,
       tone: "accent",
       value: "--"
     },
     {
-      id: "new-members",
-      label: "Altas del ano",
+      id: "renewals-soon",
+      label: "Renovaciones pendientes",
       meta,
       tone: "warning",
       value: "--"
     },
     {
-      id: "inactive-members",
-      label: "Socios inactivos",
+      id: "retention",
+      label: "Retencion",
       meta,
       tone: "dark",
       value: "--"
@@ -70,40 +70,39 @@ export function buildUsersSummaryMetrics(rows, status = "success") {
   const totalMembers = rows.length;
   const activeMembers = rows.filter((row) => row.isEnabled).length;
   const inactiveMembers = totalMembers - activeMembers;
-  const currentYear = new Date().getFullYear();
-  const currentYearRegistrations = rows.filter(
-    (row) => Number(row.enrollmentYear) === currentYear
-  ).length;
+  const retention = totalMembers ? (activeMembers / totalMembers) * 100 : 0;
   const activeRatio = totalMembers ? activeMembers / totalMembers : 0;
 
   return [
     {
       id: "total-members",
-      label: "Total socios",
+      label: "Socios totales",
       meta: `${numberFormatter.format(totalMembers)} registros en el sistema`,
       tone: "primary",
       value: numberFormatter.format(totalMembers)
     },
     {
       id: "active-members",
-      label: "Socios activos",
+      label: "Activos ahora",
       meta: `${percentFormatter.format(activeRatio)} del total operativo`,
       tone: "accent",
       value: numberFormatter.format(activeMembers)
     },
     {
-      id: "new-members",
-      label: "Altas del ano",
-      meta: `Registrados durante ${currentYear}`,
+      id: "renewals-soon",
+      label: "Renovaciones pendientes",
+      meta: inactiveMembers
+        ? `${numberFormatter.format(inactiveMembers)} perfiles necesitan revision`
+        : "Sin renovaciones pendientes",
       tone: "warning",
-      value: numberFormatter.format(currentYearRegistrations)
+      value: numberFormatter.format(inactiveMembers)
     },
     {
-      id: "inactive-members",
-      label: "Socios inactivos",
-      meta: "Pendientes de reactivacion o baja",
+      id: "retention",
+      label: "Retencion",
+      meta: "Usuarios activos respecto al total",
       tone: "dark",
-      value: numberFormatter.format(inactiveMembers)
+      value: `${retention.toFixed(1)}%`
     }
   ];
 }

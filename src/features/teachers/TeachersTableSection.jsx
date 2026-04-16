@@ -73,7 +73,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
 
         setRows([]);
         setErrorMessage(
-          getApiErrorMessage(error, "No se pudieron cargar los profesores.")
+          getApiErrorMessage(error, "No se pudieron cargar los monitores.")
         );
         setRequestState("error");
       }
@@ -106,9 +106,9 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const emptyState =
     requestState === "loading" ? (
       <EmptyState
-        description="Estamos consultando la API para traer el equipo docente real."
+        description="Estamos consultando la API para traer el equipo de monitores real."
         icon="search"
-        title="Cargando profesores"
+        title="Cargando monitores"
       />
     ) : requestState === "error" ? (
       <EmptyState
@@ -119,19 +119,19 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
         }
         description={errorMessage}
         icon="warning"
-        title="No se pudieron cargar los profesores"
+        title="No se pudieron cargar los monitores"
       />
     ) : (
       <EmptyState
-        description="Cuando lleguen registros desde la base de datos, el listado del equipo docente aparecera aqui."
-        title="Todavia no hay profesores"
+        description="Cuando lleguen registros desde la base de datos, el listado de monitores aparecera aqui."
+        title="Todavia no hay monitores"
       />
     );
 
   const columns = [
     {
       key: "teacher",
-      label: "Profesor",
+      label: "Monitor",
       render: (row) => (
         <AvatarCell
           imageUrl={row.avatarUrl}
@@ -218,7 +218,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
             <div className="teachers-directory__footer">
               <span className="teachers-directory__meta">
                 Mostrando {paginatedRows.length} de{" "}
-                {teachersDirectoryFormatter.format(rows.length)} profesores
+                {teachersDirectoryFormatter.format(rows.length)} monitores
               </span>
               <Pagination
                 onPageChange={setPage}
@@ -250,8 +250,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
                 </Button>
               </div>
             }
-            description="Listado conectado a profesores y actividades del backend."
-            title="Listado de profesores"
+            title="Directorio de monitores"
           />
         }
         rows={requestState === "success" ? paginatedRows : []}

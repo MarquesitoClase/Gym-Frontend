@@ -18,22 +18,22 @@ function createPlaceholderMetrics(meta) {
       value: "--"
     },
     {
-      id: "active-staff",
-      label: "Profesores activos",
+      id: "active-classes",
+      label: "Clases activas",
       meta,
       tone: "accent",
       value: "--"
     },
     {
-      id: "assigned-activities",
-      label: "Actividades asignadas",
+      id: "avg-retention",
+      label: "Retencion media",
       meta,
       tone: "neutral",
       value: "--"
     },
     {
-      id: "without-activities",
-      label: "Sin actividades",
+      id: "expiring",
+      label: "Certificaciones pendientes",
       meta,
       tone: "warning",
       value: "--"
@@ -60,7 +60,7 @@ export function mapTeacherDtoToRow(teacher, activities = []) {
 
 export function buildTeachersSummaryMetrics(rows, status = "success") {
   if (status === "loading") {
-    return createPlaceholderMetrics("Cargando equipo docente");
+    return createPlaceholderMetrics("Cargando equipo de monitores");
   }
 
   if (status === "error") {
@@ -88,25 +88,27 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
       value: numberFormatter.format(totalTeachers)
     },
     {
-      id: "active-staff",
-      label: "Profesores activos",
-      meta: `${numberFormatter.format(inactiveTeachers)} inactivos`,
+      id: "active-classes",
+      label: "Clases activas",
+      meta: `${numberFormatter.format(activeTeachers)} monitores activos`,
       tone: "accent",
-      value: numberFormatter.format(activeTeachers)
-    },
-    {
-      id: "assigned-activities",
-      label: "Actividades asignadas",
-      meta: `${percentFormatter.format(coverage)} del equipo con clases`,
-      tone: "neutral",
       value: numberFormatter.format(assignedActivities)
     },
     {
-      id: "without-activities",
-      label: "Sin actividades",
-      meta: "Profesores sin sesiones asociadas",
+      id: "avg-retention",
+      label: "Retencion media",
+      meta: `${percentFormatter.format(coverage)} del equipo con clases`,
+      tone: "neutral",
+      value: `${Math.round(coverage * 100)}%`
+    },
+    {
+      id: "expiring",
+      label: "Certificaciones pendientes",
+      meta: "Perfiles sin sesiones o inactivos",
       tone: "warning",
-      value: numberFormatter.format(totalTeachers - teachersWithActivities)
+      value: numberFormatter.format(
+        Math.max(totalTeachers - teachersWithActivities, inactiveTeachers)
+      )
     }
   ];
 }
