@@ -1,20 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AvatarCell } from "../../components/ui/AvatarCell";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
+import { Icon } from "../../components/ui/Icon";
 import { LoadingState } from "../../components/ui/LoadingState";
-import { MetricCard } from "../../components/ui/MetricCard";
+import { ProgressBar } from "../../components/ui/ProgressBar";
+import { StatCard } from "../../components/ui/StatCard";
 import { StatusBadge } from "../../components/ui/StatusBadge";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import { activitiesService, teachersService, usersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
   buildDashboardMetrics,
-  buildQuickActions,
-  buildReceptionUpdates,
   buildUpcomingActivities
 } from "../../services/mappers/dashboardMapper";
 
+const metricIcons = {
+  revenue: "activities",
+  "teachers-active": "teachers",
+  "users-active": "users"
+};
+
+function formatSessionCaption(activity) {
+  return `Monitor ${activity.teacher}`;
+}
+
 export function DashboardOverview() {
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState({
     activities: [],
     activeTeachers: [],
@@ -34,30 +47,25 @@ export function DashboardOverview() {
       setErrorMessage("");
 
       try {
-        const [
-          usersResponse,
-          activeUsersResponse,
-          teachersResponse,
-          activeTeachersResponse,
-          activitiesResponse
-        ] = await Promise.all([
-          usersService.list(),
-          usersService.listActive(),
-          teachersService.list(),
-          teachersService.listActive(),
-          activitiesService.list()
-        ]);
+        const [users, activeUsers, teachers, activeTeachers, activities] =
+          await Promise.all([
+            usersService.list(),
+            usersService.listActive(),
+            teachersService.list(),
+            teachersService.listActive(),
+            activitiesService.list()
+          ]);
 
         if (ignore) {
           return;
         }
 
         setDashboardData({
-          activities: activitiesResponse,
-          activeTeachers: activeTeachersResponse,
-          activeUsers: activeUsersResponse,
-          teachers: teachersResponse,
-          users: usersResponse
+          activities,
+          activeTeachers,
+          activeUsers,
+          teachers,
+          users
         });
         setRequestState("success");
       } catch (error) {
@@ -65,15 +73,11 @@ export function DashboardOverview() {
           return;
         }
 
-        setDashboardData({
-          activities: [],
-          activeTeachers: [],
-          activeUsers: [],
-          teachers: [],
-          users: []
-        });
         setErrorMessage(
-          getApiErrorMessage(error, "No se pudo cargar el dashboard.")
+          getApiErrorMessage(
+            error,
+            "No se pudo construir el panel principal con los datos reales."
+          )
         );
         setRequestState("error");
       }
@@ -86,7 +90,7 @@ export function DashboardOverview() {
     };
   }, [reloadKey]);
 
-  const dashboardMetrics = useMemo(
+  const metrics = useMemo(
     () => buildDashboardMetrics(dashboardData, requestState),
     [dashboardData, requestState]
   );
@@ -94,29 +98,24 @@ export function DashboardOverview() {
     () => buildUpcomingActivities(dashboardData.activities, dashboardData.teachers),
     [dashboardData.activities, dashboardData.teachers]
   );
-  const receptionUpdates = useMemo(
-    () => buildReceptionUpdates(dashboardData, requestState),
-    [dashboardData, requestState]
-  );
-  const quickActions = useMemo(
-    () => buildQuickActions(dashboardData, requestState),
-    [dashboardData, requestState]
-  );
 
-  const handleRetry = () => {
-    setReloadKey((currentValue) => currentValue + 1);
-  };
+  const receptionUser =
+    dashboardData.activeUsers[0] ?? dashboardData.users[0] ?? null;
 
   if (requestState === "loading") {
-    return <LoadingState lines={5} />;
+    return <LoadingState lines={6} />;
   }
 
   if (requestState === "error") {
     return (
-      <SurfaceCard className="dashboard-panel">
+      <SurfaceCard className="dashboard-feedback">
         <EmptyState
           action={
-            <Button onClick={handleRetry} size="sm" variant="secondary">
+            <Button
+              onClick={() => setReloadKey((value) => value + 1)}
+              size="sm"
+              variant="secondary"
+            >
               Reintentar
             </Button>
           }
@@ -129,106 +128,162 @@ export function DashboardOverview() {
   }
 
   return (
-    <div className="dashboard-layout">
-      <div className="metrics-grid">
-        {dashboardMetrics.map((metric) => (
-          <MetricCard
+    <div className="dashboard-view">
+      <header className="dashboard-hero">
+        <div className="dashboard-hero__copy">
+          <h1>El motor cinetico</h1>
+          <p>Vista operativa diaria del gimnasio en tiempo real.</p>
+        </div>
+      </header>
+
+      <div className="dashboard-metrics">
+        {metrics.map((metric) => (
+          <StatCard
+            badge={metric.badge}
+            className={
+              metric.id === "revenue"
+                ? "dashboard-metric dashboard-metric--wide"
+                : "dashboard-metric"
+            }
+            icon={<Icon name={metricIcons[metric.id] ?? "dashboard"} size={18} />}
             key={metric.id}
             label={metric.label}
             meta={metric.meta}
             tone={metric.tone}
             value={metric.value}
-          />
+          >
+            {metric.id === "revenue" ? (
+              <ProgressBar
+                label="Objetivo mensual"
+                tone="primary"
+                value={metric.progress ?? 0}
+                valueLabel={metric.targetLabel}
+              />
+            ) : null}
+          </StatCard>
         ))}
       </div>
 
-      <div className="dashboard-panels">
-        <SurfaceCard className="dashboard-panel dashboard-panel--agenda">
-          <div className="panel-header">
+      <div className="dashboard-grid">
+        <SurfaceCard className="dashboard-agenda">
+          <div className="dashboard-panel__header">
             <div>
-              <h2 className="panel-title">Agenda operativa</h2>
-              <p className="panel-description">
-                Proximas actividades futuras recuperadas desde el backend real.
-              </p>
+              <h2>Proximas actividades</h2>
             </div>
-            <StatusBadge label="Datos reales" tone="active" />
+            <button
+              className="dashboard-link-button"
+              onClick={() => navigate("/actividades")}
+              type="button"
+            >
+              Ver horario
+            </button>
           </div>
 
           {upcomingActivities.length ? (
-            <div className="agenda-list">
-              {upcomingActivities.map((activity) => (
-                <div className="agenda-list__item" key={activity.id}>
-                  <div className="agenda-list__main">
-                    <strong>{activity.name}</strong>
-                    <span>{activity.teacher}</span>
+            <div className="dashboard-agenda__list">
+              {upcomingActivities.slice(0, 4).map((activity) => (
+                <article className="dashboard-agenda__item" key={activity.id}>
+                  <div className="dashboard-agenda__time">
+                    {activity.schedule.split(",")[1]?.trim() ?? activity.schedule}
                   </div>
-                  <div className="agenda-list__meta">
-                    <span>{activity.schedule}</span>
-                    <span>{activity.metric}</span>
+                  <div className="dashboard-agenda__main">
+                    <h3>{activity.name}</h3>
+                    <p>{formatSessionCaption(activity)}</p>
                   </div>
-                </div>
+                  <div className="dashboard-agenda__side">
+                    <span className="dashboard-agenda__occupancy">
+                      {activity.occupancyLabel}
+                    </span>
+                    <ProgressBar
+                      className="dashboard-agenda__progress"
+                      tone={activity.occupancyPercent >= 100 ? "warning" : "accent"}
+                      value={activity.occupancyPercent}
+                    />
+                  </div>
+                  <button
+                    aria-label={`Abrir ${activity.name}`}
+                    className="dashboard-agenda__cta"
+                    onClick={() => navigate("/actividades")}
+                    type="button"
+                  >
+                    <Icon name="edit" size={14} />
+                  </button>
+                </article>
               ))}
             </div>
           ) : (
             <EmptyState
-              description="No hay actividades futuras publicadas por el backend en este momento."
-              title="Agenda sin sesiones"
+              description="No hay actividades futuras disponibles en el backend."
+              title="Sin sesiones proximas"
             />
           )}
         </SurfaceCard>
 
-        <SurfaceCard className="dashboard-panel">
-          <div className="panel-header">
-            <div>
-              <h2 className="panel-title">Avisos operativos</h2>
-              <p className="panel-description">
-                Resumen rapido a partir del estado real de usuarios, profesores y catalogo.
-              </p>
-            </div>
-          </div>
-
-          <div className="stack-list">
-            {receptionUpdates.map((item) => (
-              <div className="stack-list__item" key={item.id}>
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.description}</p>
-                </div>
-                <StatusBadge
-                  label={
-                    item.tone === "inactive"
-                      ? "Bloqueo"
-                      : item.tone === "attention"
-                      ? "Revision"
-                      : "Correcto"
-                  }
-                  tone={item.tone}
-                />
+        <div className="dashboard-side">
+          <SurfaceCard className="dashboard-join-card">
+            <div className="dashboard-panel__header dashboard-panel__header--compact">
+              <div>
+                <h2>Alta instantanea</h2>
+                <p>Registra un nuevo socio en menos de 30 segundos desde recepcion.</p>
               </div>
-            ))}
-          </div>
-        </SurfaceCard>
-      </div>
-
-      <SurfaceCard className="dashboard-panel">
-        <div className="panel-header">
-          <div>
-            <h2 className="panel-title">Accesos rapidos de recepcion</h2>
-            <p className="panel-description">
-              Bloques de lectura basados en el estado actual del gimnasio.
-            </p>
-          </div>
-        </div>
-
-        <div className="quick-actions-grid">
-          {quickActions.map((action) => (
-            <div className="quick-action-card" key={action.id}>
-              <strong>{action.title}</strong>
-              <p>{action.detail}</p>
             </div>
-          ))}
+
+            <div className="dashboard-join-card__field">
+              <span>Nombre completo</span>
+              <strong>Juan Perez</strong>
+            </div>
+            <div className="dashboard-join-card__field">
+              <span>Plan de membresia</span>
+              <strong>Titan Premium anual</strong>
+            </div>
+
+            <Button
+              className="dashboard-join-card__button"
+              fullWidth
+              onClick={() => navigate("/inscripciones")}
+            >
+              Completar alta
+            </Button>
+          </SurfaceCard>
+
+          <SurfaceCard className="dashboard-frontdesk">
+            <div className="dashboard-panel__header dashboard-panel__header--compact">
+              <div>
+                <h2>Modo recepcion</h2>
+              </div>
+              <button
+                aria-label="Abrir inscripciones"
+                className="dashboard-frontdesk__action"
+                onClick={() => navigate("/inscripciones")}
+                type="button"
+              >
+                <Icon name="enrollments" size={16} />
+              </button>
+            </div>
+
+            {receptionUser ? (
+              <>
+                <div className="dashboard-frontdesk__entry">
+                  <AvatarCell
+                    imageUrl={receptionUser.imageUrl}
+                    subtitle={`Alta ${receptionUser.registrationYear ?? "reciente"}`}
+                    title={[receptionUser.firstName, receptionUser.lastName].filter(Boolean).join(" ")}
+                  />
+                  <StatusBadge label="Socio activo" tone="active" />
+                </div>
+                <p className="dashboard-frontdesk__note">
+                  Listo para check-in desde recepcion o para registrar una nueva clase.
+                </p>
+              </>
+            ) : (
+              <EmptyState
+                description="No hay usuarios activos disponibles para mostrar en recepcion."
+                title="Sin usuarios activos"
+              />
+            )}
+          </SurfaceCard>
         </div>
-      </SurfaceCard>
+      </div>
     </div>
   );
 }
