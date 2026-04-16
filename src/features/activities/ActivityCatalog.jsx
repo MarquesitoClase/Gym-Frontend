@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
-import { FloatingActionButton } from "../../components/ui/FloatingActionButton";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
@@ -166,12 +165,6 @@ export function ActivityCatalog({
         </div>
       ) : null}
 
-      <FloatingActionButton
-        className="activities-fab"
-        fixed
-        label="Nueva actividad"
-        onClick={onCreateRequest}
-      />
     </div>
   );
 }

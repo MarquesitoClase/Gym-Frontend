@@ -6,7 +6,6 @@ import { EmptyState } from "../../components/ui/EmptyState";
 import { Icon } from "../../components/ui/Icon";
 import { Pagination } from "../../components/ui/Pagination";
 import { StatCard } from "../../components/ui/StatCard";
-import { StatusBadge } from "../../components/ui/StatusBadge";
 import { TableToolbar } from "../../components/ui/TableToolbar";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
@@ -18,17 +17,6 @@ import "./TeachersTableSection.css";
 
 const PAGE_SIZE = 4;
 const teachersDirectoryFormatter = new Intl.NumberFormat("es-ES");
-
-const statusMap = {
-  active: {
-    label: "Activo",
-    tone: "active"
-  },
-  inactive: {
-    label: "Baja",
-    tone: "inactive"
-  }
-};
 
 export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -148,16 +136,6 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
     {
       key: "contractYear",
       label: "Ano de contratacion"
-    },
-    {
-      key: "status",
-      label: "Estado laboral",
-      render: (row) => (
-        <StatusBadge
-          label={statusMap[row.status].label}
-          tone={statusMap[row.status].tone}
-        />
-      )
     },
     {
       key: "assignedActivities",

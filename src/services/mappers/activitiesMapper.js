@@ -98,7 +98,34 @@ export function mapActivityDtoToCard(activity, teacherNameById) {
 
 export function mapActivitiesCatalog(activities, teachers) {
   const teacherNameById = buildTeacherMap(teachers);
-  return activities.map((activity) => mapActivityDtoToCard(activity, teacherNameById));
+
+  // Group sessions that share the same title + teacher into a single card
+  const groups = new Map();
+  for (const activity of activities) {
+    const key = `${activity.title}__${activity.teacherId ?? "none"}`;
+    if (!groups.has(key)) {
+      groups.set(key, { base: activity, sessions: [] });
+    }
+    groups.get(key).sessions.push({
+      enrolledCount: activity.enrolledCount ?? 0,
+      id: activity.id,
+      schedule: formatDateTime(activity.date)
+    });
+  }
+
+  return [...groups.values()].map(({ base, sessions }) => ({
+    category: getCategory(base.title, base.description),
+    coverTone: getCoverTone(base.title, base.description),
+    description: base.description,
+    id: sessions[0].id,
+    imageUrl: base.imageUrl ?? null,
+    price: base.price,
+    sessions,
+    status: "active",
+    teacher:
+      teacherNameById.get(base.teacherId) ?? `Monitor #${base.teacherId}`,
+    title: base.title
+  }));
 }
 
 function createPlaceholderHighlights(meta) {

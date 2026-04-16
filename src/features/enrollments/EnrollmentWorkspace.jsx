@@ -3,9 +3,7 @@ import { AvatarCell } from "../../components/ui/AvatarCell";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Icon } from "../../components/ui/Icon";
-import { InfoBanner } from "../../components/ui/InfoBanner";
 import { LoadingState } from "../../components/ui/LoadingState";
-import { SelectableCard } from "../../components/ui/SelectableCard";
 import { StatusBadge } from "../../components/ui/StatusBadge";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import {
@@ -19,297 +17,298 @@ import {
   mapEnrollmentActivityOptions,
   mapUserCandidate
 } from "../../services/mappers/enrollmentsMapper";
+import { formatDateTime } from "../../utils/formatters";
 
-export function EnrollmentWorkspace() {
-  const [activities, setActivities] = useState([]);
-  const [feedback, setFeedback] = useState(null);
-  const [query, setQuery] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
-  const [requestState, setRequestState] = useState("loading");
-  const [selectedActivityId, setSelectedActivityId] = useState(null);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [teachers, setTeachers] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [userActivities, setUserActivities] = useState([]);
-  const [userActivitiesReloadKey, setUserActivitiesReloadKey] = useState(0);
-  const [userActivitiesState, setUserActivitiesState] = useState("idle");
-  const [workspaceError, setWorkspaceError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+// ─── Paso indicator ──────────────────────────────────────────
+function StepIndicator({ currentStep }) {
+  const steps = [
+    { label: "Elige socio", number: 1 },
+    { label: "Elige actividad", number: 2 },
+    { label: "Confirma", number: 3 }
+  ];
 
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadWorkspace() {
-      setRequestState("loading");
-      setWorkspaceError("");
-      setFeedback(null);
-
-      try {
-        const [usersResponse, activitiesResponse, teachersResponse] = await Promise.all([
-          usersService.list(),
-          activitiesService.list(),
-          teachersService.list()
-        ]);
-
-        if (ignore) {
-          return;
-        }
-
-        setUsers(usersResponse.map(mapUserCandidate));
-        setActivities(activitiesResponse);
-        setTeachers(teachersResponse);
-        setRequestState("success");
-      } catch (error) {
-        if (ignore) {
-          return;
-        }
-
-        setUsers([]);
-        setActivities([]);
-        setTeachers([]);
-        setWorkspaceError(
-          getApiErrorMessage(error, "No se pudo preparar el panel de inscripciones.")
+  return (
+    <div className="enroll-steps">
+      {steps.map((step, index) => {
+        const isDone = currentStep > step.number;
+        const isActive = currentStep === step.number;
+        return (
+          <div className="enroll-steps__item" key={step.number}>
+            <div
+              className={[
+                "enroll-steps__bubble",
+                isDone && "enroll-steps__bubble--done",
+                isActive && "enroll-steps__bubble--active"
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {isDone ? <Icon name="check" size={13} /> : step.number}
+            </div>
+            <span
+              className={[
+                "enroll-steps__label",
+                isActive && "enroll-steps__label--active"
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {step.label}
+            </span>
+            {index < steps.length - 1 ? (
+              <div
+                className={[
+                  "enroll-steps__line",
+                  isDone && "enroll-steps__line--done"
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              />
+            ) : null}
+          </div>
         );
-        setRequestState("error");
-      }
-    }
+      })}
+    </div>
+  );
+}
 
-    loadWorkspace();
+// ─── Activity card para la selección ────────────────────────
+function ActivityOptionCard({ activity, onSelect, selected }) {
+  return (
+    <button
+      className={[
+        "enroll-activity-option",
+        selected && "enroll-activity-option--selected",
+        activity.alreadyEnrolled && "enroll-activity-option--enrolled"
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      onClick={() => !activity.alreadyEnrolled && onSelect(activity.id)}
+      type="button"
+    >
+      <div className="enroll-activity-option__header">
+        <strong className="enroll-activity-option__title">{activity.title}</strong>
+        {activity.alreadyEnrolled ? (
+          <StatusBadge label="Ya inscrito" tone="attention" />
+        ) : (
+          <span className="enroll-activity-option__price">{activity.priceLabel}</span>
+        )}
+      </div>
+      <div className="enroll-activity-option__meta">
+        <span>
+          <Icon name="user" size={13} />
+          {activity.teacher}
+        </span>
+        <span>
+          <Icon name="calendar" size={13} />
+          {activity.schedule}
+        </span>
+        <span>
+          <Icon name="users" size={13} />
+          {activity.enrolledCount}{" "}
+          {activity.enrolledCount === 1 ? "inscrito" : "inscritos"}
+        </span>
+      </div>
+    </button>
+  );
+}
 
-    return () => {
-      ignore = true;
-    };
-  }, [reloadKey]);
+// ─── Main component ──────────────────────────────────────────
+export function EnrollmentWorkspace() {
+  const [users, setUsers] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [userEnrollments, setUserEnrollments] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedActivityId, setSelectedActivityId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [loadState, setLoadState] = useState("loading");
+  const [loadError, setLoadError] = useState("");
+  const [userEnrollState, setUserEnrollState] = useState("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null); // { tone, message }
 
+  // Carga inicial
   useEffect(() => {
     let ignore = false;
+    setLoadState("loading");
 
-    async function loadUserActivities() {
-      if (!selectedUserId) {
-        setUserActivities([]);
-        setUserActivitiesState("idle");
-        return;
-      }
+    Promise.all([
+      usersService.list(),
+      activitiesService.list(),
+      teachersService.list()
+    ])
+      .then(([usersRes, activitiesRes, teachersRes]) => {
+        if (ignore) return;
+        setUsers(usersRes.map(mapUserCandidate));
+        setActivities(activitiesRes);
+        setTeachers(teachersRes);
+        setLoadState("success");
+      })
+      .catch((error) => {
+        if (ignore) return;
+        setLoadError(getApiErrorMessage(error, "No se pudieron cargar los datos."));
+        setLoadState("error");
+      });
 
-      setUserActivitiesState("loading");
-      setFeedback(null);
+    return () => { ignore = true; };
+  }, []);
 
-      try {
-        const response = await enrollmentsService.listByUser(selectedUserId);
-
-        if (ignore) {
-          return;
-        }
-
-        setUserActivities(response);
-        setUserActivitiesState("success");
-      } catch (error) {
-        if (ignore) {
-          return;
-        }
-
-        setUserActivities([]);
-        setUserActivitiesState("error");
-        setFeedback({
-          message: getApiErrorMessage(
-            error,
-            "No se pudieron consultar las actividades futuras del usuario."
-          ),
-          tone: "warning",
-          title: "No se pudieron cargar las validaciones"
-        });
-      }
+  // Carga inscripciones del usuario seleccionado
+  useEffect(() => {
+    if (!selectedUserId) {
+      setUserEnrollments([]);
+      setUserEnrollState("idle");
+      return;
     }
 
-    loadUserActivities();
+    let ignore = false;
+    setUserEnrollState("loading");
 
-    return () => {
-      ignore = true;
-    };
-  }, [selectedUserId, userActivitiesReloadKey]);
+    enrollmentsService
+      .listByUser(selectedUserId)
+      .then((res) => {
+        if (ignore) return;
+        setUserEnrollments(res);
+        setUserEnrollState("success");
+      })
+      .catch(() => {
+        if (ignore) return;
+        setUserEnrollments([]);
+        setUserEnrollState("error");
+      });
 
+    return () => { ignore = true; };
+  }, [selectedUserId]);
+
+  // ── Computed ──────────────────────────────────────────────
   const selectedUser = useMemo(
-    () => users.find((user) => user.id === selectedUserId) ?? null,
-    [selectedUserId, users]
+    () => users.find((u) => u.id === selectedUserId) ?? null,
+    [users, selectedUserId]
   );
 
   const enrolledIds = useMemo(
-    () => new Set(userActivities.map((activity) => activity.id)),
-    [userActivities]
+    () => new Set(userEnrollments.map((a) => a.id)),
+    [userEnrollments]
   );
 
   const activityOptions = useMemo(
     () => mapEnrollmentActivityOptions(activities, teachers, enrolledIds),
-    [activities, enrolledIds, teachers]
+    [activities, teachers, enrolledIds]
   );
 
   const selectedActivity = useMemo(
-    () => activityOptions.find((activity) => activity.id === selectedActivityId) ?? null,
+    () => activityOptions.find((a) => a.id === selectedActivityId) ?? null,
     [activityOptions, selectedActivityId]
   );
 
   const filteredUsers = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    const rows = normalizedQuery
-      ? users.filter((user) =>
-          [user.name, user.identifier]
+    const q = query.trim().toLowerCase();
+    return q
+      ? users.filter((u) =>
+          [u.name, u.identifier]
             .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedQuery))
+            .some((v) => v.toLowerCase().includes(q))
         )
       : users;
-
-    return rows.slice(0, 6);
   }, [query, users]);
 
-  const userCanRegister = Boolean(selectedUser?.active);
-  const duplicateEnrollment = Boolean(
-    selectedActivity && enrolledIds.has(selectedActivity.id)
-  );
-  const futureLimitReached = Boolean(
-    selectedUser && userActivities.length >= 3 && !duplicateEnrollment
-  );
-
-  const validationChecklist = [
-    {
-      id: "user-active",
-      label: "Cuota operativa",
-      text: selectedUser
-        ? selectedUser.active
-          ? "El socio figura activo y puede completar la inscripción."
-          : "El backend bloqueará la operación porque el socio está inactivo."
-        : "Selecciona un socio para validar el estado de su cuenta.",
-      tone: selectedUser ? (selectedUser.active ? "active" : "attention") : "pending"
-    },
-    {
-      id: "duplicate-check",
-      label: "Control de duplicidad",
-      text: selectedActivity
-        ? duplicateEnrollment
-          ? "La actividad elegida ya está asociada al socio seleccionado."
-          : "No existe una inscripción previa para esta sesión."
-        : "Selecciona una actividad para comprobar duplicados.",
-      tone: selectedActivity
-        ? duplicateEnrollment
-          ? "attention"
-          : "active"
-        : "pending"
-    },
-    {
-      id: "future-limit",
-      label: "Límite de futuras",
-      text: selectedUser
-        ? futureLimitReached
-          ? `El socio ya tiene ${userActivities.length} actividades futuras registradas.`
-          : `${userActivities.length} actividades futuras registradas actualmente.`
-        : "Selecciona un socio para comprobar su carga de futuras.",
-      tone: selectedUser
-        ? futureLimitReached
-          ? "attention"
-          : "active"
-        : "pending"
-    }
-  ];
+  // ── Validaciones ──────────────────────────────────────────
+  const isUserActive = Boolean(selectedUser?.active);
+  const isDuplicate = Boolean(selectedActivity?.alreadyEnrolled);
+  const hasNoTeacher = Boolean(selectedActivity) && !selectedActivity.teacherId;
+  const futureLimitReached =
+    userEnrollState === "success" && userEnrollments.length >= 3 && !isDuplicate;
 
   const canSubmit =
     Boolean(selectedUser) &&
     Boolean(selectedActivity) &&
-    userActivitiesState === "success" &&
-    userCanRegister &&
-    !duplicateEnrollment &&
+    userEnrollState === "success" &&
+    isUserActive &&
+    !isDuplicate &&
+    !hasNoTeacher &&
     !futureLimitReached &&
     !isSubmitting;
 
-  const handleRetryWorkspace = () => {
-    setReloadKey((currentValue) => currentValue + 1);
-  };
+  // Paso actual para el indicador
+  const currentStep = !selectedUser ? 1 : !selectedActivity ? 2 : 3;
 
+  // ── Handlers ─────────────────────────────────────────────
   const handleSelectUser = (userId) => {
     setSelectedUserId(userId);
     setSelectedActivityId(null);
-    setFeedback(null);
+    setSubmitResult(null);
   };
 
-  const handleRetryUserActivities = () => {
-    setUserActivitiesReloadKey((currentValue) => currentValue + 1);
-  };
-
-  const handleResetSelection = () => {
+  const handleReset = () => {
     setSelectedUserId(null);
     setSelectedActivityId(null);
-    setUserActivities([]);
-    setUserActivitiesState("idle");
-    setFeedback(null);
+    setUserEnrollments([]);
+    setUserEnrollState("idle");
+    setSubmitResult(null);
     setQuery("");
   };
 
-  const handleRegister = async () => {
-    if (!selectedUser || !selectedActivity) {
-      return;
-    }
-
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
     setIsSubmitting(true);
-    setFeedback(null);
+    setSubmitResult(null);
 
     try {
       await enrollmentsService.register(selectedActivity.id, selectedUser.id);
-      const nextUserActivities = await enrollmentsService.listByUser(selectedUser.id);
-
-      setUserActivities(nextUserActivities);
-      setUserActivitiesState("success");
+      const updated = await enrollmentsService.listByUser(selectedUser.id);
+      setUserEnrollments(updated);
       setSelectedActivityId(null);
-      setFeedback({
-        message: `${selectedUser.name} se ha inscrito correctamente en ${selectedActivity.title}.`,
+      setSubmitResult({
         tone: "success",
-        title: "Inscripción confirmada"
+        message: `${selectedUser.name} inscrito correctamente en ${selectedActivity.title}.`
       });
     } catch (error) {
-      setFeedback({
-        message: getApiErrorMessage(
-          error,
-          "No se pudo completar la inscripción seleccionada."
-        ),
-        tone: "warning",
-        title: "Inscripción rechazada"
+      setSubmitResult({
+        tone: "error",
+        message: getApiErrorMessage(error, "No se pudo completar la inscripcion.")
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (requestState === "loading") {
+  // ── Render estados de carga/error ─────────────────────────
+  if (loadState === "loading") {
     return <LoadingState lines={5} />;
   }
 
-  if (requestState === "error") {
+  if (loadState === "error") {
     return (
-      <SurfaceCard className="enrollment-panel">
+      <SurfaceCard>
         <EmptyState
-          action={
-            <Button onClick={handleRetryWorkspace} size="sm" variant="secondary">
-              Reintentar
-            </Button>
-          }
-          description={workspaceError}
+          description={loadError}
           icon="warning"
-          title="No se pudo cargar el panel de inscripciones"
+          title="No se pudo cargar el panel"
         />
       </SurfaceCard>
     );
   }
 
+  // ── Render principal ──────────────────────────────────────
   return (
-    <div className="enrollment-workspace">
-      <div className="enrollment-workspace__grid">
-        <div className="enrollment-workspace__sidebar">
-          <SurfaceCard className="enrollment-panel">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Socio seleccionado</h2>
-              </div>
+    <div className="enroll-workspace">
+      {/* Indicador de pasos */}
+      <StepIndicator currentStep={currentStep} />
+
+      <div className="enroll-workspace__body">
+        {/* ── Columna izquierda: selección de socio ── */}
+        <div className="enroll-workspace__col enroll-workspace__col--users">
+          <SurfaceCard className="enroll-panel">
+            <div className="enroll-panel__header">
+              <h2 className="enroll-panel__title">
+                <span className="enroll-panel__step-num">1</span>
+                Socio
+              </h2>
               {selectedUser ? (
                 <button
-                  className="dashboard-link-button"
-                  onClick={handleResetSelection}
+                  className="enroll-panel__reset"
+                  onClick={handleReset}
                   type="button"
                 >
                   Cambiar
@@ -318,254 +317,221 @@ export function EnrollmentWorkspace() {
             </div>
 
             {selectedUser ? (
-              <div className="enrollment-selected-user enrollment-selected-user--featured">
+              <div className="enroll-selected-user">
                 <AvatarCell
                   imageUrl={selectedUser.avatarUrl}
                   subtitle={`DNI ${selectedUser.identifier}`}
                   title={selectedUser.name}
                 />
-                <div className="enrollment-selected-user__meta">
-                  <span>Plan operativo</span>
+                <div className="enroll-selected-user__status">
                   <StatusBadge
                     label={selectedUser.active ? "Activo" : "Inactivo"}
                     tone={selectedUser.active ? "active" : "inactive"}
                   />
+                  {userEnrollState === "success" ? (
+                    <span className="enroll-selected-user__count">
+                      {userEnrollments.length}/3 actividades futuras
+                    </span>
+                  ) : null}
                 </div>
+
+                {!isUserActive ? (
+                  <div className="enroll-alert enroll-alert--warning">
+                    Socio inactivo — el backend bloqueara la inscripcion.
+                  </div>
+                ) : null}
+
+                {futureLimitReached ? (
+                  <div className="enroll-alert enroll-alert--warning">
+                    Limite alcanzado: ya tiene 3 actividades futuras.
+                  </div>
+                ) : null}
               </div>
             ) : (
-              <EmptyState
-                description="Busca y selecciona primero el socio que va a completar la inscripción."
-                icon="users"
-                title="Sin socio elegido"
-              />
-            )}
-          </SurfaceCard>
-
-          <SurfaceCard className="enrollment-panel">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Buscador de socios</h2>
-                <p className="panel-description">
-                  Encuentra un usuario por nombre o DNI y activa el flujo de inscripción.
-                </p>
-              </div>
-            </div>
-
-            <label className="search-field">
-              <span className="search-field__label">Buscar registro</span>
-              <div className="search-field__control">
-                <Icon name="search" size={18} />
-                <input
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Nombre o DNI"
-                  type="search"
-                  value={query}
-                />
-              </div>
-            </label>
-
-            <div className="enrollment-user-results">
-              {filteredUsers.length ? (
-                filteredUsers.map((user) => (
-                  <SelectableCard
-                    className="enrollment-user-card"
-                    key={user.id}
-                    meta={`Alta ${user.registrationYear}`}
-                    onClick={() => handleSelectUser(user.id)}
-                    selected={user.id === selectedUserId}
-                    subtitle={user.identifier}
-                    title={user.name}
-                    trailing={
-                      <StatusBadge
-                        label={user.active ? "Activo" : "Inactivo"}
-                        tone={user.active ? "active" : "inactive"}
-                      />
-                    }
+              <>
+                <label className="enroll-search">
+                  <Icon name="search" size={16} />
+                  <input
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Nombre o DNI..."
+                    type="search"
+                    value={query}
                   />
-                ))
-              ) : (
-                <EmptyState
-                  description="No hemos encontrado socios que coincidan con la búsqueda."
-                  icon="users"
-                  title="Sin resultados"
-                />
-              )}
-            </div>
-          </SurfaceCard>
+                </label>
 
-          <SurfaceCard className="enrollment-panel">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Validaciones del sistema</h2>
-                <p className="panel-description">
-                  Reglas reales que ejecuta el backend antes de completar la inscripción.
-                </p>
-              </div>
-            </div>
-
-            <div className="validation-list">
-              {validationChecklist.map((rule) => (
-                <div className="validation-list__item" key={rule.id}>
-                  <div>
-                    <strong>{rule.label}</strong>
-                    <p>{rule.text}</p>
-                  </div>
-                  <StatusBadge
-                    label={
-                      rule.tone === "active"
-                        ? "OK"
-                        : rule.tone === "attention"
-                        ? "Bloqueado"
-                        : "Pendiente"
-                    }
-                    tone={rule.tone}
-                  />
+                <div className="enroll-user-list">
+                  {filteredUsers.length ? (
+                    filteredUsers.map((user) => (
+                      <button
+                        className="enroll-user-row"
+                        key={user.id}
+                        onClick={() => handleSelectUser(user.id)}
+                        type="button"
+                      >
+                        <div className="enroll-user-row__avatar">
+                          {user.avatarUrl ? (
+                            <img alt={user.name} src={user.avatarUrl} />
+                          ) : (
+                            <span>{user.name.slice(0, 2).toUpperCase()}</span>
+                          )}
+                        </div>
+                        <div className="enroll-user-row__info">
+                          <strong>{user.name}</strong>
+                          <span>{user.identifier}</span>
+                        </div>
+                        <StatusBadge
+                          label={user.active ? "Activo" : "Inactivo"}
+                          tone={user.active ? "active" : "inactive"}
+                        />
+                      </button>
+                    ))
+                  ) : (
+                    <EmptyState
+                      description="Prueba con otro nombre o DNI."
+                      icon="search"
+                      title="Sin resultados"
+                    />
+                  )}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
           </SurfaceCard>
         </div>
 
-        <div className="enrollment-workspace__main">
-          <SurfaceCard className="enrollment-panel enrollment-panel--activity">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Selecciona actividad</h2>
-                <p className="panel-description">
-                  Sesiones futuras disponibles para el socio actualmente seleccionado.
-                </p>
-              </div>
-              <div className="enrollment-panel__toggles">
-                <button className="summary-icon-button" type="button">
-                  <Icon name="filter" size={16} />
+        {/* ── Columna derecha: selección de actividad ── */}
+        <div className="enroll-workspace__col enroll-workspace__col--activities">
+          <SurfaceCard className="enroll-panel">
+            <div className="enroll-panel__header">
+              <h2 className="enroll-panel__title">
+                <span className="enroll-panel__step-num">2</span>
+                Actividad
+              </h2>
+              {selectedActivity ? (
+                <button
+                  className="enroll-panel__reset"
+                  onClick={() => {
+                    setSelectedActivityId(null);
+                    setSubmitResult(null);
+                  }}
+                  type="button"
+                >
+                  Cambiar
                 </button>
-                <button className="summary-icon-button" type="button">
-                  <Icon name="dashboard" size={16} />
-                </button>
-              </div>
+              ) : null}
             </div>
 
             {!selectedUser ? (
               <EmptyState
-                description="Selecciona primero un usuario para activar la elección de actividad."
+                description="Selecciona primero un socio para ver las actividades disponibles."
                 icon="activities"
-                title="Usuario pendiente"
+                title="Primero elige un socio"
               />
-            ) : userActivitiesState === "loading" ? (
-              <LoadingState lines={4} />
-            ) : userActivitiesState === "error" ? (
-              <EmptyState
-                action={
-                  <Button onClick={handleRetryUserActivities} size="sm" variant="secondary">
-                    Reintentar
-                  </Button>
-                }
-                description="No se pudieron recuperar las actividades del usuario para validar la inscripción."
-                icon="warning"
-                title="Validación pendiente"
-              />
+            ) : userEnrollState === "loading" ? (
+              <LoadingState lines={3} />
             ) : (
-              <div className="enrollment-activity-grid">
-                {activityOptions.map((activity) => (
-                  <SelectableCard
-                    className="enrollment-activity-card"
-                    key={activity.id}
-                    meta={activity.description}
-                    onClick={() => setSelectedActivityId(activity.id)}
-                    selected={activity.id === selectedActivityId}
-                    subtitle={activity.teacher}
-                    title={activity.title}
-                    trailing={
-                      activity.alreadyEnrolled ? (
-                        <StatusBadge label="Ya inscrito" tone="attention" />
-                      ) : (
-                        <StatusBadge label={activity.priceLabel} tone="neutral" />
-                      )
-                    }
-                    footer={
-                      <div className="enrollment-card-footer">
-                        <div className="enrollment-card-footer__item">
-                          <Icon name="clock" size={15} />
-                          <span>{activity.schedule}</span>
-                        </div>
-                      </div>
-                    }
+              <div className="enroll-activity-list">
+                {activityOptions.length ? (
+                  activityOptions.map((activity) => (
+                    <ActivityOptionCard
+                      activity={activity}
+                      key={activity.id}
+                      onSelect={setSelectedActivityId}
+                      selected={activity.id === selectedActivityId}
+                    />
+                  ))
+                ) : (
+                  <EmptyState
+                    description="No hay actividades futuras disponibles en este momento."
+                    icon="activities"
+                    title="Sin actividades"
                   />
-                ))}
+                )}
               </div>
             )}
           </SurfaceCard>
+        </div>
+      </div>
 
-          <SurfaceCard className="enrollment-panel enrollment-panel--confirmation">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Confirmación</h2>
-                <p className="panel-description">
-                  Revisa el usuario y la actividad antes de enviar la inscripción.
-                </p>
-              </div>
+      {/* ── Barra de confirmacion ── */}
+      <div
+        className={[
+          "enroll-confirm-bar",
+          (selectedUser && selectedActivity) && "enroll-confirm-bar--visible"
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {submitResult ? (
+          <div
+            className={[
+              "enroll-confirm-bar__result",
+              submitResult.tone === "success"
+                ? "enroll-confirm-bar__result--success"
+                : "enroll-confirm-bar__result--error"
+            ].join(" ")}
+          >
+            <Icon
+              name={submitResult.tone === "success" ? "check" : "warning"}
+              size={16}
+            />
+            {submitResult.message}
+          </div>
+        ) : (
+          <div className="enroll-confirm-bar__summary">
+            <div className="enroll-confirm-bar__item">
+              <span>Socio</span>
+              <strong>{selectedUser?.name ?? "—"}</strong>
             </div>
-
-            {feedback ? (
-              <InfoBanner
-                icon={
-                  <Icon
-                    name={feedback.tone === "success" ? "check" : "warning"}
-                    size={18}
-                  />
-                }
-                title={feedback.title}
-                tone={feedback.tone}
-              >
-                {feedback.message}
-              </InfoBanner>
+            <Icon name="chevron" size={16} />
+            <div className="enroll-confirm-bar__item">
+              <span>Actividad</span>
+              <strong>{selectedActivity?.title ?? "—"}</strong>
+            </div>
+            {selectedActivity ? (
+              <>
+                <Icon name="chevron" size={16} />
+                <div className="enroll-confirm-bar__item">
+                  <span>Fecha</span>
+                  <strong>{selectedActivity.schedule}</strong>
+                </div>
+                <div className="enroll-confirm-bar__item">
+                  <span>Precio</span>
+                  <strong>{selectedActivity.priceLabel}</strong>
+                </div>
+              </>
             ) : null}
+          </div>
+        )}
 
-            <div className="enrollment-summary-bar">
-              <div className="enrollment-summary-bar__block">
-                <span className="enrollment-summary-bar__label">Total</span>
-                <strong>{selectedActivity?.priceLabel ?? "Pendiente"}</strong>
-              </div>
-              <div className="enrollment-summary-bar__block">
-                <span className="enrollment-summary-bar__label">Estado</span>
-                <strong>{canSubmit ? "Listo para inscribir" : "Pendiente"}</strong>
-              </div>
+        <div className="enroll-confirm-bar__actions">
+          {!submitResult ? (
+            <>
+              {isDuplicate && (
+                <span className="enroll-confirm-bar__block-reason">
+                  Ya inscrito en esta actividad
+                </span>
+              )}
+              {hasNoTeacher && (
+                <span className="enroll-confirm-bar__block-reason">
+                  Sin monitor asignado
+                </span>
+              )}
               <Button
                 disabled={!canSubmit}
                 iconLeft={<Icon name="check" size={16} />}
-                onClick={handleRegister}
+                onClick={handleSubmit}
               >
-                {isSubmitting ? "Confirmando..." : "Confirmar inscripción"}
+                {isSubmitting ? "Inscribiendo..." : "Confirmar inscripcion"}
               </Button>
-              <Button onClick={handleResetSelection} variant="ghost">
-                Cancelar
-              </Button>
-            </div>
-
-            <InfoBanner icon={<Icon name="help" size={18} />} tone="info">
-              La confirmación enviará una notificación y actualizará el estado del socio
-              directamente en el backend.
-            </InfoBanner>
-
-            <div className="enrollment-summary">
-              <div className="enrollment-summary__item">
-                <span className="enrollment-summary__label">Usuario</span>
-                <strong>{selectedUser?.name ?? "Sin seleccionar"}</strong>
-              </div>
-              <div className="enrollment-summary__item">
-                <span className="enrollment-summary__label">Actividad</span>
-                <strong>{selectedActivity?.title ?? "Sin seleccionar"}</strong>
-              </div>
-              <div className="enrollment-summary__item">
-                <span className="enrollment-summary__label">Monitor</span>
-                <strong>{selectedActivity?.teacher ?? "Pendiente"}</strong>
-              </div>
-              <div className="enrollment-summary__item">
-                <span className="enrollment-summary__label">Fecha</span>
-                <strong>{selectedActivity?.schedule ?? "Pendiente"}</strong>
-              </div>
-            </div>
-          </SurfaceCard>
+            </>
+          ) : (
+            <Button onClick={() => setSubmitResult(null)} variant="ghost">
+              Nueva inscripcion
+            </Button>
+          )}
+          <Button onClick={handleReset} variant="ghost">
+            Reiniciar
+          </Button>
         </div>
       </div>
     </div>

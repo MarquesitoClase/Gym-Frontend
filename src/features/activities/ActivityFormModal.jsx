@@ -5,17 +5,35 @@ import { Modal } from "../../components/ui/Modal";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 
+function toLocalDateTimeString(date) {
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+}
+
+function generateDates(baseDate, freq, count) {
+  const dates = [];
+  for (let i = 1; i <= count; i++) {
+    const next = new Date(baseDate);
+    if (freq === "weekly") {
+      next.setDate(baseDate.getDate() + 7 * i);
+    } else {
+      // 2x/semana: lun+jue pattern (+3, +4, +3, +4...)
+      const daysOffset = Math.ceil(i / 2) * 3 + Math.floor(i / 2) * 4;
+      next.setDate(baseDate.getDate() + daysOffset);
+    }
+    dates.push(toLocalDateTimeString(next));
+  }
+  return dates;
+}
+
 function getCurrentDateTimeLocal() {
-  const now = new Date();
-  const timezoneOffset = now.getTimezoneOffset() * 60 * 1000;
-  return new Date(now.getTime() - timezoneOffset).toISOString().slice(0, 16);
+  return toLocalDateTimeString(new Date());
 }
 
 function formatDateTimeLocal(value) {
   if (!value) {
     return "";
   }
-
   return value.slice(0, 16);
 }
 
@@ -41,6 +59,10 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [additionalDates, setAdditionalDates] = useState([]);
+  const [showGenerator, setShowGenerator] = useState(false);
+  const [generatorFreq, setGeneratorFreq] = useState("weekly");
+  const [generatorCount, setGeneratorCount] = useState(4);
 
   useEffect(() => {
     let ignore = false;
@@ -50,7 +72,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
       setSubmitError("");
 
       try {
-        const teachers = await teachersService.listActive();
+        const teachers = await teachersService.list();
 
         if (ignore) {
           return;
@@ -165,8 +187,59 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
     }));
   };
 
+  const addExtraDate = () => {
+    const base = formValues.date || getCurrentDateTimeLocal();
+    const next = new Date(normalizeDateTimeValue(base));
+    next.setDate(next.getDate() + 7);
+    setAdditionalDates((current) => [...current, toLocalDateTimeString(next)]);
+  };
+
+  const removeExtraDate = (index) => {
+    setAdditionalDates((current) => current.filter((_, i) => i !== index));
+  };
+
+  const updateExtraDate = (index, value) => {
+    setAdditionalDates((current) =>
+      current.map((d, i) => (i === index ? value : d))
+    );
+  };
+
+  const handleGenerate = () => {
+    const base = new Date(normalizeDateTimeValue(formValues.date || getCurrentDateTimeLocal()));
+    const generated = generateDates(base, generatorFreq, generatorCount);
+    setAdditionalDates((current) => [...current, ...generated]);
+    setShowGenerator(false);
+  };
+
+  function buildExtraPayload(date) {
+    const p = new FormData();
+    p.append("title", formValues.title.trim());
+    p.append("description", formValues.description.trim());
+    p.append("date", normalizeDateTimeValue(date));
+    p.append("price", formValues.price);
+    p.append("teacherId", formValues.teacherId);
+    p.append("imageUrl", formValues.imageUrl.trim());
+    if (imageFile) {
+      p.append("image", imageFile);
+    }
+    return p;
+  }
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    if (event?.preventDefault) {
+      event.preventDefault();
+    }
+
+    if (!formValues.teacherId) {
+      setSubmitError("Selecciona un monitor antes de guardar.");
+      return;
+    }
+
+    if (!formValues.title.trim()) {
+      setSubmitError("El titulo no puede estar vacio.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError("");
 
@@ -187,6 +260,10 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
         await activitiesService.update(activityId, payload);
       } else {
         await activitiesService.create(payload);
+      }
+
+      for (const extraDate of additionalDates) {
+        await activitiesService.create(buildExtraPayload(extraDate));
       }
 
       onSuccess?.();
@@ -227,6 +304,20 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
     }
   };
 
+  const totalSessions = 1 + additionalDates.length;
+
+  const submitLabel = isSubmitting
+    ? additionalDates.length > 0
+      ? `Creando ${totalSessions} sesiones...`
+      : mode === "edit"
+      ? "Guardando..."
+      : "Creando..."
+    : additionalDates.length > 0
+    ? mode === "edit"
+      ? `Guardar y añadir ${additionalDates.length} sesión${additionalDates.length > 1 ? "es" : ""}`
+      : `Crear ${totalSessions} sesiones`
+    : modalCopy.submitLabel;
+
   return (
     <Modal
       description={modalCopy.description}
@@ -236,7 +327,7 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
       {isFetching ? (
         <LoadingState lines={5} />
       ) : (
-        <form className="entity-form" onSubmit={handleSubmit}>
+        <form className="entity-form" noValidate onSubmit={handleSubmit}>
           {submitError ? (
             <div className="entity-form__error">{submitError}</div>
           ) : null}
@@ -295,10 +386,12 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
             </label>
 
             <label className="entity-form__field">
-              <span className="entity-form__label">Fecha y hora</span>
+              <span className="entity-form__label">
+                {mode === "create" ? "Primera sesión" : "Fecha y hora"}
+              </span>
               <input
                 className="entity-form__control"
-                min={getCurrentDateTimeLocal()}
+                min={mode === "create" ? getCurrentDateTimeLocal() : undefined}
                 onChange={handleChange("date")}
                 required
                 type="datetime-local"
@@ -321,6 +414,111 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
                 {imageFile ? imageFile.name : "Puedes dejarlo vacio si no quieres subir imagen."}
               </span>
             </label>
+          </div>
+
+          <div className="entity-form__extra-dates">
+            <div className="entity-form__extra-dates-header">
+              <strong className="entity-form__section-title">
+                Sesiones adicionales
+                {additionalDates.length > 0 ? (
+                  <span className="entity-form__extra-dates-count">
+                    {additionalDates.length}
+                  </span>
+                ) : null}
+              </strong>
+              <div className="entity-form__extra-dates-actions">
+                <button
+                  className="entity-form__add-date-btn"
+                  onClick={() => setShowGenerator((v) => !v)}
+                  type="button"
+                >
+                  Generar automáticamente
+                </button>
+                <button
+                  className="entity-form__add-date-btn entity-form__add-date-btn--primary"
+                  onClick={addExtraDate}
+                  type="button"
+                >
+                  + Añadir fecha
+                </button>
+              </div>
+            </div>
+
+            {showGenerator ? (
+              <div className="entity-form__recurring-options">
+                <div className="entity-form__recurring-row">
+                  <label className="entity-form__field">
+                    <span className="entity-form__label">Frecuencia</span>
+                    <select
+                      className="entity-form__control"
+                      onChange={(e) => setGeneratorFreq(e.target.value)}
+                      value={generatorFreq}
+                    >
+                      <option value="weekly">1 vez por semana</option>
+                      <option value="biweekly">2 veces por semana</option>
+                    </select>
+                  </label>
+                  <label className="entity-form__field">
+                    <span className="entity-form__label">Número de sesiones</span>
+                    <input
+                      className="entity-form__control"
+                      max="24"
+                      min="1"
+                      onChange={(e) => setGeneratorCount(Number(e.target.value))}
+                      type="number"
+                      value={generatorCount}
+                    />
+                  </label>
+                </div>
+                <p className="entity-form__helper">
+                  Se añadirán <strong>{generatorCount} fechas</strong> a la lista
+                  — {generatorFreq === "weekly" ? "cada 7 días" : "patrón lun/jue (3-4 días)"}
+                  . Podrás ajustarlas antes de guardar.
+                </p>
+                <div className="entity-form__recurring-actions">
+                  <Button onClick={handleGenerate} size="sm" type="button">
+                    Añadir {generatorCount} fechas
+                  </Button>
+                  <Button
+                    onClick={() => setShowGenerator(false)}
+                    size="sm"
+                    type="button"
+                    variant="ghost"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+
+            {additionalDates.length ? (
+              <ul className="entity-form__extra-dates-list">
+                {additionalDates.map((date, index) => (
+                  <li className="entity-form__extra-date-item" key={index}>
+                    <span className="entity-form__extra-date-num">{index + 2}</span>
+                    <input
+                      className="entity-form__control"
+                      onChange={(e) => updateExtraDate(index, e.target.value)}
+                      type="datetime-local"
+                      value={date}
+                    />
+                    <button
+                      aria-label="Eliminar fecha"
+                      className="entity-form__unenroll-btn"
+                      onClick={() => removeExtraDate(index)}
+                      type="button"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="entity-form__helper">
+                Añade fechas manualmente o usa el generador automático para
+                programar varias sesiones de golpe.
+              </p>
+            )}
           </div>
 
           {previewUrl ? (
@@ -368,15 +566,11 @@ export function ActivityFormModal({ activityId, mode, onClose, onSuccess }) {
                 Cancelar
               </Button>
               <Button
-                disabled={
-                  isDeleting ||
-                  isSubmitting ||
-                  !formValues.teacherId ||
-                  !activeTeachers.length
-                }
-                type="submit"
+                disabled={isDeleting || isSubmitting}
+                onClick={handleSubmit}
+                type="button"
               >
-                {isSubmitting ? "Guardando..." : modalCopy.submitLabel}
+                {submitLabel}
               </Button>
             </div>
           </div>

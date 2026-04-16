@@ -44,9 +44,7 @@ export function ActivitiesPage() {
       <PageHeader
         actions={
           <>
-            <Button iconLeft={<Icon name="filter" size={16} />} variant="ghost">
-              Filtrar
-            </Button>
+            
             <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
               Nueva actividad
             </Button>

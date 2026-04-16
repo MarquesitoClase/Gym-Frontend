@@ -6,10 +6,9 @@ export function EnrollmentsPage() {
   return (
     <PageContainer>
       <PageHeader
-        description="Paso 2 de 2: confirma actividad y validaciones operativas antes de inscribir."
-        title="Panel de inscripciones"
+        description="Busca un socio, elige una actividad y confirma la inscripcion en segundos."
+        title="Inscripcion rapida"
       />
-
       <EnrollmentWorkspace />
     </PageContainer>
   );

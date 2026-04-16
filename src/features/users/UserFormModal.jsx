@@ -35,6 +35,7 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
   const [isLoadingEnrollments, setIsLoadingEnrollments] = useState(false);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollMessage, setEnrollMessage] = useState(null);
+  const [deletingEnrollId, setDeletingEnrollId] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -94,26 +95,26 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
   }, [mode, userId]);
 
   useEffect(() => {
-    if (mode !== "edit" || !userId) {
-      return undefined;
-    }
-
     let ignore = false;
     setIsLoadingEnrollments(true);
 
-    Promise.all([
-      enrollmentsService.listByUser(userId),
-      activitiesService.list()
-    ])
-      .then(([enrollResponse, activitiesResponse]) => {
+    const promises = [
+      activitiesService.list(),
+      mode === "edit" && userId ? enrollmentsService.listByUser(userId) : Promise.resolve([])
+    ];
+
+    Promise.all(promises)
+      .then(([activitiesResponse, enrollResponse]) => {
         if (ignore) {
           return;
         }
-        setEnrollments(enrollResponse);
         setEnrollActivities(activitiesResponse);
+        if (mode === "edit" && userId) {
+          setEnrollments(enrollResponse);
+        }
       })
       .catch(() => {
-        // no bloquear el modal si falla la carga de inscripciones
+        // no bloquear el modal si falla la carga
       })
       .finally(() => {
         if (!ignore) {
@@ -214,7 +215,14 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
       if (mode === "edit" && userId) {
         await usersService.update(userId, payload);
       } else {
-        await usersService.create(payload);
+        const created = await usersService.create(payload);
+        if (selectedEnrollId && created?.id) {
+          try {
+            await enrollmentsService.register(Number(selectedEnrollId), created.id);
+          } catch {
+            // la inscripcion fallo pero el usuario ya fue creado
+          }
+        }
       }
 
       onSuccess?.();
@@ -252,6 +260,31 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
       );
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleUnenroll = async (activityId) => {
+    if (!userId) {
+      return;
+    }
+
+    setDeletingEnrollId(activityId);
+    setEnrollMessage(null);
+
+    try {
+      await enrollmentsService.remove(activityId, userId);
+      setEnrollments((current) => current.filter((a) => a.id !== activityId));
+      setEnrollMessage({
+        tone: "success",
+        text: "Inscripcion cancelada correctamente."
+      });
+    } catch (error) {
+      setEnrollMessage({
+        tone: "error",
+        text: getApiErrorMessage(error, "No se pudo cancelar la inscripcion.")
+      });
+    } finally {
+      setDeletingEnrollId(null);
     }
   };
 
@@ -384,6 +417,37 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
             </div>
           ) : null}
 
+          {mode === "create" ? (
+            <div className="entity-form__enrollments">
+              <div className="entity-form__section-divider" />
+              <strong className="entity-form__section-title">
+                Inscribir en actividad (opcional)
+              </strong>
+              {isLoadingEnrollments ? (
+                <LoadingState lines={1} />
+              ) : availableActivities.length ? (
+                <div className="entity-form__enroll-row">
+                  <select
+                    className="entity-form__control"
+                    onChange={(e) => setSelectedEnrollId(e.target.value)}
+                    value={selectedEnrollId}
+                  >
+                    <option value="">Sin inscripcion inicial</option>
+                    {availableActivities.map((activity) => (
+                      <option key={activity.id} value={activity.id}>
+                        {activity.title} — {formatDateTime(activity.date)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <p className="entity-form__helper">
+                  No hay actividades disponibles para inscribir.
+                </p>
+              )}
+            </div>
+          ) : null}
+
           {mode === "edit" && userId ? (
             <div className="entity-form__enrollments">
               <div className="entity-form__section-divider" />
@@ -402,9 +466,20 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
                           <span className="entity-form__enrollment-name">
                             {activity.title}
                           </span>
-                          <span className="entity-form__enrollment-date">
-                            {formatDateTime(activity.date)}
-                          </span>
+                          <div className="entity-form__enrollment-actions">
+                            <span className="entity-form__enrollment-date">
+                              {formatDateTime(activity.date)}
+                            </span>
+                            <button
+                              aria-label={`Cancelar inscripcion en ${activity.title}`}
+                              className="entity-form__unenroll-btn"
+                              disabled={deletingEnrollId === activity.id}
+                              onClick={() => handleUnenroll(activity.id)}
+                              type="button"
+                            >
+                              {deletingEnrollId === activity.id ? "…" : "×"}
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>

@@ -26,16 +26,9 @@ function createPlaceholderMetrics(meta) {
     },
     {
       id: "renewals-soon",
-      label: "Renovaciones pendientes",
+      label: "Socios inactivos",
       meta,
       tone: "warning",
-      value: "--"
-    },
-    {
-      id: "retention",
-      label: "Retencion",
-      meta,
-      tone: "dark",
       value: "--"
     }
   ];
@@ -90,19 +83,12 @@ export function buildUsersSummaryMetrics(rows, status = "success") {
     },
     {
       id: "renewals-soon",
-      label: "Renovaciones pendientes",
+      label: "Socios inactivos",
       meta: inactiveMembers
-        ? `${numberFormatter.format(inactiveMembers)} perfiles necesitan revision`
-        : "Sin renovaciones pendientes",
+        ? `${numberFormatter.format(inactiveMembers)} perfiles sin acceso activo`
+        : "Todos los socios estan activos",
       tone: "warning",
       value: numberFormatter.format(inactiveMembers)
-    },
-    {
-      id: "retention",
-      label: "Retencion",
-      meta: "Usuarios activos respecto al total",
-      tone: "dark",
-      value: `${retention.toFixed(1)}%`
     }
   ];
 }

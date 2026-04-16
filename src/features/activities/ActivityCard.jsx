@@ -79,12 +79,20 @@ export function ActivityCard({ activity, className, onEditRequest }) {
 
         <div className="activity-card__meta">
           <div className="activity-card__meta-item">
-            <Icon name="calendar" size={16} />
-            <span>{activity.schedule}</span>
-          </div>
-          <div className="activity-card__meta-item">
             <Icon name="user" size={16} />
             <span>{activity.teacher}</span>
+          </div>
+          <div className="activity-card__sessions">
+            {activity.sessions.map((session) => (
+              <div className="activity-card__session-chip" key={session.id}>
+                <Icon name="calendar" size={13} />
+                <span>{session.schedule}</span>
+                <span className="activity-card__session-count">
+                  {session.enrolledCount}{" "}
+                  {session.enrolledCount === 1 ? "inscrito" : "inscritos"}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

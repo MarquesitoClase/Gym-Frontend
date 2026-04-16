@@ -270,6 +270,39 @@
   white-space: nowrap;
 }
 
+.entity-form__enrollment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.entity-form__unenroll-btn {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.entity-form__unenroll-btn:hover:not(:disabled) {
+  background: #fdf2f5;
+  color: #b42348;
+}
+
+.entity-form__unenroll-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .entity-form__enroll-row {
   display: flex;
   gap: 10px;
@@ -278,6 +311,128 @@
 
 .entity-form__enroll-row .entity-form__control {
   flex: 1;
+}
+
+.entity-form__extra-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-form__extra-dates-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.entity-form__extra-dates-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 8px;
+  padding: 0 5px;
+}
+
+.entity-form__extra-dates-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.entity-form__add-date-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.entity-form__add-date-btn:hover {
+  background: var(--surface-muted);
+  color: var(--ink-strong);
+}
+
+.entity-form__add-date-btn--primary {
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+.entity-form__add-date-btn--primary:hover {
+  background: rgba(29, 77, 255, 0.08);
+  color: var(--brand-primary);
+}
+
+.entity-form__extra-dates-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entity-form__extra-date-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entity-form__extra-date-item .entity-form__control {
+  flex: 1;
+}
+
+.entity-form__extra-date-num {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--ink-dim);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.entity-form__recurring-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.entity-form__recurring {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-form__recurring-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 14px;
+  background: #f4f1ed;
+  padding: 14px;
+}
+
+.entity-form__recurring-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 .entity-form__enroll-success {

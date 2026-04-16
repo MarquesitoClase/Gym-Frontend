@@ -1,9 +1,17 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 import { Icon } from "../../components/ui/Icon";
 import { classNames } from "../../utils/classNames";
 import { navigationItems } from "../navigationItems";
 
 export function SidebarNav({ isOpen, onClose }) {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    onClose();
+    logout();
+  };
+
   return (
     <>
       <button
@@ -51,11 +59,7 @@ export function SidebarNav({ isOpen, onClose }) {
             <Icon name="plus" size={18} />
             <span>Inscripción rápida</span>
           </NavLink>
-          <button className="sidebar__footer-link" type="button">
-            <Icon name="settings" size={18} />
-            <span>Configuración</span>
-          </button>
-          <button className="sidebar__footer-link" type="button">
+          <button className="sidebar__footer-link" onClick={handleLogout} type="button">
             <Icon name="logout" size={18} />
             <span>Cerrar sesión</span>
           </button>

@@ -100,7 +100,7 @@ export function DashboardOverview() {
   );
 
   const receptionUser =
-    dashboardData.activeUsers[0] ?? dashboardData.users[0] ?? null;
+    dashboardData.users[dashboardData.users.length - 1] ?? null;
 
   if (requestState === "loading") {
     return <LoadingState lines={6} />;
@@ -218,45 +218,78 @@ export function DashboardOverview() {
         </SurfaceCard>
 
         <div className="dashboard-side">
-          <SurfaceCard className="dashboard-join-card">
+          <SurfaceCard className="dashboard-quickactions">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Alta instantanea</h2>
-                <p>Registra un nuevo socio en menos de 30 segundos desde recepcion.</p>
+                <h2>Acciones rapidas</h2>
+                <p>Accede directamente a las secciones principales.</p>
               </div>
             </div>
-
-            <div className="dashboard-join-card__field">
-              <span>Nombre completo</span>
-              <strong>Juan Perez</strong>
+            <div className="dashboard-quickactions__list">
+              <button
+                className="dashboard-quickactions__item"
+                onClick={() => navigate("/usuarios")}
+                type="button"
+              >
+                <span className="dashboard-quickactions__icon">
+                  <Icon name="users" size={18} />
+                </span>
+                <div>
+                  <strong>Nuevo socio</strong>
+                  <span>Registrar alta en el sistema</span>
+                </div>
+                <Icon name="chevron" size={14} />
+              </button>
+              <button
+                className="dashboard-quickactions__item"
+                onClick={() => navigate("/actividades")}
+                type="button"
+              >
+                <span className="dashboard-quickactions__icon">
+                  <Icon name="activities" size={18} />
+                </span>
+                <div>
+                  <strong>Nueva actividad</strong>
+                  <span>Publicar clase o taller</span>
+                </div>
+                <Icon name="chevron" size={14} />
+              </button>
+              <button
+                className="dashboard-quickactions__item"
+                onClick={() => navigate("/inscripciones")}
+                type="button"
+              >
+                <span className="dashboard-quickactions__icon">
+                  <Icon name="enrollments" size={18} />
+                </span>
+                <div>
+                  <strong>Inscripcion rapida</strong>
+                  <span>Apuntar socio a una clase</span>
+                </div>
+                <Icon name="chevron" size={14} />
+              </button>
+              <button
+                className="dashboard-quickactions__item"
+                onClick={() => navigate("/profesores")}
+                type="button"
+              >
+                <span className="dashboard-quickactions__icon">
+                  <Icon name="teachers" size={18} />
+                </span>
+                <div>
+                  <strong>Nuevo monitor</strong>
+                  <span>Dar de alta a un profesor</span>
+                </div>
+                <Icon name="chevron" size={14} />
+              </button>
             </div>
-            <div className="dashboard-join-card__field">
-              <span>Plan de membresia</span>
-              <strong>Titan Premium anual</strong>
-            </div>
-
-            <Button
-              className="dashboard-join-card__button"
-              fullWidth
-              onClick={() => navigate("/inscripciones")}
-            >
-              Completar alta
-            </Button>
           </SurfaceCard>
 
           <SurfaceCard className="dashboard-frontdesk">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Modo recepcion</h2>
+                <h2>Ultimo socio registrado</h2>
               </div>
-              <button
-                aria-label="Abrir inscripciones"
-                className="dashboard-frontdesk__action"
-                onClick={() => navigate("/inscripciones")}
-                type="button"
-              >
-                <Icon name="enrollments" size={16} />
-              </button>
             </div>
 
             {receptionUser ? (
@@ -267,16 +300,21 @@ export function DashboardOverview() {
                     subtitle={`Alta ${receptionUser.registrationYear ?? "reciente"}`}
                     title={[receptionUser.firstName, receptionUser.lastName].filter(Boolean).join(" ")}
                   />
-                  <StatusBadge label="Socio activo" tone="active" />
+                  <StatusBadge
+                    label={receptionUser.active ? "Activo" : "Inactivo"}
+                    tone={receptionUser.active ? "active" : "inactive"}
+                  />
                 </div>
                 <p className="dashboard-frontdesk__note">
-                  Listo para check-in desde recepcion o para registrar una nueva clase.
+                  {dashboardData.users.length}{" "}
+                  {dashboardData.users.length === 1 ? "socio registrado" : "socios registrados"} en total —{" "}
+                  {dashboardData.activeUsers.length} activos.
                 </p>
               </>
             ) : (
               <EmptyState
-                description="No hay usuarios activos disponibles para mostrar en recepcion."
-                title="Sin usuarios activos"
+                description="Todavia no hay socios registrados en el sistema."
+                title="Sin socios"
               />
             )}
           </SurfaceCard>

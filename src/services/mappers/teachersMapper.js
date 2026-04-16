@@ -30,13 +30,6 @@ function createPlaceholderMetrics(meta) {
       meta,
       tone: "neutral",
       value: "--"
-    },
-    {
-      id: "expiring",
-      label: "Certificaciones pendientes",
-      meta,
-      tone: "warning",
-      value: "--"
     }
   ];
 }
@@ -69,7 +62,6 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
 
   const totalTeachers = rows.length;
   const activeTeachers = rows.filter((row) => row.status === "active").length;
-  const inactiveTeachers = totalTeachers - activeTeachers;
   const assignedActivities = rows.reduce(
     (total, row) => total + row.assignedActivities.length,
     0
@@ -100,15 +92,6 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
       meta: `${percentFormatter.format(coverage)} del equipo con clases`,
       tone: "neutral",
       value: `${Math.round(coverage * 100)}%`
-    },
-    {
-      id: "expiring",
-      label: "Certificaciones pendientes",
-      meta: "Perfiles sin sesiones o inactivos",
-      tone: "warning",
-      value: numberFormatter.format(
-        Math.max(totalTeachers - teachersWithActivities, inactiveTeachers)
-      )
     }
   ];
 }

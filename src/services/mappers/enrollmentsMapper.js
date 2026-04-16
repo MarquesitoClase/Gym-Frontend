@@ -26,12 +26,14 @@ export function mapEnrollmentActivityOptions(activities, teachers, enrolledIds) 
   return activities.map((activity) => ({
     alreadyEnrolled: enrolledIds.has(activity.id),
     description: activity.description,
+    enrolledCount: activity.enrolledCount ?? 0,
     id: activity.id,
     priceLabel: formatCurrency(activity.price),
     schedule: formatDateTime(activity.date),
     teacher:
       teacherNameById.get(activity.teacherId) ??
       `Monitor #${activity.teacherId}`,
+    teacherId: activity.teacherId ?? null,
     title: activity.title
   }));
 }
