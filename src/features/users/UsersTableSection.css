@@ -1,13 +1,13 @@
 .users-section {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 .users-section__summary {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .users-directory {
@@ -15,7 +15,7 @@
 }
 
 .users-directory .table-shell__header {
-  padding: 24px 24px 0;
+  padding: 22px 22px 4px;
 }
 
 .users-directory .table-shell__footer {
@@ -24,7 +24,7 @@
   justify-content: space-between;
   gap: 16px;
   border-top: 1px solid var(--border-soft);
-  padding: 20px 24px;
+  padding: 18px 22px;
 }
 
 .users-directory__footer {
@@ -44,7 +44,7 @@
 .users-toolbar-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
 }
 
 .users-actions {
@@ -62,7 +62,7 @@
   justify-content: center;
   border: none;
   border-radius: 10px;
-  background: transparent;
+  background: #f4f1ee;
   color: var(--ink-soft);
 }
 
@@ -72,7 +72,7 @@
 }
 
 .users-action-button:hover {
-  background: var(--surface-muted);
+  background: #ece7e2;
   color: var(--ink-strong);
 }
 

@@ -1,12 +1,12 @@
 .floating-action-button {
   display: inline-flex;
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   align-items: center;
   justify-content: center;
   gap: 10px;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--brand-primary);
   color: #ffffff;
   box-shadow: var(--shadow-primary);
@@ -20,8 +20,8 @@
 
 .floating-action-button--fixed {
   position: fixed;
-  right: 32px;
-  bottom: 32px;
+  right: 42px;
+  bottom: 42px;
   z-index: 30;
 }
 
