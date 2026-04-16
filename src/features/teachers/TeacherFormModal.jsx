@@ -16,6 +16,8 @@ const initialFormState = {
 
 export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
   const [formValues, setFormValues] = useState(initialFormState);
+  const [imageFile, setImageFile] = useState(null);
+const [previewUrl, setPreviewUrl] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFetching, setIsFetching] = useState(mode === "edit");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,12 +27,14 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
     let ignore = false;
 
     async function loadTeacher() {
-      if (mode !== "edit" || !teacherId) {
-        setFormValues(initialFormState);
-        setIsFetching(false);
-        setSubmitError("");
-        return;
-      }
+    if (mode !== "edit" || !teacherId) {
+  setFormValues(initialFormState);
+  setImageFile(null);       // añadir
+  setIsFetching(false);
+  setPreviewUrl("");        // añadir
+  setSubmitError("");
+  return;
+}
 
       setIsFetching(true);
       setSubmitError("");
