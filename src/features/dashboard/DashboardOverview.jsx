@@ -184,7 +184,8 @@ export function DashboardOverview() {
               {upcomingActivities.slice(0, 4).map((activity) => (
                 <article className="dashboard-agenda__item" key={activity.id}>
                   <div className="dashboard-agenda__time">
-                    {activity.schedule.split(",")[1]?.trim() ?? activity.schedule}
+                    <span className="dashboard-agenda__time-hour">{activity.scheduleTime}</span>
+                    <span className="dashboard-agenda__time-date">{activity.scheduleDate}</span>
                   </div>
                   <div className="dashboard-agenda__main">
                     <h3>{activity.name}</h3>

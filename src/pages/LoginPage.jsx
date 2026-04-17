@@ -29,8 +29,7 @@ export function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-card__brand">
-          <div className="login-card__logo">TG</div>
-          <h1 className="login-card__title">Titan Gym</h1>
+          <img alt="TenFit" className="login-card__logo-img" src="/logo.png" />
           <p className="login-card__subtitle">Panel de administracion</p>
         </div>
 
@@ -46,7 +45,7 @@ export function LoginPage() {
               autoFocus
               className="login-form__input"
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@titangym.com"
+              placeholder="admin@tenfit.com"
               required
               type="email"
               value={email}

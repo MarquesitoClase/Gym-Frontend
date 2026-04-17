@@ -1,4 +1,19 @@
-import { formatCurrency, formatDateTime } from "../../utils/formatters";
+import { formatCurrency } from "../../utils/formatters";
+
+function formatTime(value) {
+  return new Intl.DateTimeFormat("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date(value));
+}
+
+function formatShortDate(value) {
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "numeric",
+    month: "short",
+    weekday: "short"
+  }).format(new Date(value));
+}
 
 const numberFormatter = new Intl.NumberFormat("es-ES");
 
@@ -109,7 +124,8 @@ export function buildUpcomingActivities(activities, teachers) {
         id: activity.id,
         metric: formatCurrency(activity.price),
         name: activity.title,
-        schedule: formatDateTime(activity.date),
+        scheduleDate: formatShortDate(activity.date),
+        scheduleTime: formatTime(activity.date),
         teacher:
           teacherNameById.get(activity.teacherId) ??
           `Monitor #${activity.teacherId}`

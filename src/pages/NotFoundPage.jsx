@@ -11,7 +11,7 @@ export function NotFoundPage() {
             Volver al panel
           </Link>
         }
-        description="La ruta solicitada no existe dentro del panel interno de Titan Gym."
+        description="La ruta solicitada no existe dentro del panel interno de TenFit."
         title="No hemos encontrado esta vista"
       />
     </PageContainer>

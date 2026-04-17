@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";
 import { EmptyState } from "../../components/ui/EmptyState";
@@ -40,6 +41,8 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [reloadKey, setReloadKey] = useState(0);
   const [requestState, setRequestState] = useState("loading");
   const [rows, setRows] = useState([]);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q")?.toLowerCase().trim() ?? "";
 
   useEffect(() => {
     let ignore = false;
@@ -83,13 +86,22 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
     [requestState, rows]
   );
 
-  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const filteredRows = useMemo(() => {
+    if (!query) return rows;
+    return rows.filter((r) =>
+      [r.name, r.identifier]
+        .filter(Boolean)
+        .some((v) => v.toLowerCase().includes(query))
+    );
+  }, [rows, query]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
 
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
-    return rows.slice(start, start + PAGE_SIZE);
-  }, [currentPage, rows]);
+    return filteredRows.slice(start, start + PAGE_SIZE);
+  }, [currentPage, filteredRows]);
 
   const handleRetry = () => {
     setReloadKey((currentValue) => currentValue + 1);

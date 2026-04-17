@@ -61,7 +61,7 @@ export const routes = [
         path: "*",
         element: <NotFoundPage />,
         handle: {
-          searchPlaceholder: "Buscar en Titan Gym..."
+          searchPlaceholder: "Buscar en TenFit..."
         }
       }
     ]

@@ -1,18 +1,18 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 const ADMIN_CREDENTIALS = {
-  email: "admin@titangym.com",
+  email: "admin@tenfit.com",
   password: "Admin1234"
 };
 
 const ADMIN_PROFILE = {
-  email: "admin@titangym.com",
-  initials: "AT",
-  name: "Admin Titan",
+  email: "admin@tenfit.com",
+  initials: "TF",
+  name: "Admin TenFit",
   role: "Administrador principal"
 };
 
-const STORAGE_KEY = "titan_gym_auth";
+const STORAGE_KEY = "tenfit_auth";
 
 const AuthContext = createContext(null);
 

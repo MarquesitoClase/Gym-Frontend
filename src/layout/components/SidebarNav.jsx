@@ -32,8 +32,7 @@ export function SidebarNav({ isOpen, onClose }) {
 
         <div className="sidebar__content">
           <div className="sidebar__brand">
-            <div className="sidebar__brand-title">Titan Gym</div>
-            <div className="sidebar__brand-subtitle">Terminal de administración</div>
+            <img alt="TenFit" className="sidebar__brand-logo" src="/logo.png" />
           </div>
 
           <nav className="sidebar__nav">

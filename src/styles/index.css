@@ -100,13 +100,10 @@ img {
   padding: 0 14px;
 }
 
-.sidebar__brand-title {
-  color: var(--brand-primary);
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+.sidebar__brand-logo {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
 }
 
 .sidebar__brand-subtitle {
@@ -1645,14 +1642,30 @@ img {
 
 .dashboard-agenda__time {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
+  min-width: 68px;
   min-height: 54px;
   border-radius: 12px;
   background: #ebf0ff;
   color: var(--brand-primary);
+  padding: 6px 10px;
+}
+
+.dashboard-agenda__time-hour {
   font-size: 15px;
   font-weight: 800;
+  line-height: 1;
+}
+
+.dashboard-agenda__time-date {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.75;
+  line-height: 1;
+  text-align: center;
 }
 
 .dashboard-agenda__main {
@@ -2271,25 +2284,10 @@ img {
   gap: 10px;
 }
 
-.login-card__logo {
-  display: inline-flex;
-  width: 56px;
-  height: 56px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  background: #163c5b;
-  color: white;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-}
-
-.login-card__title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text-primary, #0a1220);
-  margin: 0;
+.login-card__logo-img {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
 }
 
 .login-card__subtitle {

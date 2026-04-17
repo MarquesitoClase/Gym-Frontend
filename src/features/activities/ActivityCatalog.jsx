@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
@@ -20,6 +21,8 @@ export function ActivityCatalog({
   const [reloadKey, setReloadKey] = useState(0);
   const [requestState, setRequestState] = useState("loading");
   const [teachers, setTeachers] = useState([]);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q")?.toLowerCase().trim() ?? "";
 
   useEffect(() => {
     let ignore = false;
@@ -66,10 +69,16 @@ export function ActivityCatalog({
     () => buildCatalogHighlights(activities, teachers, requestState),
     [activities, requestState, teachers]
   );
-  const activitiesCatalog = useMemo(
-    () => mapActivitiesCatalog(activities, teachers),
-    [activities, teachers]
-  );
+  const activitiesCatalog = useMemo(() => {
+    const all = mapActivitiesCatalog(activities, teachers);
+    if (!query) return all;
+    return all.filter((a) =>
+      [a.title, a.teacher, a.category]
+        .filter(Boolean)
+        .some((v) => v.toLowerCase().includes(query))
+    );
+  }, [activities, teachers, query]);
+
   const primaryActivities = activitiesCatalog.slice(0, 4);
   const secondaryActivities = activitiesCatalog.slice(4, 6);
 
@@ -137,9 +146,6 @@ export function ActivityCatalog({
             <div className="panel-header">
               <div>
                 <h2 className="panel-title">Insights del catalogo</h2>
-                <p className="panel-description">
-                  Indicadores operativos sincronizados con las actividades futuras del backend.
-                </p>
               </div>
             </div>
 

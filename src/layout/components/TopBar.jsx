@@ -1,9 +1,31 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+
+  // Reset search when route changes
+  useEffect(() => {
+    setQuery("");
+  }, [location.pathname]);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    const params = new URLSearchParams(searchParams);
+    if (value.trim()) {
+      params.set("q", value.trim());
+    } else {
+      params.delete("q");
+    }
+    navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+  };
 
   useEffect(() => {
     if (!isProfileOpen) {
@@ -37,8 +59,10 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
             <Icon name="search" size={18} />
           </span>
           <input
-            placeholder={searchPlaceholder ?? "Buscar en Titan Gym..."}
+            onChange={handleSearch}
+            placeholder={searchPlaceholder ?? "Buscar en TenFit..."}
             type="search"
+            value={query}
           />
         </label>
       </div>
