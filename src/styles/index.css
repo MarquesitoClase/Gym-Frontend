@@ -1067,12 +1067,53 @@ img {
   background: var(--surface-raised, rgba(0,0,0,0.04));
   font-size: 12px;
   color: var(--ink-soft);
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+
+.activity-card__session-chip--editable {
+  cursor: pointer;
+  transition: background 0.15s, outline 0.15s;
+}
+
+.activity-card__session-chip--editable:hover {
+  background: var(--surface-hover, rgba(99,102,241,0.08));
+  color: var(--ink, inherit);
+  outline: 1px solid var(--accent, #6366f1);
+}
+
+.activity-card__session-chip--editable:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 1px;
+}
+
+.activity-card__session-edit-icon {
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.activity-card__session-chip--editable:hover .activity-card__session-edit-icon,
+.activity-card__session-chip--editable:focus-visible .activity-card__session-edit-icon {
+  opacity: 0.6;
 }
 
 .activity-card__session-count {
   margin-left: auto;
   font-size: 11px;
   opacity: 0.7;
+}
+
+.activity-card__session-teacher {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--accent, #6366f1);
+  font-weight: 500;
 }
 
 .activities-fab:disabled {

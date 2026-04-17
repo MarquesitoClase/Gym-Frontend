@@ -84,14 +84,27 @@ export function ActivityCard({ activity, className, onEditRequest }) {
           </div>
           <div className="activity-card__sessions">
             {activity.sessions.map((session) => (
-              <div className="activity-card__session-chip" key={session.id}>
+              <button
+                aria-label={`Editar sesión del ${session.schedule}`}
+                className="activity-card__session-chip activity-card__session-chip--editable"
+                key={session.id}
+                onClick={() => onEditRequest?.(session.id)}
+                type="button"
+              >
                 <Icon name="calendar" size={13} />
                 <span>{session.schedule}</span>
+                {session.teacherName && session.teacherName !== activity.teacher ? (
+                  <span className="activity-card__session-teacher">
+                    <Icon name="user" size={11} />
+                    {session.teacherName}
+                  </span>
+                ) : null}
                 <span className="activity-card__session-count">
                   {session.enrolledCount}{" "}
                   {session.enrolledCount === 1 ? "inscrito" : "inscritos"}
+                  <Icon name="edit" size={11} className="activity-card__session-edit-icon" />
                 </span>
-              </div>
+              </button>
             ))}
           </div>
         </div>

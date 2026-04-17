@@ -99,33 +99,40 @@ export function mapActivityDtoToCard(activity, teacherNameById) {
 export function mapActivitiesCatalog(activities, teachers) {
   const teacherNameById = buildTeacherMap(teachers);
 
-  // Group sessions that share the same title + teacher into a single card
+  // Group sessions by title only — different teachers for the same class share one card
   const groups = new Map();
   for (const activity of activities) {
-    const key = `${activity.title}__${activity.teacherId ?? "none"}`;
+    const key = activity.title.trim().toLowerCase();
     if (!groups.has(key)) {
       groups.set(key, { base: activity, sessions: [] });
     }
     groups.get(key).sessions.push({
       enrolledCount: activity.enrolledCount ?? 0,
       id: activity.id,
-      schedule: formatDateTime(activity.date)
+      schedule: formatDateTime(activity.date),
+      teacherName:
+        teacherNameById.get(activity.teacherId) ?? `Monitor #${activity.teacherId}`
     });
   }
 
-  return [...groups.values()].map(({ base, sessions }) => ({
-    category: getCategory(base.title, base.description),
-    coverTone: getCoverTone(base.title, base.description),
-    description: base.description,
-    id: sessions[0].id,
-    imageUrl: base.imageUrl ?? null,
-    price: base.price,
-    sessions,
-    status: "active",
-    teacher:
-      teacherNameById.get(base.teacherId) ?? `Monitor #${base.teacherId}`,
-    title: base.title
-  }));
+  return [...groups.values()].map(({ base, sessions }) => {
+    const uniqueTeachers = [...new Set(sessions.map((s) => s.teacherName))];
+    return {
+      category: getCategory(base.title, base.description),
+      coverTone: getCoverTone(base.title, base.description),
+      description: base.description,
+      id: sessions[0].id,
+      imageUrl: base.imageUrl ?? null,
+      price: base.price,
+      sessions,
+      status: "active",
+      teacher:
+        uniqueTeachers.length === 1
+          ? uniqueTeachers[0]
+          : `${uniqueTeachers.length} monitores`,
+      title: base.title
+    };
+  });
 }
 
 function createPlaceholderHighlights(meta) {
