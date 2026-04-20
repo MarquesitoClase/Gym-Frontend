@@ -17,7 +17,7 @@ import {
   mapEnrollmentActivityOptions,
   mapUserCandidate
 } from "../../services/mappers/enrollmentsMapper";
-import { formatDateTime } from "../../utils/formatters";
+// import { formatDateTime } from "../../utils/formatters";
 
 // ─── Paso indicator ──────────────────────────────────────────
 function StepIndicator({ currentStep }) {

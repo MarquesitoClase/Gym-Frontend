@@ -12,7 +12,6 @@ import {
 import { ActivityCard } from "./ActivityCard";
 
 export function ActivityCatalog({
-  onCreateRequest,
   onEditRequest,
   refreshToken = 0
 }) {

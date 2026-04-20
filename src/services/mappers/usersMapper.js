@@ -63,7 +63,7 @@ export function buildUsersSummaryMetrics(rows, status = "success") {
   const totalMembers = rows.length;
   const activeMembers = rows.filter((row) => row.isEnabled).length;
   const inactiveMembers = totalMembers - activeMembers;
-  const retention = totalMembers ? (activeMembers / totalMembers) * 100 : 0;
+ // const retention = totalMembers ? (activeMembers / totalMembers) * 100 : 0;
   const activeRatio = totalMembers ? activeMembers / totalMembers : 0;
 
   return [

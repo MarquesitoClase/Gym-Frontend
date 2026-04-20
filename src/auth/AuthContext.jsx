@@ -1,20 +1,5 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-
-const ADMIN_CREDENTIALS = {
-  email: "admin@tenfit.com",
-  password: "Admin1234"
-};
-
-const ADMIN_PROFILE = {
-  email: "admin@tenfit.com",
-  initials: "TF",
-  name: "Admin TenFit",
-  role: "Administrador principal"
-};
-
-const STORAGE_KEY = "tenfit_auth";
-
-const AuthContext = createContext(null);
+import { useCallback, useMemo, useState } from "react";
+import { AuthContext, ADMIN_CREDENTIALS, ADMIN_PROFILE, STORAGE_KEY } from "./AuthContext";
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -39,17 +24,18 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ admin: ADMIN_PROFILE, isAuthenticated, login, logout }),
+    () => ({
+      admin: ADMIN_PROFILE,
+      isAuthenticated,
+      login,
+      logout
+    }),
     [isAuthenticated, login, logout]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
-  return ctx;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

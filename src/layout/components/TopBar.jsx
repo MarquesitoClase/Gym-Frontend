@@ -11,9 +11,9 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
 
   // Reset search when route changes
-  useEffect(() => {
+  /*useEffect(() => {
     setQuery("");
-  }, [location.pathname]);
+  }, [location.pathname]);*/
 
   const handleSearch = (e) => {
     const value = e.target.value;
