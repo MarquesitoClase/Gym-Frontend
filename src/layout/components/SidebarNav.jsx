@@ -54,10 +54,6 @@ export function SidebarNav({ isOpen, onClose }) {
         </div>
 
         <div className="sidebar__footer">
-          <NavLink className="sidebar__quick-link" onClick={onClose} to="/inscripciones">
-            <Icon name="plus" size={18} />
-            <span>Inscripción rápida</span>
-          </NavLink>
           <button className="sidebar__footer-link" onClick={handleLogout} type="button">
             <Icon name="logout" size={18} />
             <span>Cerrar sesión</span>
