@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
-import { Icon } from "../../components/ui/Icon";
+import { Icon } from "../../components/Icon/Icon";
 import { classNames } from "../../utils/classNames";
 import { navigationItems } from "../navigationItems";
 

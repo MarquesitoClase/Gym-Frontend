@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Icon } from "../../components/ui/Icon";
+import { Icon } from "../../components/Icon/Icon";
 
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);

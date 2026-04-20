@@ -1,6 +1,6 @@
 import { classNames } from "../../utils/classNames";
-import { EmptyState } from "./EmptyState";
-import { SurfaceCard } from "./SurfaceCard";
+import { EmptyState } from "../EmptyState/EmptyState";
+import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
 
 function renderCell(column, row) {
   if (typeof column.render === "function") {

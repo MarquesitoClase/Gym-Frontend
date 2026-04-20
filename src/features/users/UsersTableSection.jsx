@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "../../components/ui/Button";
-import { DataTable } from "../../components/ui/DataTable";
-import { EmptyState } from "../../components/ui/EmptyState";
-import { Icon } from "../../components/ui/Icon";
-import { Pagination } from "../../components/ui/Pagination";
-import { StatCard } from "../../components/ui/StatCard";
-import { StatusBadge } from "../../components/ui/StatusBadge";
-import { TableToolbar } from "../../components/ui/TableToolbar";
-import { ToggleSwitch } from "../../components/ui/ToggleSwitch";
+import { Button } from "../../components/Button/Button";
+import { DataTable } from "../../components/DataTable/DataTable";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
+import { Icon } from "../../components/Icon/Icon";
+import { Pagination } from "../../components/Pagination/Pagination";
+import { StatCard } from "../../components/StatCard/StatCard";
+import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
+import { TableToolbar } from "../../components/TableToolbar/TableToolbar";
+import { ToggleSwitch } from "../../components/ToogleSwitch/ToggleSwitch";
 import { usersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {

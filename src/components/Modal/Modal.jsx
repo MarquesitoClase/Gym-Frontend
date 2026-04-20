@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { classNames } from "../../utils/classNames";
-import { Icon } from "./Icon";
+import { Icon } from "../Icon/Icon";
 import "./Modal.css";
 
 export function Modal({

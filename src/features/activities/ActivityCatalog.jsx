@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "../../components/ui/Button";
-import { EmptyState } from "../../components/ui/EmptyState";
-import { SurfaceCard } from "../../components/ui/SurfaceCard";
+import { Button } from "../../components/Button/Button";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
+import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {

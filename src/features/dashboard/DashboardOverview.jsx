@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AvatarCell } from "../../components/ui/AvatarCell";
-import { Button } from "../../components/ui/Button";
-import { EmptyState } from "../../components/ui/EmptyState";
-import { Icon } from "../../components/ui/Icon";
-import { LoadingState } from "../../components/ui/LoadingState";
+import { AvatarCell } from "../../components/AvatarCells/AvatarCell";
+import { Button } from "../../components/Button/Button";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
+import { Icon } from "../../components/Icon/Icon";
+import { LoadingState } from "../../components/LoadingState/LoadingState";
 import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
-import { StatCard } from "../../components/ui/StatCard";
-import { StatusBadge } from "../../components/ui/StatusBadge";
-import { SurfaceCard } from "../../components/ui/SurfaceCard";
+import { StatCard } from "../../components/StatCard/StatCard";
+import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
+import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
 import { activitiesService, teachersService, usersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {

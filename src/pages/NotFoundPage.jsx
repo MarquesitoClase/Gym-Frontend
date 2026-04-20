@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { EmptyState } from "../components/ui/EmptyState";
-import { PageContainer } from "../components/ui/PageContainer";
+import { EmptyState } from "../components/EmptyState/EmptyState";
+import { PageContainer } from "../components/PageContainer/PageContainer";
 
 export function NotFoundPage() {
   return (

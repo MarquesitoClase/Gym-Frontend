@@ -1,6 +1,6 @@
-import { Icon } from "../../components/ui/Icon";
-import { StatusBadge } from "../../components/ui/StatusBadge";
-import { SurfaceCard } from "../../components/ui/SurfaceCard";
+import { Icon } from "../../components/Icon/Icon";
+import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
+import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
 import { classNames } from "../../utils/classNames";
 import { formatCurrency } from "../../utils/formatters";
 

@@ -1,5 +1,5 @@
 import { classNames } from "../../utils/classNames";
-import { SurfaceCard } from "./SurfaceCard";
+import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
 import "./StatCard.css";
 
 function renderBadge(badge) {

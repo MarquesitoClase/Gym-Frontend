@@ -1,4 +1,4 @@
-import { PageContainer } from "../components/ui/PageContainer";
+import { PageContainer } from "../components/PageContainer/PageContainer";
 import { DashboardOverview } from "../features/dashboard/DashboardOverview";
 
 export function DashboardPage() {

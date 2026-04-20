@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "../../components/ui/Button";
-import { LoadingState } from "../../components/ui/LoadingState";
-import { Modal } from "../../components/ui/Modal";
+import { Button } from "../../components/Button/Button";
+import { LoadingState } from "../../components/LoadingState/LoadingState";
+import { Modal } from "../../components/Modal/Modal";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 

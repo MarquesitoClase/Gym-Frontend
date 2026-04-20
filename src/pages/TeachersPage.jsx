@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button } from "../components/ui/Button";
-import { Icon } from "../components/ui/Icon";
-import { PageContainer } from "../components/ui/PageContainer";
-import { PageHeader } from "../components/ui/PageHeader";
+import { Button } from "../components/Button/Button";
+import { Icon } from "../components/Icon/Icon";
+import { PageContainer } from "../components/PageContainer/PageContainer";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 import { TeacherFormModal } from "../features/teachers/TeacherFormModal";
 import { TeachersTableSection } from "../features/teachers/TeachersTableSection";
 

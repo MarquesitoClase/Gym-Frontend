@@ -1,5 +1,5 @@
-import { PageContainer } from "../components/ui/PageContainer";
-import { PageHeader } from "../components/ui/PageHeader";
+import { PageContainer } from "../components/PageContainer/PageContainer";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 import { EnrollmentWorkspace } from "../features/enrollments/EnrollmentWorkspace";
 
 export function EnrollmentsPage() {

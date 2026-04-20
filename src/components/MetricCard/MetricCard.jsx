@@ -1,5 +1,5 @@
 import { classNames } from "../../utils/classNames";
-import { SurfaceCard } from "./SurfaceCard";
+import { SurfaceCard } from "../ui/SurfaceCard";
 
 export function MetricCard({ label, meta, tone = "primary", value }) {
   return (
