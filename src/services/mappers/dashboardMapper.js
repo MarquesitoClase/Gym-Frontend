@@ -73,9 +73,9 @@ export function buildDashboardMetrics(data, status = "success") {
     0
   );
   const revenueTarget = 50000;
-  const revenueProgress = revenueTarget
-    ? Math.min(100, Math.round((estimatedRevenue / revenueTarget) * 100))
-    : 0;
+  const revenueProgress = users.length > 0
+    ? Math.round((activeUsers.length / users.length) * 100)
+    : 45;
 
   return [
     {
@@ -98,7 +98,7 @@ export function buildDashboardMetrics(data, status = "success") {
       badge: "Objetivo: 50k",
       id: "revenue",
       label: "Ingresos del mes",
-      meta: `${revenueProgress}% del objetivo - ${numberFormatter.format(
+      meta: `${revenueProgress}% usuarios activos - ${numberFormatter.format(
         teachers.length
       )} monitores en plantilla`,
       progress: revenueProgress,
