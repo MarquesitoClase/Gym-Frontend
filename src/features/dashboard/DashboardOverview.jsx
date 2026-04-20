@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Icon } from "../../components/ui/Icon";
 import { LoadingState } from "../../components/ui/LoadingState";
-import { ProgressBar } from "../../components/ui/ProgressBar";
+import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
 import { StatCard } from "../../components/ui/StatCard";
 import { StatusBadge } from "../../components/ui/StatusBadge";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
