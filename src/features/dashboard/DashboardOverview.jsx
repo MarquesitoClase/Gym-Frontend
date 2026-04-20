@@ -175,7 +175,7 @@ export function DashboardOverview() {
               onClick={() => navigate("/actividades")}
               type="button"
             >
-              Ver horario
+              Ver actividades
             </button>
           </div>
 
