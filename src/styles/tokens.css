@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap");
+
+:root {
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Manrope", sans-serif;
+  --brand-primary: #1d4dff;
+  --brand-primary-strong: #1740d9;
+  --brand-secondary: #2458ff;
+  --brand-accent: #18c6f4;
+  --ink-strong: #1f1f23;
+  --ink-soft: #6d6d76;
+  --ink-dim: #8c8c96;
+  --surface-page: #faf7f3;
+  --surface-card: #ffffff;
+  --surface-muted: #f2efec;
+  --surface-sidebar: #f3f1ee;
+  --surface-dark: #151515;
+  --border-soft: #ebe7e3;
+  --border-strong: #ded8d2;
+  --shadow-card: 0 10px 24px rgba(17, 24, 39, 0.04);
+  --shadow-primary: 0 16px 28px rgba(29, 77, 255, 0.18);
+  --radius-card: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+}

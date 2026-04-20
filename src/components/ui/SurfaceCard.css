@@ -1,0 +1,7 @@
+.surface-card {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  background: var(--surface-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}

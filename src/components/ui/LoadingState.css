@@ -1,0 +1,54 @@
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.loading-state__card,
+.loading-state__line {
+  overflow: hidden;
+  position: relative;
+  border-radius: 14px;
+  background: rgba(243, 240, 239, 0.9);
+}
+
+.loading-state__card::after,
+.loading-state__line::after {
+  position: absolute;
+  inset: 0;
+  animation: shimmer 1.4s linear infinite;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+  content: "";
+}
+
+.loading-state__card {
+  height: 140px;
+}
+
+.loading-state__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loading-state__line {
+  height: 14px;
+}
+
+.loading-state__line:nth-child(2n) {
+  width: 72%;
+}
+
+.loading-state__line:nth-child(2n + 1) {
+  width: 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
