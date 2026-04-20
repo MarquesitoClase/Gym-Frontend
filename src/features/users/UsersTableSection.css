@@ -1,3 +1,39 @@
+.table-avatar-only {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #dfe6fb;
+  color: var(--brand-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.table-avatar-only img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.table-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.table-identity strong {
+  font-size: 15px;
+}
+
+.table-identity span {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
 .users-section {
   display: flex;
   flex-direction: column;
