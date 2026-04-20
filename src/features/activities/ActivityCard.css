@@ -1,0 +1,237 @@
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: clamp(420px, 38vh, 520px);
+  border: 1px solid #eee8e3;
+  border-radius: 14px;
+  box-shadow: none;
+  padding: 0;
+}
+
+.activity-card__cover {
+  position: relative;
+  display: flex;
+  min-height: clamp(214px, 24vh, 286px);
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-soft);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--surface-sunken, #0d1520);
+  padding: 12px;
+}
+
+.activity-card__cover--image {
+  background-repeat: no-repeat;
+}
+
+.activity-card__cover-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.activity-card__edit-button {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.activity-card__edit-button:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.activity-card:hover .activity-card__edit-button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.activity-card__cover--spinning {
+  background: linear-gradient(135deg, rgba(12, 15, 24, 0.92) 0%, rgba(39, 51, 78, 0.76) 100%);
+}
+
+.activity-card__cover--yoga {
+  background: linear-gradient(135deg, rgba(249, 192, 173, 0.95) 0%, rgba(255, 227, 214, 0.92) 100%);
+}
+
+.activity-card__cover--strength {
+  background: linear-gradient(135deg, rgba(28, 48, 82, 0.98) 0%, rgba(79, 112, 168, 0.88) 100%);
+}
+
+.activity-card__cover--hiit {
+  background: linear-gradient(135deg, rgba(248, 130, 124, 0.92) 0%, rgba(102, 159, 193, 0.74) 100%);
+}
+
+.activity-card__cover--pilates {
+  background: linear-gradient(135deg, rgba(233, 237, 240, 0.95) 0%, rgba(200, 210, 219, 0.9) 100%);
+}
+
+.activity-card__cover--boxing {
+  background: linear-gradient(135deg, rgba(156, 28, 42, 0.98) 0%, rgba(253, 157, 98, 0.86) 100%);
+}
+
+.activity-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 15px 12px;
+}
+
+.activity-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.activity-card__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.activity-card__heading h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  line-height: 1.28;
+}
+
+.activity-card__heading strong {
+  color: var(--brand-primary);
+  font-family: var(--font-heading);
+  font-size: 17px;
+}
+
+.activity-card__description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #6d6d76;
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+}
+
+.activity-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.activity-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6d6d76;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.activity-card__sessions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.activity-card__session-chip {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 6px;
+  background: var(--surface-raised, rgba(0, 0, 0, 0.04));
+  padding: 4px 8px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-align: left;
+}
+
+.activity-card__session-chip--editable {
+  cursor: pointer;
+  transition: background 0.15s, outline 0.15s;
+}
+
+.activity-card__session-chip--editable:hover {
+  background: var(--surface-hover, rgba(99, 102, 241, 0.08));
+  color: var(--ink, inherit);
+  outline: 1px solid var(--accent, #6366f1);
+}
+
+.activity-card__session-chip--editable:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 1px;
+}
+
+.activity-card__session-edit-icon {
+  opacity: 0;
+  flex-shrink: 0;
+  margin-left: 4px;
+  vertical-align: middle;
+  transition: opacity 0.15s;
+}
+
+.activity-card__session-chip--editable:hover .activity-card__session-edit-icon,
+.activity-card__session-chip--editable:focus-visible .activity-card__session-edit-icon {
+  opacity: 0.6;
+}
+
+.activity-card__session-count {
+  margin-left: auto;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.activity-card__session-teacher {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent, #6366f1);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.activity-card--catalog-top {
+  min-height: clamp(420px, 38vh, 520px);
+}
+
+.activity-card--catalog-bottom {
+  min-height: clamp(420px, 38vh, 520px);
+}
+
+.activity-card--catalog-bottom .activity-card__cover {
+  min-height: clamp(214px, 24vh, 286px);
+}
+
+.activity-card--catalog-bottom .activity-card__body {
+  padding-bottom: 14px;
+}
+
+@media (max-width: 760px) {
+  .activity-card__heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

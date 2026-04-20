@@ -1,0 +1,4 @@
+.not-found-page {
+  min-height: calc(100vh - 128px);
+  justify-content: center;
+}
