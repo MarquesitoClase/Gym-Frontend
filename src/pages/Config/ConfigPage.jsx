@@ -54,16 +54,10 @@ function safeParseSettings(value) {
 }
 
 export function ConfigPage() {
-  const [status, setStatus] = useState({ type: "idle", message: "" });
   const [settings, setSettings] = useState(() => {
     const defaults = {
       theme: "light", // light | dark | system
-      accentColor: "#1d4dff",
-      density: "comfortable", // comfortable | compact
-      language: "es",
-      notificationsEmail: true,
-      notificationsPush: false,
-      marketingEmails: false
+      accentColor: "#1d4dff"
     };
 
     const stored = safeParseSettings(localStorage.getItem(SETTINGS_STORAGE_KEY));
@@ -89,14 +83,11 @@ export function ConfigPage() {
     root.style.setProperty("--brand-primary", accent);
     root.style.setProperty("--brand-secondary", mixColors(accent, "#ffffff", 0.08) ?? accent);
     root.style.setProperty("--brand-primary-strong", mixColors(accent, "#000000", 0.18) ?? accent);
-    root.dataset.density = settings.density;
-  }, [resolvedTheme, settings.accentColor, settings.density]);
+  }, [resolvedTheme, settings.accentColor]);
 
-  const handleSave = () => {
+  useEffect(() => {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-    setStatus({ type: "success", message: "Preferencias guardadas." });
-    window.setTimeout(() => setStatus({ type: "idle", message: "" }), 2200);
-  };
+  }, [settings]);
 
   return (
     <div className="config-page">
@@ -105,17 +96,12 @@ export function ConfigPage() {
           <h1 className="config-title">Configuración</h1>
           <p className="config-subtitle">Personaliza la apariencia y tus preferencias.</p>
         </div>
-        <div className="config-actions">
-          <button className="config-btn config-btn--primary" onClick={handleSave} type="button">
-            Guardar cambios
-          </button>
-        </div>
       </div>
 
       <section className="config-section">
         <div className="config-section__heading">
           <h2>Apariencia</h2>
-          <p>Colores, tema y densidad de la interfaz.</p>
+          <p>Colores y tema de la interfaz.</p>
         </div>
 
         <div className="config-grid">
@@ -129,18 +115,6 @@ export function ConfigPage() {
               <option value="light">Claro</option>
               <option value="dark">Oscuro</option>
               <option value="system">Sistema</option>
-            </select>
-          </div>
-
-          <div className="config-field">
-            <label htmlFor="settings-density">Densidad</label>
-            <select
-              id="settings-density"
-              onChange={(e) => setSettings((current) => ({ ...current, density: e.target.value }))}
-              value={settings.density}
-            >
-              <option value="comfortable">Cómoda</option>
-              <option value="compact">Compacta</option>
             </select>
           </div>
 
@@ -164,92 +138,6 @@ export function ConfigPage() {
                 placeholder="#1d4dff"
                 value={settings.accentColor}
               />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="config-section">
-        <div className="config-section__heading">
-          <h2>Notificaciones</h2>
-          <p>Elige qué avisos quieres recibir.</p>
-        </div>
-
-        <div className="config-field config-toggle">
-          <div>
-            <div className="config-toggle__title">Emails de actividad</div>
-            <div className="config-toggle__hint">Altas, bajas y cambios importantes.</div>
-          </div>
-          <input
-            checked={settings.notificationsEmail}
-            onChange={(e) =>
-              setSettings((current) => ({ ...current, notificationsEmail: e.target.checked }))
-            }
-            type="checkbox"
-          />
-        </div>
-
-        <div className="config-field config-toggle">
-          <div>
-            <div className="config-toggle__title">Notificaciones push</div>
-            <div className="config-toggle__hint">Avisos rápidos en el dispositivo.</div>
-          </div>
-          <input
-            checked={settings.notificationsPush}
-            onChange={(e) =>
-              setSettings((current) => ({ ...current, notificationsPush: e.target.checked }))
-            }
-            type="checkbox"
-          />
-        </div>
-
-        <div className="config-field config-toggle">
-          <div>
-            <div className="config-toggle__title">Comunicaciones comerciales</div>
-            <div className="config-toggle__hint">Novedades, consejos y promociones.</div>
-          </div>
-          <input
-            checked={settings.marketingEmails}
-            onChange={(e) =>
-              setSettings((current) => ({ ...current, marketingEmails: e.target.checked }))
-            }
-            type="checkbox"
-          />
-        </div>
-      </section>
-
-      <section className="config-section">
-        <div className="config-section__heading">
-          <h2>Cuenta</h2>
-          <p>Preferencias generales del panel.</p>
-        </div>
-
-        <div className="config-grid">
-          <div className="config-field">
-            <label htmlFor="settings-language">Idioma</label>
-            <select
-              id="settings-language"
-              onChange={(e) =>
-                setSettings((current) => ({ ...current, language: e.target.value }))
-              }
-              value={settings.language}
-            >
-              <option value="es">Español</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-
-          <div className="config-field">
-            <label>Estado</label>
-            <div
-              aria-live="polite"
-              className={
-                status.type === "success"
-                  ? "config-status config-status--ok"
-                  : "config-status"
-              }
-            >
-              {status.message || "Sin cambios pendientes."}
             </div>
           </div>
         </div>

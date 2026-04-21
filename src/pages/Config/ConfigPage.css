@@ -23,12 +23,6 @@
   color: var(--ink-soft);
 }
 
-.config-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .config-section {
   background: var(--surface-card);
   box-shadow: var(--shadow-card);
@@ -51,7 +45,7 @@
 
 .config-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 1.25rem;
 }
@@ -76,28 +70,6 @@
   outline: none;
 }
 
-.config-toggle {
-  margin-top: 1rem;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-soft);
-  background: var(--surface-muted);
-}
-
-.config-toggle__title {
-  font-weight: 600;
-  color: var(--ink-strong);
-}
-
-.config-toggle__hint {
-  margin-top: 0.15rem;
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-}
-
 .config-color {
   display: grid;
   grid-template-columns: 46px 1fr;
@@ -112,35 +84,6 @@
   border-radius: 12px;
   border: 1px solid var(--border-strong);
   background: transparent;
-}
-
-.config-btn {
-  padding: 0.65rem 1rem;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: var(--surface-card);
-  color: var(--ink-strong);
-}
-
-.config-btn--primary {
-  background: var(--brand-primary);
-  border-color: transparent;
-  color: #ffffff;
-  box-shadow: var(--shadow-primary);
-}
-
-.config-status {
-  padding: 0.65rem 0.75rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-soft);
-  background: var(--surface-muted);
-  color: var(--ink-soft);
-}
-
-.config-status--ok {
-  border-color: rgba(20, 184, 166, 0.35);
-  background: rgba(20, 184, 166, 0.08);
-  color: var(--ink-strong);
 }
 
 @media (max-width: 880px) {
