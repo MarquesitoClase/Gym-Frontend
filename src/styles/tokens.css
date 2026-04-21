@@ -23,3 +23,16 @@
   --radius-md: 14px;
   --radius-sm: 10px;
 }
+
+:root[data-theme="dark"] {
+  --ink-strong: #f3f4f6;
+  --ink-soft: #b9bdc8;
+  --ink-dim: #8c93a4;
+  --surface-page: #0f1115;
+  --surface-card: #151923;
+  --surface-muted: #1b2130;
+  --surface-sidebar: #121622;
+  --border-soft: #232a3a;
+  --border-strong: #2b3347;
+  --shadow-card: 0 16px 30px rgba(0, 0, 0, 0.35);
+}

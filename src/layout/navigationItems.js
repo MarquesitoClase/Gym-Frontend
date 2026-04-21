@@ -19,5 +19,10 @@ export const navigationItems = [
     path: "/actividades",
     label: "Actividades",
     icon: "activities"
+  },
+  {
+    path: "/configuracion",
+    label: "Configuración",
+    icon: "settings"
   }
 ];

@@ -8,6 +8,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { TeachersPage } from "../pages/TeachersPage";
 import { UsersPage } from "../pages/UsersPage";
+import { ConfigPage } from "../pages/config/ConfigPage";
 
 export const routes = [
   {
