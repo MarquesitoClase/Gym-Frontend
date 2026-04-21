@@ -58,6 +58,13 @@ export const routes = [
         }
       },
       {
+        path: "configuracion",
+        element: <ConfigPage />,
+        handle: {
+          searchPlaceholder: "Buscar en configuración..."
+        }
+      },
+      {
         path: "*",
         element: <NotFoundPage />,
         handle: {

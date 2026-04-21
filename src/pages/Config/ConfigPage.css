@@ -1,0 +1,64 @@
+.config-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.config-title {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.config-section {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+}
+
+.config-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.config-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.config-field label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.config-field input[type="email"] {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+.config-toggle {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.config-btn.save {
+  background-color: #4caf50;
+  color: white;
+}
+
+.config-btn.logout {
+  background-color: #f44336;
+  color: white;
+}
