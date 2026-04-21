@@ -72,7 +72,6 @@ export function buildDashboardMetrics(data, status = "success") {
     (total, activity) => total + Number(activity.price || 0),
     0
   );
-  const revenueTarget = 50000;
   const revenueProgress = users.length > 0
     ? Math.round((activeUsers.length / users.length) * 100)
     : 45;

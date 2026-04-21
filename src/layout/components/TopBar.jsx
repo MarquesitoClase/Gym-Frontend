@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/Icon/Icon";
 
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
@@ -7,24 +7,25 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const query = new URLSearchParams(location.search).get("q") ?? "";
 
-  // Reset search when route changes
-  /*useEffect(() => {
-    setQuery("");
-  }, [location.pathname]);*/
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    const params = new URLSearchParams(location.search);
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-    const params = new URLSearchParams(searchParams);
     if (value.trim()) {
       params.set("q", value.trim());
     } else {
       params.delete("q");
     }
-    navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.toString()
+      },
+      { replace: true }
+    );
   };
 
   useEffect(() => {
@@ -81,7 +82,9 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
             </div>
             <div className="topbar__profile-text">
               <span className="topbar__profile-name">{admin?.name ?? "Admin"}</span>
-              <span className="topbar__profile-role">{admin?.role ?? "Administrador"}</span>
+              <span className="topbar__profile-role">
+                {admin?.role ?? "Administrador"}
+              </span>
             </div>
             <Icon name="chevron" size={14} />
           </button>

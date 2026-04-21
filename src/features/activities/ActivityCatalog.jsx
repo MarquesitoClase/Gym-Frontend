@@ -78,14 +78,16 @@ export function ActivityCatalog({
     );
   }, [activities, teachers, query]);
 
-  const primaryActivities = activitiesCatalog.slice(0, 4);
-  const secondaryActivities = activitiesCatalog.slice(4, 6);
+  const featuredActivities = activitiesCatalog.slice(0, 4);
+  const remainingActivities = activitiesCatalog.slice(4);
+  const hasCatalogResults =
+    requestState === "success" && activitiesCatalog.length > 0;
 
   const handleRetry = () => {
     setReloadKey((currentValue) => currentValue + 1);
   };
 
-  const gridContent =
+  const fallbackContent =
     requestState === "loading" ? (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
@@ -127,8 +129,8 @@ export function ActivityCatalog({
   return (
     <div className="activities-catalog">
       <div className="activities-catalog__top">
-        {primaryActivities.length
-          ? primaryActivities.map((activity) => (
+        {hasCatalogResults
+          ? featuredActivities.map((activity) => (
               <ActivityCard
                 activity={activity}
                 className="activity-card--catalog-top"
@@ -136,10 +138,10 @@ export function ActivityCatalog({
                 onEditRequest={onEditRequest}
               />
             ))
-          : gridContent}
+          : fallbackContent}
       </div>
 
-      {requestState === "success" && activitiesCatalog.length ? (
+      {hasCatalogResults ? (
         <div className="activities-catalog__bottom">
           <SurfaceCard className="activities-insights">
             <div className="panel-header">
@@ -159,7 +161,7 @@ export function ActivityCatalog({
             </div>
           </SurfaceCard>
 
-          {secondaryActivities.map((activity) => (
+          {remainingActivities.map((activity) => (
             <ActivityCard
               activity={activity}
               className="activity-card--catalog-bottom"
@@ -169,7 +171,6 @@ export function ActivityCatalog({
           ))}
         </div>
       ) : null}
-
     </div>
   );
 }

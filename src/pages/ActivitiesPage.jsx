@@ -43,12 +43,9 @@ export function ActivitiesPage() {
     <PageContainer>
       <PageHeader
         actions={
-          <>
-            
-            <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
-              Nueva actividad
-            </Button>
-          </>
+          <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
+            Nueva actividad
+          </Button>
         }
         description="Gestiona y programa el catálogo real de clases y talleres del gimnasio."
         title="Catálogo de actividades"
