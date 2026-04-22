@@ -51,7 +51,11 @@ export function mapTeacherDtoToRow(teacher, activities = []) {
   };
 }
 
-export function buildTeachersSummaryMetrics(rows, status = "success") {
+export function buildTeachersSummaryMetrics(
+  rows,
+  status = "success",
+  activeClassesCount = null
+) {
   if (status === "loading") {
     return createPlaceholderMetrics("Cargando equipo de monitores");
   }
@@ -62,14 +66,14 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
 
   const totalTeachers = rows.length;
   const activeTeachers = rows.filter((row) => row.status === "active").length;
-  const assignedActivities = rows.reduce(
-    (total, row) => total + row.assignedActivities.length,
-    0
-  );
   const teachersWithActivities = rows.filter(
     (row) => row.assignedActivities.length > 0
   ).length;
   const coverage = totalTeachers ? teachersWithActivities / totalTeachers : 0;
+  const activeClassesValue =
+    typeof activeClassesCount === "number"
+      ? numberFormatter.format(activeClassesCount)
+      : "--";
 
   return [
     {
@@ -84,7 +88,7 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
       label: "Clases activas",
       meta: `${numberFormatter.format(activeTeachers)} monitores activos`,
       tone: "accent",
-      value: numberFormatter.format(assignedActivities)
+      value: activeClassesValue
     },
     {
       id: "avg-retention",

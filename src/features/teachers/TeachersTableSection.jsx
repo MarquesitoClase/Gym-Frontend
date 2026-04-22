@@ -25,6 +25,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [reloadKey, setReloadKey] = useState(0);
   const [requestState, setRequestState] = useState("loading");
   const [rows, setRows] = useState([]);
+  const [activeClassesCount, setActiveClassesCount] = useState(0);
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q")?.toLowerCase().trim() ?? "";
 
@@ -36,7 +37,11 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
       setErrorMessage("");
 
       try {
-        const teachers = await teachersService.list();
+        const [teachers, futureActivities] = await Promise.all([
+          teachersService.list(),
+          activitiesService.list()
+        ]);
+
         const mappedRows = await Promise.all(
           teachers.map(async (teacher) => {
             try {
@@ -55,6 +60,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
         }
 
         setRows(mappedRows);
+        setActiveClassesCount(futureActivities.length);
         setPage(1);
         setRequestState("success");
       } catch (error) {
@@ -63,6 +69,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
         }
 
         setRows([]);
+        setActiveClassesCount(0);
         setErrorMessage(
           getApiErrorMessage(error, "No se pudieron cargar los monitores.")
         );
@@ -78,8 +85,8 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   }, [reloadKey, refreshToken]);
 
   const summaryMetrics = useMemo(
-    () => buildTeachersSummaryMetrics(rows, requestState),
-    [requestState, rows]
+    () => buildTeachersSummaryMetrics(rows, requestState, activeClassesCount),
+    [activeClassesCount, requestState, rows]
   );
 
   const filteredRows = useMemo(() => {
