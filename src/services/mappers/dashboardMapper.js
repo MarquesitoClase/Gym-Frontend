@@ -69,7 +69,12 @@ export function buildDashboardMetrics(data, status = "success") {
     users = []
   } = data;
   const estimatedRevenue = activities.reduce(
-    (total, activity) => total + Number(activity.price || 0),
+    (total, activity) =>
+      total + Number(activity.price || 0) * Number(activity.enrolledCount || 0),
+    0
+  );
+  const totalEnrollments = activities.reduce(
+    (total, activity) => total + Number(activity.enrolledCount || 0),
     0
   );
   const revenueProgress = users.length > 0
@@ -97,9 +102,9 @@ export function buildDashboardMetrics(data, status = "success") {
       badge: "Objetivo: 50k",
       id: "revenue",
       label: "Ingresos del mes",
-      meta: `${revenueProgress}% usuarios activos - ${numberFormatter.format(
-        teachers.length
-      )} monitores en plantilla`,
+      meta: `${numberFormatter.format(totalEnrollments)} ${
+        totalEnrollments === 1 ? "inscripcion" : "inscripciones"
+      } en las ${numberFormatter.format(activities.length)} clases activas`,
       progress: revenueProgress,
       targetLabel: `${revenueProgress}%`,
       tone: "revenue",
