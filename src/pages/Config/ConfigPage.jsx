@@ -117,29 +117,6 @@ export function ConfigPage() {
               <option value="system">Sistema</option>
             </select>
           </div>
-
-          <div className="config-field">
-            <label htmlFor="settings-accent">Color principal</label>
-            <div className="config-color">
-              <input
-                aria-label="Color principal"
-                id="settings-accent"
-                onChange={(e) =>
-                  setSettings((current) => ({ ...current, accentColor: e.target.value }))
-                }
-                type="color"
-                value={normalizeHexColor(settings.accentColor) ?? "#1d4dff"}
-              />
-              <input
-                inputMode="text"
-                onChange={(e) =>
-                  setSettings((current) => ({ ...current, accentColor: e.target.value }))
-                }
-                placeholder="#1d4dff"
-                value={settings.accentColor}
-              />
-            </div>
-          </div>
         </div>
       </section>
     </div>
