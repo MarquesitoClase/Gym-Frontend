@@ -43,7 +43,33 @@
 .users-section__summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
+}
+
+.users-section__summary .stat-card {
+  min-height: 88px;
+  gap: 6px;
+  padding: 14px 16px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.users-section__summary .stat-card__body {
+  align-items: center;
+  text-align: center;
+}
+
+.users-section__summary .stat-card__value {
+  font-size: 24px;
+}
+
+.users-section__summary .stat-card__label {
+  font-size: 11px;
+}
+
+.users-section__summary .stat-card__meta {
+  font-size: 11px;
 }
 
 .users-directory {

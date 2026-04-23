@@ -5,10 +5,7 @@ import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
-import {
-  buildCatalogHighlights,
-  mapActivitiesCatalog
-} from "../../services/mappers/activitiesMapper";
+import { mapActivitiesCatalog } from "../../services/mappers/activitiesMapper";
 import { ActivityCard } from "./ActivityCard";
 
 export function ActivityCatalog({
@@ -65,10 +62,6 @@ export function ActivityCatalog({
     };
   }, [reloadKey, refreshToken]);
 
-  const catalogHighlights = useMemo(
-    () => buildCatalogHighlights(activities, teachers, requestState),
-    [activities, requestState, teachers]
-  );
   const activitiesCatalog = useMemo(() => {
     const all = mapActivitiesCatalog(activities, teachers);
     if (!query) return all;
@@ -79,17 +72,12 @@ export function ActivityCatalog({
     );
   }, [activities, teachers, query]);
 
-  const featuredActivities = activitiesCatalog.slice(0, 4);
-  const remainingActivities = activitiesCatalog.slice(4);
-  const hasCatalogResults =
-    requestState === "success" && activitiesCatalog.length > 0;
-
   const handleRetry = () => {
     setReloadKey((currentValue) => currentValue + 1);
   };
 
-  const fallbackContent =
-    requestState === "loading" ? (
+  if (requestState === "loading") {
+    return (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
           description="Estamos consultando el backend para traer el catalogo futuro real."
@@ -97,7 +85,11 @@ export function ActivityCatalog({
           title="Cargando actividades"
         />
       </SurfaceCard>
-    ) : requestState === "error" ? (
+    );
+  }
+
+  if (requestState === "error") {
+    return (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
           action={
@@ -110,16 +102,11 @@ export function ActivityCatalog({
           title="No se pudo cargar el catalogo"
         />
       </SurfaceCard>
-    ) : activitiesCatalog.length ? (
-      activitiesCatalog.map((activity) => (
-        <ActivityCard
-          activity={activity}
-          key={activity.id}
-          onEditRequest={onEditRequest}
-          onRosterRequest={onRosterRequest}
-        />
-      ))
-    ) : (
+    );
+  }
+
+  if (!activitiesCatalog.length) {
+    return (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
           description="Todavia no hay actividades futuras publicadas en el backend."
@@ -127,54 +114,18 @@ export function ActivityCatalog({
         />
       </SurfaceCard>
     );
+  }
 
   return (
     <div className="activities-catalog">
-      <div className="activities-catalog__top">
-        {hasCatalogResults
-          ? featuredActivities.map((activity) => (
-              <ActivityCard
-                activity={activity}
-                className="activity-card--catalog-top"
-                key={activity.id}
-                onEditRequest={onEditRequest}
-                onRosterRequest={onRosterRequest}
-              />
-            ))
-          : fallbackContent}
-      </div>
-
-      {hasCatalogResults ? (
-        <div className="activities-catalog__bottom">
-          <SurfaceCard className="activities-insights">
-            <div className="panel-header">
-              <div>
-                <h2 className="panel-title">Insights del catalogo</h2>
-              </div>
-            </div>
-
-            <div className="activities-summary__grid">
-              {catalogHighlights.map((item) => (
-                <div className="highlight-card" key={item.id}>
-                  <span className="highlight-card__label">{item.label}</span>
-                  <strong className="highlight-card__value">{item.value}</strong>
-                  <span className="highlight-card__meta">{item.meta}</span>
-                </div>
-              ))}
-            </div>
-          </SurfaceCard>
-
-          {remainingActivities.map((activity) => (
-            <ActivityCard
-              activity={activity}
-              className="activity-card--catalog-bottom"
-              key={activity.id}
-              onEditRequest={onEditRequest}
-              onRosterRequest={onRosterRequest}
-            />
-          ))}
-        </div>
-      ) : null}
+      {activitiesCatalog.map((activity) => (
+        <ActivityCard
+          activity={activity}
+          key={activity.id}
+          onEditRequest={onEditRequest}
+          onRosterRequest={onRosterRequest}
+        />
+      ))}
     </div>
   );
 }

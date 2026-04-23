@@ -56,7 +56,7 @@ function safeParseSettings(value) {
 
 export function ConfigPage() {
   const { t, language, setLanguage, languages } = useI18n();
-  const [settings, setSettings] = useState(() => {
+  const [settings] = useState(() => {
     const defaults = {
       theme: "light", // light | dark | system
       accentColor: "#1d4dff"
@@ -99,13 +99,6 @@ export function ConfigPage() {
           <p className="config-subtitle">{t("config.subtitle")}</p>
         </div>
       </div>
-
-      <section className="config-section">
-        <div className="config-section__heading">
-          <h2>{t("config.appearanceTitle")}</h2>
-          <p>{t("config.appearanceNote")}</p>
-        </div>
-      </section>
 
       <section className="config-section">
         <div className="config-section__heading">

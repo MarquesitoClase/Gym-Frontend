@@ -217,22 +217,6 @@
   font-weight: 500;
 }
 
-.activity-card--catalog-top {
-  min-height: clamp(420px, 38vh, 520px);
-}
-
-.activity-card--catalog-bottom {
-  min-height: clamp(420px, 38vh, 520px);
-}
-
-.activity-card--catalog-bottom .activity-card__cover {
-  min-height: clamp(214px, 24vh, 286px);
-}
-
-.activity-card--catalog-bottom .activity-card__body {
-  padding-bottom: 14px;
-}
-
 @media (max-width: 760px) {
   .activity-card__heading {
     flex-direction: column;

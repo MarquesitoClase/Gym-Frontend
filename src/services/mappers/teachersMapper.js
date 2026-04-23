@@ -38,7 +38,9 @@ export function mapTeacherDtoToRow(teacher, activities = []) {
   const name = buildFullName(teacher.firstName, teacher.lastName);
 
   return {
-    assignedActivities: activities.map((activity) => activity.title),
+    assignedActivities: [
+      ...new Set(activities.map((activity) => activity.title).filter(Boolean))
+    ],
     avatarUrl: teacher.imageUrl ?? null,
     contractYear: teacher.contractYear,
     id: teacher.id,

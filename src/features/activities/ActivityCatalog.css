@@ -14,70 +14,10 @@
 }
 
 .activities-catalog {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-height: calc(100vh - 186px);
-}
-
-.activities-catalog__top,
-.activities-catalog__bottom {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.activities-catalog__bottom {
-  align-items: start;
-}
-
-.activities-insights {
-  grid-column: span 2;
-  min-height: clamp(180px, 22vh, 248px);
-  background: #f6f2ee;
-  padding: 22px 18px 18px;
-}
-
-.activities-summary__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.highlight-card {
-  display: flex;
-  min-height: 100px;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 10px;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid var(--border-soft);
-  padding: 14px 14px 13px;
-}
-
-.highlight-card__label {
-  display: block;
-  max-width: 100%;
-  color: var(--ink-dim);
-  line-height: 1.35;
-}
-
-.highlight-card__value {
-  display: block;
-  margin: 0;
-  max-width: 100%;
-  font-size: 18px;
-  line-height: 1.12;
-  overflow-wrap: anywhere;
-}
-
-.highlight-card__meta {
-  display: block;
-  margin-top: auto;
-  font-size: 12px;
-  line-height: 1.5;
+  gap: 16px;
+  align-items: start;
 }
 
 .activities-feedback-card {
@@ -85,18 +25,13 @@
 }
 
 @media (max-width: 1120px) {
-  .activities-catalog__top,
-  .activities-catalog__bottom {
-    grid-template-columns: 1fr;
-  }
-
-  .activities-insights {
-    grid-column: auto;
+  .activities-catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-  .activities-summary__grid {
+  .activities-catalog {
     grid-template-columns: 1fr;
   }
 }

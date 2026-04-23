@@ -73,9 +73,7 @@ export const translations = {
     },
     config: {
       title: "Configuración",
-      subtitle: "Personaliza la apariencia y tus preferencias.",
-      appearanceTitle: "Apariencia",
-      appearanceNote: "El tema se cambia desde la barra superior.",
+      subtitle: "Personaliza tus preferencias.",
       languageTitle: "Idioma",
       languageNote: "Selecciona el idioma en el que se mostrará el panel.",
       languageLabel: "Idioma de la interfaz"
@@ -152,9 +150,7 @@ export const translations = {
     },
     config: {
       title: "Settings",
-      subtitle: "Customize the appearance and your preferences.",
-      appearanceTitle: "Appearance",
-      appearanceNote: "The theme is switched from the top bar.",
+      subtitle: "Customize your preferences.",
       languageTitle: "Language",
       languageNote: "Pick the language used to render the panel.",
       languageLabel: "Interface language"
@@ -231,9 +227,7 @@ export const translations = {
     },
     config: {
       title: "Configuració",
-      subtitle: "Personalitza l'aparença i les teves preferències.",
-      appearanceTitle: "Aparença",
-      appearanceNote: "El tema es canvia des de la barra superior.",
+      subtitle: "Personalitza les teves preferències.",
       languageTitle: "Idioma",
       languageNote: "Tria l'idioma amb què es mostrarà el tauler.",
       languageLabel: "Idioma de la interfície"

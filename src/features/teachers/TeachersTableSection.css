@@ -7,7 +7,33 @@
 .teachers-section__summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
+}
+
+.teachers-section__summary .stat-card {
+  min-height: 88px;
+  gap: 6px;
+  padding: 14px 16px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.teachers-section__summary .stat-card__body {
+  align-items: center;
+  text-align: center;
+}
+
+.teachers-section__summary .stat-card__value {
+  font-size: 24px;
+}
+
+.teachers-section__summary .stat-card__label {
+  font-size: 11px;
+}
+
+.teachers-section__summary .stat-card__meta {
+  font-size: 11px;
 }
 
 .teachers-directory {
@@ -65,9 +91,40 @@
   font-weight: 700;
 }
 
+.teachers-chip[data-variant="0"] {
+  background: #e1ebf8;
+  color: #1e4a8c;
+}
+
+.teachers-chip[data-variant="1"] {
+  background: #dcf0fa;
+  color: #0b5a85;
+}
+
+.teachers-chip[data-variant="2"] {
+  background: #fbe6c5;
+  color: #8a5212;
+}
+
+.teachers-chip[data-variant="3"] {
+  background: #f8dbd9;
+  color: #a02b25;
+}
+
+.teachers-chip[data-variant="4"] {
+  background: #fddfca;
+  color: #9a4a1c;
+}
+
+.teachers-chip[data-variant="5"] {
+  background: #d7e8ec;
+  color: #2f6f8d;
+}
+
 .teachers-chip--muted {
   background: transparent;
   border: 1px dashed var(--border-strong);
+  color: var(--ink-soft);
 }
 
 .teachers-action-button {

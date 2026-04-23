@@ -18,6 +18,15 @@ import "./TeachersTableSection.css";
 
 const PAGE_SIZE = 4;
 const teachersDirectoryFormatter = new Intl.NumberFormat("es-ES");
+const CHIP_VARIANT_COUNT = 6;
+
+function activityChipVariant(name) {
+  let hash = 0;
+  for (let index = 0; index < name.length; index += 1) {
+    hash = (hash * 31 + name.charCodeAt(index)) >>> 0;
+  }
+  return hash % CHIP_VARIANT_COUNT;
+}
 
 export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -162,8 +171,12 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
       render: (row) => (
         <div className="teachers-chip-list">
           {row.assignedActivities.length ? (
-            row.assignedActivities.map((activity, index) => (
-              <span className="teachers-chip" key={`${activity}-${index}`}>
+            row.assignedActivities.map((activity) => (
+              <span
+                className="teachers-chip"
+                data-variant={activityChipVariant(activity.toLowerCase())}
+                key={activity}
+              >
                 {activity}
               </span>
             ))
