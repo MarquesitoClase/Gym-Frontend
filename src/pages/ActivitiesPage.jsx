@@ -6,6 +6,9 @@ import { PageHeader } from "../components/PageHeader/PageHeader";
 import { ActivityCatalog } from "../features/activities/ActivityCatalog";
 import { ActivityFormModal } from "../features/activities/ActivityFormModal";
 import { ClassRosterModal } from "../features/activities/ClassRosterModal";
+import { activitiesService } from "../services";
+import { getApiErrorMessage } from "../services/http/getApiErrorMessage";
+import { notifyError, notifySuccess } from "../utils/notifications";
 
 export function ActivitiesPage() {
   const [editorState, setEditorState] = useState({
@@ -50,6 +53,30 @@ export function ActivitiesPage() {
     setRefreshToken((currentValue) => currentValue + 1);
   };
 
+  const handleDeleteRequest = async (activity) => {
+    const sessionCount = activity.sessions?.length ?? 1;
+    const confirmed = window.confirm(
+      sessionCount > 1
+        ? `Vas a eliminar la actividad "${activity.title}" y sus ${sessionCount} sesiones. ¿Continuar?`
+        : `Vas a eliminar la actividad "${activity.title}". ¿Continuar?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const ids = activity.sessions?.length
+        ? activity.sessions.map((session) => session.id)
+        : [activity.id];
+      await Promise.all(ids.map((id) => activitiesService.remove(id)));
+      notifySuccess("Actividad eliminada correctamente.");
+      setRefreshToken((currentValue) => currentValue + 1);
+    } catch (error) {
+      notifyError(
+        getApiErrorMessage(error, "No se pudo eliminar la actividad.")
+      );
+    }
+  };
+
   return (
     <PageContainer>
       <PageHeader
@@ -64,6 +91,7 @@ export function ActivitiesPage() {
 
       <ActivityCatalog
         onCreateRequest={openCreateModal}
+        onDeleteRequest={handleDeleteRequest}
         onEditRequest={openEditModal}
         onRosterRequest={openRosterModal}
         refreshToken={refreshToken}

@@ -61,6 +61,21 @@
   pointer-events: auto;
 }
 
+.activity-card__cover-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-card__edit-button--danger {
+  background: rgba(220, 60, 60, 0.32);
+  color: #ffffff;
+}
+
+.activity-card__edit-button--danger:hover {
+  background: rgba(220, 60, 60, 0.55);
+}
+
 .activity-card__cover--spinning {
   background: linear-gradient(135deg, rgba(12, 15, 24, 0.92) 0%, rgba(39, 51, 78, 0.76) 100%);
 }

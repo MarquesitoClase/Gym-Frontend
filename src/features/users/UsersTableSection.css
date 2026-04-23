@@ -138,6 +138,16 @@
   color: var(--ink-strong);
 }
 
+.users-action-button--danger {
+  background: #fdecec;
+  color: #b03030;
+}
+
+.users-action-button--danger:hover {
+  background: #f7d4d4;
+  color: #8a1f1f;
+}
+
 @media (max-width: 900px) {
   .users-section__summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));

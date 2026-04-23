@@ -5,6 +5,9 @@ import { PageContainer } from "../components/PageContainer/PageContainer";
 import { PageHeader } from "../components/PageHeader/PageHeader";
 import { UserFormModal } from "../features/users/UserFormModal";
 import { UsersTableSection } from "../features/users/UsersTableSection";
+import { usersService } from "../services";
+import { getApiErrorMessage } from "../services/http/getApiErrorMessage";
+import { notifyError, notifySuccess } from "../utils/notifications";
 
 export function UsersPage() {
   const [editorState, setEditorState] = useState({
@@ -39,6 +42,22 @@ export function UsersPage() {
     setRefreshToken((currentValue) => currentValue + 1);
   };
 
+  const handleDeleteRequest = async (user) => {
+    const confirmed = window.confirm(
+      `Vas a eliminar a ${user.name} de forma permanente. ¿Continuar?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await usersService.remove(user.id);
+      notifySuccess("Usuario eliminado correctamente.");
+      setRefreshToken((currentValue) => currentValue + 1);
+    } catch (error) {
+      notifyError(getApiErrorMessage(error, "No se pudo eliminar el usuario."));
+    }
+  };
+
   return (
     <PageContainer>
       <PageHeader
@@ -53,6 +72,7 @@ export function UsersPage() {
       />
 
       <UsersTableSection
+        onDeleteRequest={handleDeleteRequest}
         onEditRequest={openEditModal}
         refreshToken={refreshToken}
       />

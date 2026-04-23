@@ -218,6 +218,16 @@ export function Icon({ className, name, size = 20 }) {
           <path d="m13.5 7.5 3 3" />
         </svg>
       );
+    case "trash":
+      return (
+        <svg {...sharedProps}>
+          <path d="M4 7h16" />
+          <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+          <path d="M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7" />
+          <path d="M10 11v6" />
+          <path d="M14 11v6" />
+        </svg>
+      );
     default:
       return (
         <svg {...sharedProps}>

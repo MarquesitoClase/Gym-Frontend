@@ -35,7 +35,7 @@ const statusMap = {
   }
 };
 
-export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
+export function UsersTableSection({ onDeleteRequest, onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -194,6 +194,14 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
             type="button"
           >
             <Icon name="edit" size={16} />
+          </button>
+          <button
+            aria-label={`Eliminar a ${row.name}`}
+            className="users-action-button users-action-button--danger"
+            onClick={() => onDeleteRequest?.(row)}
+            type="button"
+          >
+            <Icon name="trash" size={16} />
           </button>
         </div>
       )

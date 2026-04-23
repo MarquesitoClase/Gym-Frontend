@@ -9,6 +9,7 @@ import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
 import { StatCard } from "../../components/StatCard/StatCard";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
+import { ClassRosterModal } from "../activities/ClassRosterModal";
 import { useI18n } from "../../i18n/I18nContext";
 import {
   activitiesService,
@@ -31,6 +32,7 @@ const metricIcons = {
 export function DashboardOverview() {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const [rosterActivityId, setRosterActivityId] = useState(null);
   const [dashboardData, setDashboardData] = useState({
     activities: [],
     activeTeachers: [],
@@ -209,12 +211,12 @@ export function DashboardOverview() {
                     </span>
                   </div>
                   <button
-                    aria-label={activity.name}
+                    aria-label={`Ver inscritos en ${activity.name}`}
                     className="dashboard-agenda__cta"
-                    onClick={() => navigate("/actividades")}
+                    onClick={() => setRosterActivityId(activity.id)}
                     type="button"
                   >
-                    <Icon name="edit" size={14} />
+                    <Icon name="users" size={14} />
                   </button>
                 </article>
               ))}
@@ -340,6 +342,13 @@ export function DashboardOverview() {
           </SurfaceCard>
         </div>
       </div>
+
+      {rosterActivityId ? (
+        <ClassRosterModal
+          activityId={rosterActivityId}
+          onClose={() => setRosterActivityId(null)}
+        />
+      ) : null}
     </div>
   );
 }

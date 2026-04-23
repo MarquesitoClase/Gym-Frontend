@@ -9,6 +9,7 @@ import { mapActivitiesCatalog } from "../../services/mappers/activitiesMapper";
 import { ActivityCard } from "./ActivityCard";
 
 export function ActivityCatalog({
+  onDeleteRequest,
   onEditRequest,
   onRosterRequest,
   refreshToken = 0
@@ -122,6 +123,7 @@ export function ActivityCatalog({
         <ActivityCard
           activity={activity}
           key={activity.id}
+          onDeleteRequest={onDeleteRequest}
           onEditRequest={onEditRequest}
           onRosterRequest={onRosterRequest}
         />

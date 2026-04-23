@@ -28,7 +28,7 @@ function activityChipVariant(name) {
   return hash % CHIP_VARIANT_COUNT;
 }
 
-export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
+export function TeachersTableSection({ onDeleteRequest, onEditRequest, refreshToken = 0 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -193,14 +193,24 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
       key: "actions",
       label: "Acciones",
       render: (row) => (
-        <button
-          aria-label={`Editar a ${row.name}`}
-          className="teachers-action-button"
-          onClick={() => onEditRequest?.(row.id)}
-          type="button"
-        >
-          <Icon name="edit" size={16} />
-        </button>
+        <div className="teachers-actions">
+          <button
+            aria-label={`Editar a ${row.name}`}
+            className="teachers-action-button"
+            onClick={() => onEditRequest?.(row.id)}
+            type="button"
+          >
+            <Icon name="edit" size={16} />
+          </button>
+          <button
+            aria-label={`Eliminar a ${row.name}`}
+            className="teachers-action-button teachers-action-button--danger"
+            onClick={() => onDeleteRequest?.(row)}
+            type="button"
+          >
+            <Icon name="trash" size={16} />
+          </button>
+        </div>
       )
     }
   ];

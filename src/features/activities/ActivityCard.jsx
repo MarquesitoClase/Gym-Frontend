@@ -1,5 +1,4 @@
 import { Icon } from "../../components/Icon/Icon";
-import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
 import { classNames } from "../../utils/classNames";
 import { formatCurrency } from "../../utils/formatters";
@@ -19,24 +18,13 @@ const fallbackImageByTone = {
     "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=1200&q=80"
 };
 
-const activityStatusMap = {
-  active: {
-    label: "Activa",
-    tone: "active"
-  },
-  inactive: {
-    label: "Inactiva",
-    tone: "inactive"
-  }
-};
-
 export function ActivityCard({
   activity,
   className,
+  onDeleteRequest,
   onEditRequest,
   onRosterRequest
 }) {
-  const status = activityStatusMap[activity.status];
   const fallbackImage = fallbackImageByTone[activity.coverTone] ?? fallbackImageByTone.strength;
   const coverImage = activity.imageUrl || fallbackImage;
   const coverStyle = coverImage
@@ -58,17 +46,26 @@ export function ActivityCard({
         )}
         style={coverStyle}
       >
-        <StatusBadge label={status.label} tone={status.tone} />
         <div className="activity-card__cover-actions">
           <span />
-          <button
-            aria-label={`Editar ${activity.title}`}
-            className="activity-card__edit-button"
-            onClick={() => onEditRequest?.(activity.id)}
-            type="button"
-          >
-            <Icon name="edit" size={16} />
-          </button>
+          <div className="activity-card__cover-buttons">
+            <button
+              aria-label={`Editar ${activity.title}`}
+              className="activity-card__edit-button"
+              onClick={() => onEditRequest?.(activity.id)}
+              type="button"
+            >
+              <Icon name="edit" size={16} />
+            </button>
+            <button
+              aria-label={`Eliminar ${activity.title}`}
+              className="activity-card__edit-button activity-card__edit-button--danger"
+              onClick={() => onDeleteRequest?.(activity)}
+              type="button"
+            >
+              <Icon name="trash" size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
