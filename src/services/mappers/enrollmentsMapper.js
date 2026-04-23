@@ -1,5 +1,68 @@
 import { formatCurrency, formatDateTime } from "../../utils/formatters";
 
+export const attendanceStatusLabels = {
+  PENDING: { label: "Pendiente", tone: "neutral" },
+  ATTENDED: { label: "Asistió", tone: "active" },
+  ABSENT: { label: "No asistió", tone: "inactive" },
+  CANCELLED: { label: "Cancelada", tone: "attention" }
+};
+
+export function mapEnrollmentRow(enrollment) {
+  const statusKey = enrollment.attendanceStatus ?? "PENDING";
+  const statusMeta =
+    attendanceStatusLabels[statusKey] ?? attendanceStatusLabels.PENDING;
+
+  return {
+    activityId: enrollment.activityId,
+    activityTitle: enrollment.activityTitle ?? "",
+    attendanceStatus: statusKey,
+    attendanceLabel: statusMeta.label,
+    attendanceTone: statusMeta.tone,
+    cancelledAt: enrollment.cancelledAt,
+    discountApplied: enrollment.discountApplied ?? null,
+    isCancelled: statusKey === "CANCELLED" || Boolean(enrollment.cancelledAt),
+    notes: enrollment.notes ?? "",
+    paid: Boolean(enrollment.paid),
+    pricePaid: enrollment.pricePaid ?? null,
+    pricePaidLabel:
+      enrollment.pricePaid != null ? formatCurrency(enrollment.pricePaid) : "—",
+    registeredAt: enrollment.registeredAt,
+    userFullName: enrollment.userFullName ?? `Socio #${enrollment.userId}`,
+    userId: enrollment.userId
+  };
+}
+
+export function buildRosterSummary(rows, activityPrice = 0) {
+  const total = rows.length;
+  const active = rows.filter((row) => !row.isCancelled).length;
+  const paid = rows.filter((row) => row.paid && !row.isCancelled).length;
+  const attended = rows.filter(
+    (row) => row.attendanceStatus === "ATTENDED"
+  ).length;
+  const revenueReal = rows.reduce(
+    (total, row) => total + (row.paid ? Number(row.pricePaid || 0) : 0),
+    0
+  );
+  const pendingRevenue = rows
+    .filter((row) => !row.paid && !row.isCancelled)
+    .reduce(
+      (total, row) =>
+        total + Number(row.pricePaid ?? activityPrice ?? 0),
+      0
+    );
+
+  return {
+    active,
+    attended,
+    paid,
+    pendingRevenue,
+    pendingRevenueLabel: formatCurrency(pendingRevenue),
+    revenueReal,
+    revenueRealLabel: formatCurrency(revenueReal),
+    total
+  };
+}
+
 function buildTeacherMap(teachers) {
   return new Map(
     teachers.map((teacher) => [

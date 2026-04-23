@@ -158,50 +158,54 @@
 .activity-card__session-chip {
   display: flex;
   width: 100%;
+  align-items: stretch;
+  gap: 1px;
+  border-radius: 6px;
+  background: var(--surface-raised, rgba(0, 0, 0, 0.04));
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.activity-card__session-main,
+.activity-card__session-roster {
+  display: flex;
   align-items: center;
   gap: 6px;
   border: none;
-  border-radius: 6px;
-  background: var(--surface-raised, rgba(0, 0, 0, 0.04));
+  background: transparent;
   padding: 4px 8px;
   color: var(--ink-soft);
   font-size: 12px;
   text-align: left;
-}
-
-.activity-card__session-chip--editable {
   cursor: pointer;
-  transition: background 0.15s, outline 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
-.activity-card__session-chip--editable:hover {
-  background: var(--surface-hover, rgba(99, 102, 241, 0.08));
-  color: var(--ink, inherit);
-  outline: 1px solid var(--accent, #6366f1);
+.activity-card__session-main {
+  flex: 1;
+  min-width: 0;
 }
 
-.activity-card__session-chip--editable:focus-visible {
-  outline: 2px solid var(--accent, #6366f1);
-  outline-offset: 1px;
-}
-
-.activity-card__session-edit-icon {
-  opacity: 0;
-  flex-shrink: 0;
-  margin-left: 4px;
-  vertical-align: middle;
-  transition: opacity 0.15s;
-}
-
-.activity-card__session-chip--editable:hover .activity-card__session-edit-icon,
-.activity-card__session-chip--editable:focus-visible .activity-card__session-edit-icon {
-  opacity: 0.6;
-}
-
-.activity-card__session-count {
-  margin-left: auto;
+.activity-card__session-roster {
   font-size: 11px;
-  opacity: 0.7;
+  border-left: 1px solid rgba(15, 23, 42, 0.08);
+  white-space: nowrap;
+}
+
+.activity-card__session-main:hover,
+.activity-card__session-roster:hover {
+  background: var(--surface-hover, rgba(99, 102, 241, 0.1));
+  color: var(--ink, inherit);
+}
+
+.activity-card__session-roster:hover {
+  color: var(--accent, #6366f1);
+}
+
+.activity-card__session-main:focus-visible,
+.activity-card__session-roster:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: -2px;
 }
 
 .activity-card__session-teacher {

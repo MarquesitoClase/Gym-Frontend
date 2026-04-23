@@ -28,6 +28,10 @@
   width: min(720px, calc(100vw - 32px));
 }
 
+.modal__dialog--xl {
+  width: min(960px, calc(100vw - 32px));
+}
+
 .modal__header {
   display: flex;
   align-items: flex-start;
