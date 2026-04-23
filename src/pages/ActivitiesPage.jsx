@@ -5,12 +5,14 @@ import { PageContainer } from "../components/PageContainer/PageContainer";
 import { PageHeader } from "../components/PageHeader/PageHeader";
 import { ActivityCatalog } from "../features/activities/ActivityCatalog";
 import { ActivityFormModal } from "../features/activities/ActivityFormModal";
+import { ClassRosterModal } from "../features/activities/ClassRosterModal";
 
 export function ActivitiesPage() {
   const [editorState, setEditorState] = useState({
     activityId: null,
     mode: null
   });
+  const [rosterActivityId, setRosterActivityId] = useState(null);
   const [refreshToken, setRefreshToken] = useState(0);
 
   const openCreateModal = () => {
@@ -34,6 +36,15 @@ export function ActivitiesPage() {
     });
   };
 
+  const openRosterModal = (activityId) => {
+    setRosterActivityId(activityId);
+  };
+
+  const closeRosterModal = () => {
+    setRosterActivityId(null);
+    setRefreshToken((currentValue) => currentValue + 1);
+  };
+
   const handleFormSuccess = () => {
     closeModal();
     setRefreshToken((currentValue) => currentValue + 1);
@@ -54,6 +65,7 @@ export function ActivitiesPage() {
       <ActivityCatalog
         onCreateRequest={openCreateModal}
         onEditRequest={openEditModal}
+        onRosterRequest={openRosterModal}
         refreshToken={refreshToken}
       />
 
@@ -63,6 +75,13 @@ export function ActivitiesPage() {
           mode={editorState.mode}
           onClose={closeModal}
           onSuccess={handleFormSuccess}
+        />
+      ) : null}
+
+      {rosterActivityId ? (
+        <ClassRosterModal
+          activityId={rosterActivityId}
+          onClose={closeRosterModal}
         />
       ) : null}
     </PageContainer>

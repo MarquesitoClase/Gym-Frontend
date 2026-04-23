@@ -30,7 +30,12 @@ const activityStatusMap = {
   }
 };
 
-export function ActivityCard({ activity, className, onEditRequest }) {
+export function ActivityCard({
+  activity,
+  className,
+  onEditRequest,
+  onRosterRequest
+}) {
   const status = activityStatusMap[activity.status];
   const fallbackImage = fallbackImageByTone[activity.coverTone] ?? fallbackImageByTone.strength;
   const coverImage = activity.imageUrl || fallbackImage;
@@ -84,27 +89,36 @@ export function ActivityCard({ activity, className, onEditRequest }) {
           </div>
           <div className="activity-card__sessions">
             {activity.sessions.map((session) => (
-              <button
-                aria-label={`Editar sesión del ${session.schedule}`}
-                className="activity-card__session-chip activity-card__session-chip--editable"
-                key={session.id}
-                onClick={() => onEditRequest?.(session.id)}
-                type="button"
-              >
-                <Icon name="calendar" size={13} />
-                <span>{session.schedule}</span>
-                {session.teacherName && session.teacherName !== activity.teacher ? (
-                  <span className="activity-card__session-teacher">
-                    <Icon name="user" size={11} />
-                    {session.teacherName}
+              <div className="activity-card__session-chip" key={session.id}>
+                <button
+                  aria-label={`Editar sesión del ${session.schedule}`}
+                  className="activity-card__session-main"
+                  onClick={() => onEditRequest?.(session.id)}
+                  type="button"
+                >
+                  <Icon name="calendar" size={13} />
+                  <span>{session.schedule}</span>
+                  {session.teacherName && session.teacherName !== activity.teacher ? (
+                    <span className="activity-card__session-teacher">
+                      <Icon name="user" size={11} />
+                      {session.teacherName}
+                    </span>
+                  ) : null}
+                </button>
+                <button
+                  aria-label={`Ver lista de alumnos de la sesión del ${session.schedule}`}
+                  className="activity-card__session-roster"
+                  onClick={() => onRosterRequest?.(session.id)}
+                  title="Gestionar alumnos y cobros"
+                  type="button"
+                >
+                  <Icon name="users" size={13} />
+                  <span>
+                    {session.enrolledCount}{" "}
+                    {session.enrolledCount === 1 ? "inscrito" : "inscritos"}
                   </span>
-                ) : null}
-                <span className="activity-card__session-count">
-                  {session.enrolledCount}{" "}
-                  {session.enrolledCount === 1 ? "inscrito" : "inscritos"}
-                  <Icon name="edit" size={11} className="activity-card__session-edit-icon" />
-                </span>
-              </button>
+                </button>
+              </div>
             ))}
           </div>
         </div>

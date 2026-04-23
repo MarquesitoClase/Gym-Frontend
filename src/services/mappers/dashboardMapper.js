@@ -65,21 +65,56 @@ export function buildDashboardMetrics(data, status = "success") {
     activities = [],
     activeTeachers = [],
     activeUsers = [],
+    enrollments = [],
     teachers = [],
     users = []
   } = data;
-  const estimatedRevenue = activities.reduce(
+  const activeEnrollments = enrollments.filter(
+    (enrollment) => enrollment.attendanceStatus !== "CANCELLED"
+  );
+  const priceByActivityId = new Map(
+    activities.map((activity) => [activity.id, Number(activity.price || 0)])
+  );
+  const realRevenue = activeEnrollments.reduce(
+    (total, enrollment) =>
+      total + (enrollment.paid ? Number(enrollment.pricePaid || 0) : 0),
+    0
+  );
+  const pendingFromEnrollments = activeEnrollments.reduce(
+    (total, enrollment) =>
+      total +
+      (enrollment.paid
+        ? 0
+        : Number(
+            enrollment.pricePaid ??
+              priceByActivityId.get(enrollment.activityId) ??
+              0
+          )),
+    0
+  );
+  const estimatedFromActivities = activities.reduce(
     (total, activity) =>
       total + Number(activity.price || 0) * Number(activity.enrolledCount || 0),
     0
   );
-  const totalEnrollments = activities.reduce(
+  // Si el listado de enrollments esta vacio (backend aun no las genera o fallo la llamada)
+  // usamos la estimacion historica basada en enrolledCount de cada actividad.
+  const pendingRevenue =
+    activeEnrollments.length > 0
+      ? pendingFromEnrollments
+      : Math.max(estimatedFromActivities - realRevenue, 0);
+  const totalEnrollmentsCount = activities.reduce(
     (total, activity) => total + Number(activity.enrolledCount || 0),
     0
   );
-  const revenueProgress = users.length > 0
-    ? Math.round((activeUsers.length / users.length) * 100)
-    : 45;
+  const totalEnrollments =
+    activeEnrollments.length > 0 ? activeEnrollments.length : totalEnrollmentsCount;
+  const paidEnrollments = activeEnrollments.filter((e) => e.paid).length;
+  const expectedRevenue = realRevenue + pendingRevenue;
+  const collectedProgress =
+    expectedRevenue > 0
+      ? Math.round((realRevenue / expectedRevenue) * 100)
+      : 0;
 
   return [
     {
@@ -99,16 +134,24 @@ export function buildDashboardMetrics(data, status = "success") {
       value: numberFormatter.format(activities.length)
     },
     {
-      badge: "Objetivo: 50k",
+      badge:
+        pendingRevenue > 0
+          ? `Pendiente ${formatCurrency(pendingRevenue)}`
+          : totalEnrollments > 0
+          ? "Todo cobrado"
+          : "Sin inscripciones",
       id: "revenue",
-      label: "Ingresos del mes",
-      meta: `${numberFormatter.format(totalEnrollments)} ${
+      label: "Ingresos esperados del mes",
+      meta: `${formatCurrency(realRevenue)} cobrados · ${numberFormatter.format(
+        paidEnrollments
+      )} de ${numberFormatter.format(totalEnrollments)} ${
         totalEnrollments === 1 ? "inscripcion" : "inscripciones"
-      } en las ${numberFormatter.format(activities.length)} clases activas`,
-      progress: revenueProgress,
-      targetLabel: `${revenueProgress}%`,
+      }`,
+      progress: collectedProgress,
+      progressLabel: "Cobrado",
+      targetLabel: `${collectedProgress}%`,
       tone: "revenue",
-      value: formatCurrency(estimatedRevenue)
+      value: formatCurrency(expectedRevenue)
     }
   ];
 }

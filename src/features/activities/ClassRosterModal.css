@@ -1,0 +1,230 @@
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.roster__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.roster__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-raised, rgba(99, 102, 241, 0.06));
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.06));
+}
+
+.roster__metric span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.roster__metric strong {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.roster__metric small {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.roster__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.roster__table-wrap {
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.08));
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.roster__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.roster__table thead {
+  background: var(--surface-raised, rgba(99, 102, 241, 0.06));
+}
+
+.roster__table th,
+.roster__table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-soft, rgba(15, 23, 42, 0.06));
+}
+
+.roster__table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.roster__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.roster__row--cancelled td {
+  opacity: 0.55;
+}
+
+.roster__row-sub {
+  margin-top: 4px;
+}
+
+.roster__pay-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.roster__pay-amount {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.roster__link-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.roster__link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.roster__link-btn--primary {
+  color: var(--accent, #6366f1);
+  font-weight: 600;
+}
+
+.roster__select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.12));
+  background: #fff;
+  font-size: 13px;
+  min-width: 130px;
+}
+
+.roster__select:disabled {
+  background: var(--surface-raised, rgba(15, 23, 42, 0.04));
+  cursor: not-allowed;
+}
+
+.roster__notes {
+  width: 100%;
+  min-width: 180px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.12));
+  font-family: inherit;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.roster__notes:disabled {
+  background: var(--surface-raised, rgba(15, 23, 42, 0.04));
+  cursor: not-allowed;
+}
+
+.roster__cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.1));
+  background: #fff;
+  color: #b91c1c;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.roster__cancel-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.roster__cancel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.roster-pay-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  margin-top: 4px;
+  border-radius: 8px;
+  background: var(--surface-raised, rgba(99, 102, 241, 0.06));
+  border: 1px solid var(--border-soft, rgba(99, 102, 241, 0.18));
+  min-width: 240px;
+}
+
+.roster-pay-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.roster-pay-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.roster-pay-form__field span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.roster-pay-form__field input {
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft, rgba(15, 23, 42, 0.12));
+  font-size: 13px;
+}
+
+.roster-pay-form__helper {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.roster-pay-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

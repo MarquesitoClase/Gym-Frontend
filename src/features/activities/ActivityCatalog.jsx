@@ -13,6 +13,7 @@ import { ActivityCard } from "./ActivityCard";
 
 export function ActivityCatalog({
   onEditRequest,
+  onRosterRequest,
   refreshToken = 0
 }) {
   const [activities, setActivities] = useState([]);
@@ -115,6 +116,7 @@ export function ActivityCatalog({
           activity={activity}
           key={activity.id}
           onEditRequest={onEditRequest}
+          onRosterRequest={onRosterRequest}
         />
       ))
     ) : (
@@ -136,6 +138,7 @@ export function ActivityCatalog({
                 className="activity-card--catalog-top"
                 key={activity.id}
                 onEditRequest={onEditRequest}
+                onRosterRequest={onRosterRequest}
               />
             ))
           : fallbackContent}
@@ -167,6 +170,7 @@ export function ActivityCatalog({
               className="activity-card--catalog-bottom"
               key={activity.id}
               onEditRequest={onEditRequest}
+              onRosterRequest={onRosterRequest}
             />
           ))}
         </div>

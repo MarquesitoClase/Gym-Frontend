@@ -17,5 +17,6 @@
 @import "../features/dashboard/DashboardOverview.css";
 @import "../features/activities/ActivityCatalog.css";
 @import "../features/activities/ActivityCard.css";
+@import "../features/activities/ClassRosterModal.css";
 @import "../features/enrollments/EnrollmentWorkspace.css";
 @import "../pages/LoginPage.css";

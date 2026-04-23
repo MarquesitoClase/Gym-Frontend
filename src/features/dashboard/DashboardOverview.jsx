@@ -9,7 +9,12 @@ import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
 import { StatCard } from "../../components/StatCard/StatCard";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
-import { activitiesService, teachersService, usersService } from "../../services";
+import {
+  activitiesService,
+  enrollmentsService,
+  teachersService,
+  usersService
+} from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
   buildDashboardMetrics,
@@ -32,6 +37,7 @@ export function DashboardOverview() {
     activities: [],
     activeTeachers: [],
     activeUsers: [],
+    enrollments: [],
     teachers: [],
     users: []
   });
@@ -47,14 +53,21 @@ export function DashboardOverview() {
       setErrorMessage("");
 
       try {
-        const [users, activeUsers, teachers, activeTeachers, activities] =
-          await Promise.all([
-            usersService.list(),
-            usersService.listActive(),
-            teachersService.list(),
-            teachersService.listActive(),
-            activitiesService.list()
-          ]);
+        const [
+          users,
+          activeUsers,
+          teachers,
+          activeTeachers,
+          activities,
+          enrollments
+        ] = await Promise.all([
+          usersService.list(),
+          usersService.listActive(),
+          teachersService.list(),
+          teachersService.listActive(),
+          activitiesService.list(),
+          enrollmentsService.listAll().catch(() => [])
+        ]);
 
         if (ignore) {
           return;
@@ -64,6 +77,7 @@ export function DashboardOverview() {
           activities,
           activeTeachers,
           activeUsers,
+          enrollments,
           teachers,
           users
         });
@@ -154,7 +168,7 @@ export function DashboardOverview() {
           >
             {metric.id === "revenue" ? (
               <ProgressBar
-                label="Objetivo mensual"
+                label={metric.progressLabel ?? "Cobrado"}
                 tone="primary"
                 value={metric.progress ?? 0}
                 valueLabel={metric.targetLabel}

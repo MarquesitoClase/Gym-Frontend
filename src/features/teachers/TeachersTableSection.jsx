@@ -162,8 +162,8 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
       render: (row) => (
         <div className="teachers-chip-list">
           {row.assignedActivities.length ? (
-            row.assignedActivities.map((activity) => (
-              <span className="teachers-chip" key={activity}>
+            row.assignedActivities.map((activity, index) => (
+              <span className="teachers-chip" key={`${activity}-${index}`}>
                 {activity}
               </span>
             ))
