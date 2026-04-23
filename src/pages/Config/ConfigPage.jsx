@@ -101,22 +101,7 @@ export function ConfigPage() {
       <section className="config-section">
         <div className="config-section__heading">
           <h2>Apariencia</h2>
-          <p>Colores y tema de la interfaz.</p>
-        </div>
-
-        <div className="config-grid">
-          <div className="config-field">
-            <label htmlFor="settings-theme">Tema</label>
-            <select
-              id="settings-theme"
-              onChange={(e) => setSettings((current) => ({ ...current, theme: e.target.value }))}
-              value={settings.theme}
-            >
-              <option value="light">Claro</option>
-              <option value="dark">Oscuro</option>
-              <option value="system">Sistema</option>
-            </select>
-          </div>
+          <p>El tema se cambia desde la barra superior.</p>
         </div>
       </section>
     </div>

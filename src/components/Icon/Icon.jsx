@@ -117,6 +117,26 @@ export function Icon({ className, name, size = 20 }) {
           <path d="m5 14 .8 2.4L8.2 17l-2.4.8L5 20.2l-.8-2.4L1.8 17l2.4-.6L5 14Z" />
         </svg>
       );
+    case "sun":
+      return (
+        <svg {...sharedProps}>
+          <circle cx="12" cy="12" r="4.25" />
+          <path d="M12 2.8v2" />
+          <path d="M12 19.2v2" />
+          <path d="M2.8 12h2" />
+          <path d="M19.2 12h2" />
+          <path d="M5.5 5.5l1.4 1.4" />
+          <path d="M17.1 17.1l1.4 1.4" />
+          <path d="M18.5 5.5l-1.4 1.4" />
+          <path d="M6.9 17.1l-1.4 1.4" />
+        </svg>
+      );
+    case "moon":
+      return (
+        <svg {...sharedProps}>
+          <path d="M20.6 14.7A7.6 7.6 0 0 1 9.3 3.4a6.8 6.8 0 1 0 11.3 11.3Z" />
+        </svg>
+      );
     case "plus":
       return (
         <svg {...sharedProps}>
