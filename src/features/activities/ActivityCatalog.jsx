@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
+import { useT } from "../../i18n/useT";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
@@ -15,6 +16,7 @@ export function ActivityCatalog({
   onEditRequest,
   refreshToken = 0
 }) {
+  const t = useT();
   const [activities, setActivities] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
@@ -51,7 +53,7 @@ export function ActivityCatalog({
         setActivities([]);
         setTeachers([]);
         setErrorMessage(
-          getApiErrorMessage(error, "No se pudieron cargar las actividades.")
+          getApiErrorMessage(error, t.noSePudieronCargarActividades)
         );
         setRequestState("error");
       }
@@ -62,7 +64,7 @@ export function ActivityCatalog({
     return () => {
       ignore = true;
     };
-  }, [reloadKey, refreshToken]);
+  }, [reloadKey, refreshToken, t.noSePudieronCargarActividades]);
 
   const catalogHighlights = useMemo(
     () => buildCatalogHighlights(activities, teachers, requestState),
@@ -91,9 +93,9 @@ export function ActivityCatalog({
     requestState === "loading" ? (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
-          description="Estamos consultando el backend para traer el catalogo futuro real."
+          description={t.cargandoActividadesDesc}
           icon="search"
-          title="Cargando actividades"
+          title={t.cargandoActividades}
         />
       </SurfaceCard>
     ) : requestState === "error" ? (
@@ -101,12 +103,12 @@ export function ActivityCatalog({
         <EmptyState
           action={
             <Button onClick={handleRetry} size="sm" variant="secondary">
-              Reintentar
+              {t.reintentar}
             </Button>
           }
           description={errorMessage}
           icon="warning"
-          title="No se pudo cargar el catalogo"
+          title={t.noSePudoCargarCatalogo}
         />
       </SurfaceCard>
     ) : activitiesCatalog.length ? (
@@ -120,8 +122,8 @@ export function ActivityCatalog({
     ) : (
       <SurfaceCard className="activities-feedback-card">
         <EmptyState
-          description="Todavia no hay actividades futuras publicadas en el backend."
-          title="Sin actividades programadas"
+          description={t.sinActividadesDesc}
+          title={t.sinActividades}
         />
       </SurfaceCard>
     );
@@ -146,7 +148,7 @@ export function ActivityCatalog({
           <SurfaceCard className="activities-insights">
             <div className="panel-header">
               <div>
-                <h2 className="panel-title">Insights del catalogo</h2>
+                <h2 className="panel-title">{t.catalogoInsights}</h2>
               </div>
             </div>
 

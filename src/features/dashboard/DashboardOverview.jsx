@@ -9,6 +9,7 @@ import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
 import { StatCard } from "../../components/StatCard/StatCard";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
+import { useT } from "../../i18n/useT";
 import { activitiesService, teachersService, usersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
@@ -22,11 +23,12 @@ const metricIcons = {
   "users-active": "users"
 };
 
-function formatSessionCaption(activity) {
-  return `Monitor ${activity.teacher}`;
+function formatSessionCaption(activity, monitorLabel) {
+  return `${monitorLabel} ${activity.teacher}`;
 }
 
 export function DashboardOverview() {
+  const t = useT();
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState({
     activities: [],
@@ -76,7 +78,7 @@ export function DashboardOverview() {
         setErrorMessage(
           getApiErrorMessage(
             error,
-            "No se pudo construir el panel principal con los datos reales."
+            t.noSePudoConstruirPanel
           )
         );
         setRequestState("error");
@@ -88,15 +90,34 @@ export function DashboardOverview() {
     return () => {
       ignore = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, t.noSePudoConstruirPanel]);
 
   const metrics = useMemo(
-    () => buildDashboardMetrics(dashboardData, requestState),
-    [dashboardData, requestState]
+    () =>
+      buildDashboardMetrics(dashboardData, requestState, {
+        usersActive: t.sociosActivos,
+        activeClasses: t.clasesActivas,
+        monthlyIncome: t.ingresosMes,
+        loadingRealData: t.cargandoDatosReales,
+        noBackend: t.sinConexionBackend,
+        monthVs: t.vsMesPasado,
+        liveNow: t.enDirecto,
+        goal50k: t.objetivo50k,
+        totalRegistered: t.registradosEnTotal,
+        activeInstructors: t.monitoresActivos,
+        usersActiveWord: t.usuariosActivos,
+        teachersInStaff: t.monitoresEnPlantilla
+      }),
+    [dashboardData, requestState, t]
   );
   const upcomingActivities = useMemo(
-    () => buildUpcomingActivities(dashboardData.activities, dashboardData.teachers),
-    [dashboardData.activities, dashboardData.teachers]
+    () =>
+      buildUpcomingActivities(dashboardData.activities, dashboardData.teachers, {
+        oneEnrolled: t.unInscrito,
+        manyEnrolled: t.inscritos,
+        monitorPrefix: t.monitorConNumero
+      }),
+    [dashboardData.activities, dashboardData.teachers, t]
   );
 
   const receptionUser =
@@ -116,12 +137,12 @@ export function DashboardOverview() {
               size="sm"
               variant="secondary"
             >
-              Reintentar
+              {t.reintentar}
             </Button>
           }
           description={errorMessage}
           icon="warning"
-          title="No se pudo cargar el panel principal"
+          title={t.noSePudoCargarPanel}
         />
       </SurfaceCard>
     );
@@ -131,8 +152,8 @@ export function DashboardOverview() {
     <div className="dashboard-view">
       <header className="dashboard-hero">
         <div className="dashboard-hero__copy">
-          <h1>El motor cinetico</h1>
-          <p>Vista operativa diaria del gimnasio en tiempo real.</p>
+          <h1>{t.motorCinetico}</h1>
+          <p>{t.vistaOperativa}</p>
         </div>
       </header>
 
@@ -154,7 +175,7 @@ export function DashboardOverview() {
           >
             {metric.id === "revenue" ? (
               <ProgressBar
-                label="Objetivo mensual"
+                label={t.objetivoMensual}
                 tone="primary"
                 value={metric.progress ?? 0}
                 valueLabel={metric.targetLabel}
@@ -168,14 +189,14 @@ export function DashboardOverview() {
         <SurfaceCard className="dashboard-agenda">
           <div className="dashboard-panel__header">
             <div>
-              <h2>Proximas actividades</h2>
+              <h2>{t.proximasActividades}</h2>
             </div>
             <button
               className="dashboard-link-button"
               onClick={() => navigate("/actividades")}
               type="button"
             >
-              Ver actividades
+              {t.verActividades}
             </button>
           </div>
 
@@ -189,7 +210,7 @@ export function DashboardOverview() {
                   </div>
                   <div className="dashboard-agenda__main">
                     <h3>{activity.name}</h3>
-                    <p>{formatSessionCaption(activity)}</p>
+                    <p>{formatSessionCaption(activity, t.monitor)}</p>
                   </div>
                   <div className="dashboard-agenda__side">
                     <span className="dashboard-agenda__occupancy">
@@ -212,8 +233,8 @@ export function DashboardOverview() {
             </div>
           ) : (
             <EmptyState
-              description="No hay actividades futuras disponibles en el backend."
-              title="Sin sesiones proximas"
+              description={t.sinSesionesProximasDesc}
+              title={t.sinSesionesProximas}
             />
           )}
         </SurfaceCard>
@@ -222,8 +243,8 @@ export function DashboardOverview() {
           <SurfaceCard className="dashboard-quickactions">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Acciones rapidas</h2>
-                <p>Accede directamente a las secciones principales.</p>
+                <h2>{t.accionesRapidas}</h2>
+                <p>{t.accionesRapidasDesc}</p>
               </div>
             </div>
             <div className="dashboard-quickactions__list">
@@ -236,8 +257,8 @@ export function DashboardOverview() {
                   <Icon name="users" size={18} />
                 </span>
                 <div>
-                  <strong>Nuevo socio</strong>
-                  <span>Registrar alta en el sistema</span>
+                  <strong>{t.nuevoSocio}</strong>
+                  <span>{t.registrarAlta}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -250,8 +271,8 @@ export function DashboardOverview() {
                   <Icon name="activities" size={18} />
                 </span>
                 <div>
-                  <strong>Nueva actividad</strong>
-                  <span>Publicar clase o taller</span>
+                  <strong>{t.nuevaActividad}</strong>
+                  <span>{t.publicarClase}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -264,8 +285,8 @@ export function DashboardOverview() {
                   <Icon name="enrollments" size={18} />
                 </span>
                 <div>
-                  <strong>Inscripcion rapida</strong>
-                  <span>Apuntar socio a una clase</span>
+                  <strong>{t.inscripcionRapida}</strong>
+                  <span>{t.apuntarSocio}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -278,8 +299,8 @@ export function DashboardOverview() {
                   <Icon name="teachers" size={18} />
                 </span>
                 <div>
-                  <strong>Nuevo monitor</strong>
-                  <span>Dar de alta a un profesor</span>
+                  <strong>{t.nuevoMonitor}</strong>
+                  <span>{t.darAltaProfesor}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -289,7 +310,7 @@ export function DashboardOverview() {
           <SurfaceCard className="dashboard-frontdesk">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Ultimo socio registrado</h2>
+                <h2>{t.ultimoSocioRegistrado}</h2>
               </div>
             </div>
 
@@ -298,24 +319,24 @@ export function DashboardOverview() {
                 <div className="dashboard-frontdesk__entry">
                   <AvatarCell
                     imageUrl={receptionUser.imageUrl}
-                    subtitle={`Alta ${receptionUser.registrationYear ?? "reciente"}`}
+                    subtitle={`${t.alta} ${receptionUser.registrationYear ?? t.reciente}`}
                     title={[receptionUser.firstName, receptionUser.lastName].filter(Boolean).join(" ")}
                   />
                   <StatusBadge
-                    label={receptionUser.active ? "Activo" : "Inactivo"}
+                    label={receptionUser.active ? t.activo : t.inactivo}
                     tone={receptionUser.active ? "active" : "inactive"}
                   />
                 </div>
                 <p className="dashboard-frontdesk__note">
                   {dashboardData.users.length}{" "}
-                  {dashboardData.users.length === 1 ? "socio registrado" : "socios registrados"} en total —{" "}
-                  {dashboardData.activeUsers.length} activos.
+                  {dashboardData.users.length === 1 ? t.socioRegistrado : t.sociosRegistrados} {t.enTotal} -{" "}
+                  {dashboardData.activeUsers.length} {t.activos}.
                 </p>
               </>
             ) : (
               <EmptyState
-                description="Todavia no hay socios registrados en el sistema."
-                title="Sin socios"
+                description={t.sinSociosDesc}
+                title={t.sinSocios}
               />
             )}
           </SurfaceCard>

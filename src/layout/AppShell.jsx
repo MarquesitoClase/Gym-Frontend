@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet, useMatches } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { useT } from "../i18n/useT";
 import { SidebarNav } from "./components/SidebarNav";
 import { TopBar } from "./components/TopBar";
 
@@ -13,6 +14,10 @@ export function AppShell() {
   const matches = useMatches();
   const activeHandle = getActiveHandle(matches);
   const { admin, logout } = useAuth();
+  const t = useT();
+  const searchPlaceholder = activeHandle.searchPlaceholderKey
+    ? (t[activeHandle.searchPlaceholderKey] ?? t.buscarEnTenfit)
+    : t.buscarEnTenfit;
 
   return (
     <div className="app-shell">
@@ -25,7 +30,7 @@ export function AppShell() {
           admin={admin}
           onLogout={logout}
           onMenuOpen={() => setSidebarOpen(true)}
-          searchPlaceholder={activeHandle.searchPlaceholder}
+          searchPlaceholder={searchPlaceholder}
         />
         <main className="app-shell__content">
           <Outlet />

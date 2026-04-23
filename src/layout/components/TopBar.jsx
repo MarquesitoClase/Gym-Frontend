@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/Icon/Icon";
+import { useT } from "../../i18n/useT";
 
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
+  const t = useT();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
           </span>
           <input
             onChange={handleSearch}
-            placeholder={searchPlaceholder ?? "Buscar en TenFit..."}
+            placeholder={searchPlaceholder ?? t.buscarEnTenfit}
             type="search"
             value={query}
           />
@@ -111,7 +113,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
                 type="button"
               >
                 <Icon name="logout" size={16} />
-                Cerrar sesion
+                {t.cerrarSesion}
               </button>
             </div>
           ) : null}

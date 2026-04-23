@@ -5,8 +5,10 @@ import { PageContainer } from "../components/PageContainer/PageContainer";
 import { PageHeader } from "../components/PageHeader/PageHeader";
 import { ActivityCatalog } from "../features/activities/ActivityCatalog";
 import { ActivityFormModal } from "../features/activities/ActivityFormModal";
+import { useT } from "../i18n/useT";
 
 export function ActivitiesPage() {
+  const t = useT();
   const [editorState, setEditorState] = useState({
     activityId: null,
     mode: null
@@ -44,11 +46,11 @@ export function ActivitiesPage() {
       <PageHeader
         actions={
           <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
-            Nueva actividad
+            {t.nuevaActividad}
           </Button>
         }
-        description="Gestiona y programa el catálogo real de clases y talleres del gimnasio."
-        title="Catálogo de actividades"
+        description={t.actividadesDescripcion}
+        title={t.catalogo}
       />
 
       <ActivityCatalog

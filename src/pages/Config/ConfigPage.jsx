@@ -1,5 +1,7 @@
 import "./ConfigPage.css";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { LanguageContext } from "../../context/LanguageContext";
+import { useT } from "../../i18n/useT";
 
 const SETTINGS_STORAGE_KEY = "tenfit:settings";
 
@@ -54,6 +56,9 @@ function safeParseSettings(value) {
 }
 
 export function ConfigPage() {
+  const { language, setLanguage } = useContext(LanguageContext);
+  const t = useT();
+
   const [settings, setSettings] = useState(() => {
     const defaults = {
       theme: "light", // light | dark | system
@@ -93,28 +98,50 @@ export function ConfigPage() {
     <div className="config-page">
       <div className="config-header">
         <div>
-          <h1 className="config-title">Configuración</h1>
-          <p className="config-subtitle">Personaliza la apariencia y tus preferencias.</p>
+          <h1 className="config-title">{t.configuracion}</h1>
+          <p className="config-subtitle">{t.configuracionSubtitulo}</p>
         </div>
       </div>
 
       <section className="config-section">
         <div className="config-section__heading">
-          <h2>Apariencia</h2>
-          <p>Colores y tema de la interfaz.</p>
+          <h2>{t.apariencia}</h2>
+          <p>{t.aparienciaDescripcion}</p>
         </div>
 
         <div className="config-grid">
           <div className="config-field">
-            <label htmlFor="settings-theme">Tema</label>
+            <label htmlFor="settings-theme">{t.tema}</label>
             <select
               id="settings-theme"
               onChange={(e) => setSettings((current) => ({ ...current, theme: e.target.value }))}
               value={settings.theme}
             >
-              <option value="light">Claro</option>
-              <option value="dark">Oscuro</option>
-              <option value="system">Sistema</option>
+              <option value="light">{t.temaClaro}</option>
+              <option value="dark">{t.temaOscuro}</option>
+              <option value="system">{t.temaSistema}</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section className="config-section">
+        <div className="config-section__heading">
+          <h2>{t.idioma}</h2>
+          <p>{t.seleccionaIdioma}</p>
+        </div>
+
+        <div className="config-grid">
+          <div className="config-field">
+            <label htmlFor="settings-language">{t.idioma}</label>
+            <select
+              id="settings-language"
+              onChange={(e) => setLanguage(e.target.value)}
+              value={language}
+            >
+              <option value="es">{t.idiomaEspanol}</option>
+              <option value="en">{t.idiomaIngles}</option>
+              <option value="ca">{t.idiomaCatala}</option>
             </select>
           </div>
         </div>

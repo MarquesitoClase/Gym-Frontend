@@ -5,8 +5,10 @@ import { PageContainer } from "../components/PageContainer/PageContainer";
 import { PageHeader } from "../components/PageHeader/PageHeader";
 import { TeacherFormModal } from "../features/teachers/TeacherFormModal";
 import { TeachersTableSection } from "../features/teachers/TeachersTableSection";
+import { useT } from "../i18n/useT";
 
 export function TeachersPage() {
+  const t = useT();
   const [editorState, setEditorState] = useState({
     mode: null,
     teacherId: null
@@ -47,12 +49,12 @@ export function TeachersPage() {
             iconLeft={<Icon name="plus" size={16} />}
             onClick={openCreateModal}
           >
-            Nuevo monitor
+            {t.nuevoMonitor}
           </Button>
         }
-        breadcrumb={["Admin", "Monitores"]}
-        description="Supervisa disponibilidad, certificaciones y asignaciones del equipo de monitores."
-        title="Monitores"
+        breadcrumb={[t.admin, t.monitores]}
+        description={t.monitoresDescripcion}
+        title={t.monitores}
       />
 
       <TeachersTableSection

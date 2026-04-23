@@ -27,49 +27,49 @@ export const routes = [
         index: true,
         element: <DashboardPage />,
         handle: {
-          searchPlaceholder: "Buscar usuarios o clases..."
+          searchPlaceholderKey: "buscarUsuariosOClases"
         }
       },
       {
         path: "actividades",
         element: <ActivitiesPage />,
         handle: {
-          searchPlaceholder: "Buscar actividades o monitores..."
+          searchPlaceholderKey: "buscarActividadesOMonitores"
         }
       },
       {
         path: "usuarios",
         element: <UsersPage />,
         handle: {
-          searchPlaceholder: "Buscar usuarios por nombre o DNI..."
+          searchPlaceholderKey: "buscarUsuariosPorNombreODni"
         }
       },
       {
         path: "profesores",
         element: <TeachersPage />,
         handle: {
-          searchPlaceholder: "Buscar monitores por nombre o especialidad..."
+          searchPlaceholderKey: "buscarMonitoresPorNombreOEspecialidad"
         }
       },
       {
         path: "inscripciones",
         element: <EnrollmentsPage />,
         handle: {
-          searchPlaceholder: "Buscar usuarios o actividades..."
+          searchPlaceholderKey: "buscarUsuariosOActividades"
         }
       },
       {
         path: "configuracion",
         element: <ConfigPage />,
         handle: {
-          searchPlaceholder: "Buscar en configuración..."
+          searchPlaceholderKey: "buscarEnConfiguracion"
         }
       },
       {
         path: "*",
         element: <NotFoundPage />,
         handle: {
-          searchPlaceholder: "Buscar en TenFit..."
+          searchPlaceholderKey: "buscarEnTenfit"
         }
       }
     ]

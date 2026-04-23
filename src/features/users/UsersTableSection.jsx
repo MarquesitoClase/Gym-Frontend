@@ -9,6 +9,7 @@ import { StatCard } from "../../components/StatCard/StatCard";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { TableToolbar } from "../../components/TableToolbar/TableToolbar";
 import { ToggleSwitch } from "../../components/ToogleSwitch/ToggleSwitch";
+import { useT } from "../../i18n/useT";
 import { usersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
@@ -20,22 +21,26 @@ import "./UsersTableSection.css";
 const PAGE_SIZE = 4;
 const usersDirectoryFormatter = new Intl.NumberFormat("es-ES");
 
-const statusMap = {
-  active: {
-    label: "Activo",
-    tone: "active"
-  },
-  attention: {
-    label: "Revisar",
-    tone: "attention"
-  },
-  inactive: {
-    label: "Inactivo",
-    tone: "inactive"
-  }
-};
+function buildStatusMap(t) {
+  return {
+    active: {
+      label: t.activo,
+      tone: "active"
+    },
+    attention: {
+      label: t.revisar,
+      tone: "attention"
+    },
+    inactive: {
+      label: t.inactivo,
+      tone: "inactive"
+    }
+  };
+}
 
 export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
+  const t = useT();
+  const statusMap = useMemo(() => buildStatusMap(t), [t]);
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -67,9 +72,7 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
         }
 
         setRows([]);
-        setErrorMessage(
-          getApiErrorMessage(error, "No se pudieron cargar los usuarios.")
-        );
+        setErrorMessage(getApiErrorMessage(error, t.noSePudieronCargarUsuarios));
         setRequestState("error");
       }
     }
@@ -79,11 +82,22 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
     return () => {
       ignore = true;
     };
-  }, [reloadKey, refreshToken]);
+  }, [reloadKey, refreshToken, t.noSePudieronCargarUsuarios]);
 
   const summaryMetrics = useMemo(
-    () => buildUsersSummaryMetrics(rows, requestState),
-    [requestState, rows]
+    () =>
+      buildUsersSummaryMetrics(rows, requestState, {
+        totalMembers: t.sociosTotales,
+        activeNow: t.activosAhora,
+        inactiveMembers: t.sociosInactivos,
+        loadingRealData: t.cargandoDatosReales,
+        noBackend: t.sinConexionBackend,
+        recordsInSystem: t.registrosEnSistema,
+        totalOperational: t.delTotalOperativo,
+        noActiveAccess: t.perfilesSinAccesoActivo,
+        allActive: t.todosSociosActivos
+      }),
+    [requestState, rows, t]
   );
 
   const filteredRows = useMemo(() => {
@@ -110,32 +124,32 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
   const emptyState =
     requestState === "loading" ? (
       <EmptyState
-        description="Estamos consultando la API para traer el listado real de socios."
+        description={t.cargandoUsuariosDesc}
         icon="search"
-        title="Cargando usuarios"
+        title={t.cargandoUsuarios}
       />
     ) : requestState === "error" ? (
       <EmptyState
         action={
           <Button onClick={handleRetry} size="sm" variant="secondary">
-            Reintentar
+            {t.reintentar}
           </Button>
         }
         description={errorMessage}
         icon="warning"
-        title="No se pudieron cargar los usuarios"
+        title={t.noSePudieronCargarUsuarios}
       />
     ) : (
       <EmptyState
-        description="Cuando lleguen registros desde la base de datos, el listado de socios aparecera aqui."
-        title="Todavia no hay socios"
+        description={t.sinUsuariosDesc}
+        title={t.sinUsuarios}
       />
     );
 
   const columns = [
     {
       key: "member",
-      label: "Foto",
+      label: t.foto,
       render: (row) => (
         <div className="table-avatar-only">
           {row.avatarUrl ? (
@@ -149,7 +163,7 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
     },
     {
       key: "name",
-      label: "Nombre",
+      label: t.nombre,
       render: (row) => (
         <div className="table-identity">
           <strong>{row.name}</strong>
@@ -160,15 +174,15 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
     },
     {
       key: "identifier",
-      label: "DNI / ID"
+      label: t.dniId
     },
     {
       key: "enrollmentYear",
-      label: "Ano de alta"
+      label: t.anoAlta
     },
     {
       key: "status",
-      label: "Estado",
+      label: t.estado,
       render: (row) => (
         <StatusBadge
           label={statusMap[row.status].label}
@@ -179,13 +193,13 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
     {
       align: "end",
       key: "actions",
-      label: "Acciones",
+      label: t.acciones,
       render: (row) => (
         <div className="users-actions">
           <ToggleSwitch
             disabled
             checked={row.isEnabled}
-            label={row.isEnabled ? "Activo" : "Inactivo"}
+            label={row.isEnabled ? t.activo : t.inactivo}
           />
           <button
             aria-label={`Editar a ${row.name}`}
@@ -222,8 +236,8 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
           requestState === "success" && rows.length ? (
             <div className="users-directory__footer">
               <span className="users-directory__meta">
-                Mostrando {paginatedRows.length} de{" "}
-                {usersDirectoryFormatter.format(rows.length)} socios
+                {t.mostrando} {paginatedRows.length} {t.de}{" "}
+                {usersDirectoryFormatter.format(rows.length)} {t.usuarios}
               </span>
               <Pagination
                 onPageChange={setPage}
@@ -243,7 +257,7 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
                   size="sm"
                   variant="ghost"
                 >
-                  Filtros
+                  {t.filtros}
                 </Button>
                 <Button
                   disabled={requestState !== "success" || !rows.length}
@@ -251,11 +265,11 @@ export function UsersTableSection({ onEditRequest, refreshToken = 0 }) {
                   size="sm"
                   variant="ghost"
                 >
-                  Exportar
+                  {t.exportar}
                 </Button>
               </div>
             }
-            title="Directorio de socios"
+            title={t.directorioSocios}
           />
         }
         rows={requestState === "success" ? paginatedRows : []}

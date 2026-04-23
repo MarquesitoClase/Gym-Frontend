@@ -8,6 +8,7 @@ import { Icon } from "../../components/Icon/Icon";
 import { Pagination } from "../../components/Pagination/Pagination";
 import { StatCard } from "../../components/StatCard/StatCard";
 import { TableToolbar } from "../../components/TableToolbar/TableToolbar";
+import { useT } from "../../i18n/useT";
 import { activitiesService, teachersService } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import {
@@ -20,6 +21,7 @@ const PAGE_SIZE = 4;
 const teachersDirectoryFormatter = new Intl.NumberFormat("es-ES");
 
 export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
+  const t = useT();
   const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -64,7 +66,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
 
         setRows([]);
         setErrorMessage(
-          getApiErrorMessage(error, "No se pudieron cargar los monitores.")
+          getApiErrorMessage(error, t.noSePudieronCargarMonitores)
         );
         setRequestState("error");
       }
@@ -75,11 +77,21 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
     return () => {
       ignore = true;
     };
-  }, [reloadKey, refreshToken]);
+  }, [reloadKey, refreshToken, t.noSePudieronCargarMonitores]);
 
   const summaryMetrics = useMemo(
-    () => buildTeachersSummaryMetrics(rows, requestState),
-    [requestState, rows]
+    () =>
+      buildTeachersSummaryMetrics(rows, requestState, {
+        activeClasses: t.clasesActivas,
+        activeInstructors: t.monitoresActivos,
+        avgRetention: t.retencionMedia,
+        loadingTeam: t.cargandoEquipoMonitores,
+        noBackend: t.sinConexionBackend,
+        profilesInDb: t.perfilesEnBaseDatos,
+        teamWithClasses: t.equipoConClases,
+        totalStaff: t.totalPlantilla
+      }),
+    [requestState, rows, t]
   );
 
   const filteredRows = useMemo(() => {
@@ -106,32 +118,32 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
   const emptyState =
     requestState === "loading" ? (
       <EmptyState
-        description="Estamos consultando la API para traer el equipo de monitores real."
+        description={t.cargandoMonitoresDesc}
         icon="search"
-        title="Cargando monitores"
+        title={t.cargandoMonitores}
       />
     ) : requestState === "error" ? (
       <EmptyState
         action={
           <Button onClick={handleRetry} size="sm" variant="secondary">
-            Reintentar
+            {t.reintentar}
           </Button>
         }
         description={errorMessage}
         icon="warning"
-        title="No se pudieron cargar los monitores"
+        title={t.noSePudieronCargarMonitores}
       />
     ) : (
       <EmptyState
-        description="Cuando lleguen registros desde la base de datos, el listado de monitores aparecera aqui."
-        title="Todavia no hay monitores"
+        description={t.sinMonitoresDesc}
+        title={t.sinMonitores}
       />
     );
 
   const columns = [
     {
       key: "teacher",
-      label: "Monitor",
+      label: t.monitor,
       render: (row) => (
         <AvatarCell
           imageUrl={row.avatarUrl}
@@ -143,15 +155,15 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
     },
     {
       key: "identifier",
-      label: "DNI / ID"
+      label: t.dniId
     },
     {
       key: "contractYear",
-      label: "Ano de contratacion"
+      label: t.anoContratacion
     },
     {
       key: "assignedActivities",
-      label: "Actividades asignadas",
+      label: t.actividadesAsignadas,
       render: (row) => (
         <div className="teachers-chip-list">
           {row.assignedActivities.length ? (
@@ -162,7 +174,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
             ))
           ) : (
             <span className="teachers-chip teachers-chip--muted">
-              Sin actividades
+              {t.sinActividades}
             </span>
           )}
         </div>
@@ -171,7 +183,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
     {
       align: "end",
       key: "actions",
-      label: "Acciones",
+      label: t.acciones,
       render: (row) => (
         <button
           aria-label={`Editar a ${row.name}`}
@@ -207,8 +219,8 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
           requestState === "success" && rows.length ? (
             <div className="teachers-directory__footer">
               <span className="teachers-directory__meta">
-                Mostrando {paginatedRows.length} de{" "}
-                {teachersDirectoryFormatter.format(rows.length)} monitores
+                {t.mostrando} {paginatedRows.length} {t.de}{" "}
+                {teachersDirectoryFormatter.format(rows.length)} {t.monitores}
               </span>
               <Pagination
                 onPageChange={setPage}
@@ -228,7 +240,7 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
                   size="sm"
                   variant="ghost"
                 >
-                  Filtros
+                  {t.filtros}
                 </Button>
                 <Button
                   disabled={requestState !== "success" || !rows.length}
@@ -236,11 +248,11 @@ export function TeachersTableSection({ onEditRequest, refreshToken = 0 }) {
                   size="sm"
                   variant="ghost"
                 >
-                  Exportar
+                  {t.exportar}
                 </Button>
               </div>
             }
-            title="Directorio de monitores"
+            title={t.directorioMonitores}
           />
         }
         rows={requestState === "success" ? paginatedRows : []}

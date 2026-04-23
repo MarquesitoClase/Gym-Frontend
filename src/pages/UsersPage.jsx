@@ -5,8 +5,10 @@ import { PageContainer } from "../components/PageContainer/PageContainer";
 import { PageHeader } from "../components/PageHeader/PageHeader";
 import { UserFormModal } from "../features/users/UserFormModal";
 import { UsersTableSection } from "../features/users/UsersTableSection";
+import { useT } from "../i18n/useT";
 
 export function UsersPage() {
+  const t = useT();
   const [editorState, setEditorState] = useState({
     mode: null,
     userId: null
@@ -42,12 +44,12 @@ export function UsersPage() {
   return (
     <PageContainer>
       <PageHeader
-        breadcrumb={["Admin", "Usuarios"]}
-        title="Usuarios"
-        description="Gestiona altas, estado y renovaciones de socios."
+        breadcrumb={[t.admin, t.usuarios]}
+        title={t.usuarios}
+        description={t.usuariosDescripcion}
         actions={
           <Button iconLeft={<Icon name="plus" size={16} />} onClick={openCreateModal}>
-            Nuevo usuario
+            {t.nuevoUsuario}
           </Button>
         }
       />

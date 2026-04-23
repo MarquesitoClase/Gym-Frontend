@@ -4,29 +4,40 @@ const percentFormatter = new Intl.NumberFormat("es-ES", {
   style: "percent"
 });
 
+const teachersI18nFallback = {
+  totalStaff: "Total plantilla",
+  activeClasses: "Clases activas",
+  avgRetention: "Retencion media",
+  loadingTeam: "Cargando equipo de monitores",
+  noBackend: "Sin conexion con backend",
+  profilesInDb: "perfiles en la base de datos",
+  activeInstructors: "monitores activos",
+  teamWithClasses: "del equipo con clases"
+};
+
 function buildFullName(firstName = "", lastName = "") {
   return [firstName, lastName].filter(Boolean).join(" ");
 }
 
-function createPlaceholderMetrics(meta) {
+function createPlaceholderMetrics(meta, i18n) {
   return [
     {
       id: "total-staff",
-      label: "Total plantilla",
+      label: i18n.totalStaff,
       meta,
       tone: "primary",
       value: "--"
     },
     {
       id: "active-classes",
-      label: "Clases activas",
+      label: i18n.activeClasses,
       meta,
       tone: "accent",
       value: "--"
     },
     {
       id: "avg-retention",
-      label: "Retencion media",
+      label: i18n.avgRetention,
       meta,
       tone: "neutral",
       value: "--"
@@ -51,13 +62,15 @@ export function mapTeacherDtoToRow(teacher, activities = []) {
   };
 }
 
-export function buildTeachersSummaryMetrics(rows, status = "success") {
+export function buildTeachersSummaryMetrics(rows, status = "success", i18n = {}) {
+  const labels = { ...teachersI18nFallback, ...i18n };
+
   if (status === "loading") {
-    return createPlaceholderMetrics("Cargando equipo de monitores");
+    return createPlaceholderMetrics(labels.loadingTeam, labels);
   }
 
   if (status === "error") {
-    return createPlaceholderMetrics("Sin conexion con backend");
+    return createPlaceholderMetrics(labels.noBackend, labels);
   }
 
   const totalTeachers = rows.length;
@@ -74,22 +87,22 @@ export function buildTeachersSummaryMetrics(rows, status = "success") {
   return [
     {
       id: "total-staff",
-      label: "Total plantilla",
-      meta: `${numberFormatter.format(totalTeachers)} perfiles en la base de datos`,
+      label: labels.totalStaff,
+      meta: `${numberFormatter.format(totalTeachers)} ${labels.profilesInDb}`,
       tone: "primary",
       value: numberFormatter.format(totalTeachers)
     },
     {
       id: "active-classes",
-      label: "Clases activas",
-      meta: `${numberFormatter.format(activeTeachers)} monitores activos`,
+      label: labels.activeClasses,
+      meta: `${numberFormatter.format(activeTeachers)} ${labels.activeInstructors}`,
       tone: "accent",
       value: numberFormatter.format(assignedActivities)
     },
     {
       id: "avg-retention",
-      label: "Retencion media",
-      meta: `${percentFormatter.format(coverage)} del equipo con clases`,
+      label: labels.avgRetention,
+      meta: `${percentFormatter.format(coverage)} ${labels.teamWithClasses}`,
       tone: "neutral",
       value: `${Math.round(coverage * 100)}%`
     }

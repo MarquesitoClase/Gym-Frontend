@@ -17,6 +17,24 @@ function formatShortDate(value) {
 
 const numberFormatter = new Intl.NumberFormat("es-ES");
 
+const dashboardI18nFallback = {
+  usersActive: "Socios activos",
+  activeClasses: "Clases activas",
+  monthlyIncome: "Ingresos del mes",
+  loadingRealData: "Cargando datos reales",
+  noBackend: "Sin conexion con el backend",
+  monthVs: "+12% vs el mes pasado",
+  liveNow: "En directo",
+  goal50k: "Objetivo: 50k",
+  totalRegistered: "registrados en total",
+  activeInstructors: "monitores activos",
+  usersActiveWord: "usuarios activos",
+  teachersInStaff: "monitores en plantilla",
+  oneEnrolled: "1 inscrito",
+  manyEnrolled: "inscritos",
+  monitorPrefix: "Monitor #"
+};
+
 function buildTeacherNameById(teachers) {
   return new Map(
     teachers.map((teacher) => [
@@ -26,25 +44,25 @@ function buildTeacherNameById(teachers) {
   );
 }
 
-function createPlaceholderMetrics(meta) {
+function createPlaceholderMetrics(meta, i18n) {
   return [
     {
       id: "users-active",
-      label: "Socios activos",
+      label: i18n.usersActive,
       meta,
       tone: "primary",
       value: "--"
     },
     {
       id: "teachers-active",
-      label: "Clases activas",
+      label: i18n.activeClasses,
       meta,
       tone: "accent",
       value: "--"
     },
     {
       id: "revenue",
-      label: "Ingresos del mes",
+      label: i18n.monthlyIncome,
       meta,
       tone: "revenue",
       value: "--"
@@ -52,13 +70,15 @@ function createPlaceholderMetrics(meta) {
   ];
 }
 
-export function buildDashboardMetrics(data, status = "success") {
+export function buildDashboardMetrics(data, status = "success", i18n = {}) {
+  const labels = { ...dashboardI18nFallback, ...i18n };
+
   if (status === "loading") {
-    return createPlaceholderMetrics("Cargando datos reales");
+    return createPlaceholderMetrics(labels.loadingRealData, labels);
   }
 
   if (status === "error") {
-    return createPlaceholderMetrics("Sin conexion con el backend");
+    return createPlaceholderMetrics(labels.noBackend, labels);
   }
 
   const {
@@ -78,28 +98,28 @@ export function buildDashboardMetrics(data, status = "success") {
 
   return [
     {
-      badge: "+12% vs el mes pasado",
+      badge: labels.monthVs,
       id: "users-active",
-      label: "Socios activos",
-      meta: `${numberFormatter.format(users.length)} registrados en total`,
+      label: labels.usersActive,
+      meta: `${numberFormatter.format(users.length)} ${labels.totalRegistered}`,
       tone: "primary",
       value: numberFormatter.format(activeUsers.length)
     },
     {
-      badge: "En directo",
+      badge: labels.liveNow,
       id: "teachers-active",
-      label: "Clases activas",
-      meta: `${numberFormatter.format(activeTeachers.length)} monitores activos`,
+      label: labels.activeClasses,
+      meta: `${numberFormatter.format(activeTeachers.length)} ${labels.activeInstructors}`,
       tone: "accent",
       value: numberFormatter.format(activities.length)
     },
     {
-      badge: "Objetivo: 50k",
+      badge: labels.goal50k,
       id: "revenue",
-      label: "Ingresos del mes",
-      meta: `${revenueProgress}% usuarios activos - ${numberFormatter.format(
+      label: labels.monthlyIncome,
+      meta: `${revenueProgress}% ${labels.usersActiveWord} - ${numberFormatter.format(
         teachers.length
-      )} monitores en plantilla`,
+      )} ${labels.teachersInStaff}`,
       progress: revenueProgress,
       targetLabel: `${revenueProgress}%`,
       tone: "revenue",
@@ -108,7 +128,8 @@ export function buildDashboardMetrics(data, status = "success") {
   ];
 }
 
-export function buildUpcomingActivities(activities, teachers) {
+export function buildUpcomingActivities(activities, teachers, i18n = {}) {
+  const labels = { ...dashboardI18nFallback, ...i18n };
   const teacherNameById = buildTeacherNameById(teachers);
 
   return [...activities]
@@ -119,7 +140,8 @@ export function buildUpcomingActivities(activities, teachers) {
 
       return {
         enrolled,
-        enrolledLabel: enrolled === 1 ? "1 inscrito" : `${enrolled} inscritos`,
+        enrolledLabel:
+          enrolled === 1 ? labels.oneEnrolled : `${enrolled} ${labels.manyEnrolled}`,
         id: activity.id,
         metric: formatCurrency(activity.price),
         name: activity.title,
@@ -127,7 +149,7 @@ export function buildUpcomingActivities(activities, teachers) {
         scheduleTime: formatTime(activity.date),
         teacher:
           teacherNameById.get(activity.teacherId) ??
-          `Monitor #${activity.teacherId}`
+          `${labels.monitorPrefix}${activity.teacherId}`
       };
     });
 }

@@ -4,29 +4,41 @@ const percentFormatter = new Intl.NumberFormat("es-ES", {
   style: "percent"
 });
 
+const usersI18nFallback = {
+  totalMembers: "Socios totales",
+  activeNow: "Activos ahora",
+  inactiveMembers: "Socios inactivos",
+  loadingRealData: "Cargando datos reales",
+  noBackend: "Sin conexion con backend",
+  recordsInSystem: "registros en el sistema",
+  totalOperational: "del total operativo",
+  noActiveAccess: "perfiles sin acceso activo",
+  allActive: "Todos los socios estan activos"
+};
+
 function buildFullName(firstName = "", lastName = "") {
   return [firstName, lastName].filter(Boolean).join(" ");
 }
 
-function createPlaceholderMetrics(meta) {
+function createPlaceholderMetrics(meta, i18n) {
   return [
     {
       id: "total-members",
-      label: "Socios totales",
+      label: i18n.totalMembers,
       meta,
       tone: "primary",
       value: "--"
     },
     {
       id: "active-members",
-      label: "Activos ahora",
+      label: i18n.activeNow,
       meta,
       tone: "accent",
       value: "--"
     },
     {
       id: "renewals-soon",
-      label: "Socios inactivos",
+      label: i18n.inactiveMembers,
       meta,
       tone: "warning",
       value: "--"
@@ -51,13 +63,15 @@ export function mapUserDtoToRow(user) {
   };
 }
 
-export function buildUsersSummaryMetrics(rows, status = "success") {
+export function buildUsersSummaryMetrics(rows, status = "success", i18n = {}) {
+  const labels = { ...usersI18nFallback, ...i18n };
+
   if (status === "loading") {
-    return createPlaceholderMetrics("Cargando datos reales");
+    return createPlaceholderMetrics(labels.loadingRealData, labels);
   }
 
   if (status === "error") {
-    return createPlaceholderMetrics("Sin conexion con backend");
+    return createPlaceholderMetrics(labels.noBackend, labels);
   }
 
   const totalMembers = rows.length;
@@ -69,24 +83,24 @@ export function buildUsersSummaryMetrics(rows, status = "success") {
   return [
     {
       id: "total-members",
-      label: "Socios totales",
-      meta: `${numberFormatter.format(totalMembers)} registros en el sistema`,
+      label: labels.totalMembers,
+      meta: `${numberFormatter.format(totalMembers)} ${labels.recordsInSystem}`,
       tone: "primary",
       value: numberFormatter.format(totalMembers)
     },
     {
       id: "active-members",
-      label: "Activos ahora",
-      meta: `${percentFormatter.format(activeRatio)} del total operativo`,
+      label: labels.activeNow,
+      meta: `${percentFormatter.format(activeRatio)} ${labels.totalOperational}`,
       tone: "accent",
       value: numberFormatter.format(activeMembers)
     },
     {
       id: "renewals-soon",
-      label: "Socios inactivos",
+      label: labels.inactiveMembers,
       meta: inactiveMembers
-        ? `${numberFormatter.format(inactiveMembers)} perfiles sin acceso activo`
-        : "Todos los socios estan activos",
+        ? `${numberFormatter.format(inactiveMembers)} ${labels.noActiveAccess}`
+        : labels.allActive,
       tone: "warning",
       value: numberFormatter.format(inactiveMembers)
     }

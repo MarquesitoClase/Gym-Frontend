@@ -1,11 +1,21 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { Icon } from "../../components/Icon/Icon";
+import { useT } from "../../i18n/useT";
 import { classNames } from "../../utils/classNames";
 import { navigationItems } from "../navigationItems";
 
 export function SidebarNav({ isOpen, onClose }) {
   const { logout } = useAuth();
+  const t = useT();
+
+  const labelsByPath = {
+    "/": t.panel,
+    "/usuarios": t.usuarios,
+    "/profesores": t.monitores,
+    "/actividades": t.actividades,
+    "/configuracion": t.configuracion
+  };
 
   const handleLogout = () => {
     onClose();
@@ -22,7 +32,7 @@ export function SidebarNav({ isOpen, onClose }) {
       />
       <aside className={classNames("sidebar", isOpen && "is-open")}>
         <button
-          aria-label="Cerrar navegación"
+          aria-label="Cerrar navegacion"
           className="sidebar__close"
           onClick={onClose}
           type="button"
@@ -47,7 +57,7 @@ export function SidebarNav({ isOpen, onClose }) {
                 to={item.path}
               >
                 <Icon name={item.icon} size={20} />
-                <span>{item.label}</span>
+                <span>{labelsByPath[item.path] || item.label}</span>
               </NavLink>
             ))}
           </nav>
@@ -56,7 +66,7 @@ export function SidebarNav({ isOpen, onClose }) {
         <div className="sidebar__footer">
           <button className="sidebar__footer-link" onClick={handleLogout} type="button">
             <Icon name="logout" size={18} />
-            <span>Cerrar sesión</span>
+            <span>{t.cerrarSesion}</span>
           </button>
         </div>
       </aside>
