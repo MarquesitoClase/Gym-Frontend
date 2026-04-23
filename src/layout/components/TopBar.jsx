@@ -13,13 +13,26 @@ const TIME_FORMATTER = new Intl.DateTimeFormat("es-ES", {
   minute: "2-digit"
 });
 
+const SETTINGS_STORAGE_KEY = "tenfit:settings";
+
 function capitalize(value) {
   return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
+
+function getStoredTheme() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? "null");
+    const theme = stored?.theme;
+    return theme === "dark" || theme === "light" ? theme : "light";
+  } catch {
+    return "light";
+  }
 }
 
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [theme, setTheme] = useState(getStoredTheme);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,6 +90,19 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isProfileOpen]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+
+    try {
+      const current = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? "null");
+      const next = current && typeof current === "object" ? { ...current, theme } : { theme };
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify({ theme }));
+    }
+  }, [theme]);
+
   return (
     <header className="topbar">
       <div className="topbar__search-group">
@@ -117,6 +143,28 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
           </span>
         </div>
 
+        <div className="topbar__theme-toggle" role="group" aria-label="Tema">
+          <button
+            type="button"
+            className="topbar__theme-button"
+            data-active={theme === "light"}
+            aria-pressed={theme === "light"}
+            aria-label="Tema claro"
+            onClick={() => setTheme("light")}
+          >
+            <Icon name="sun" size={18} />
+          </button>
+          <button
+            type="button"
+            className="topbar__theme-button"
+            data-active={theme === "dark"}
+            aria-pressed={theme === "dark"}
+            aria-label="Tema oscuro"
+            onClick={() => setTheme("dark")}
+          >
+            <Icon name="moon" size={18} />
+          </button>
+        </div>
         <div className="topbar__profile-wrapper" ref={dropdownRef}>
           <button
             aria-expanded={isProfileOpen}
@@ -159,7 +207,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
                 type="button"
               >
                 <Icon name="logout" size={16} />
-                Cerrar sesion
+                Cerrar sesión
               </button>
             </div>
           ) : null}

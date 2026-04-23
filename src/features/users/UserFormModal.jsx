@@ -9,6 +9,7 @@ import {
 } from "../../services";
 import { getApiErrorMessage } from "../../services/http/getApiErrorMessage";
 import { formatDateTime } from "../../utils/formatters";
+import { notifySuccess, notifyError } from "../../utils/notifications";
 
 const initialFormState = {
   active: true,
@@ -214,13 +215,15 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
 
       if (mode === "edit" && userId) {
         await usersService.update(userId, payload);
+        notifySuccess("Usuario actualizado correctamente.");
       } else {
         const created = await usersService.create(payload);
+        notifySuccess("Usuario creado correctamente.");
         if (selectedEnrollId && created?.id) {
           try {
             await enrollmentsService.register(Number(selectedEnrollId), created.id);
           } catch {
-            // la inscripcion fallo pero el usuario ya fue creado
+            notifyError("La inscripción falló, pero el usuario fue creado.");
           }
         }
       }
@@ -230,6 +233,7 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
       setSubmitError(
         getApiErrorMessage(error, "No se pudo guardar el usuario.")
       );
+      notifyError("Error al guardar el usuario.");
     } finally {
       setIsSubmitting(false);
     }
