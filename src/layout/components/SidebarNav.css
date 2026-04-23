@@ -38,6 +38,12 @@
   width: 140px;
   height: auto;
   object-fit: contain;
+  border-radius: 18px;
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .sidebar__brand-logo {
+  mix-blend-mode: screen;
 }
 
 .sidebar__nav {

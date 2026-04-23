@@ -9,6 +9,7 @@ import { ProgressBar } from "../../components/ProgressBar/ProgressBar";
 import { StatCard } from "../../components/StatCard/StatCard";
 import { StatusBadge } from "../../components/StatusBadge/StatusBadge";
 import { SurfaceCard } from "../../components/SurfaceCard/SurfaceCard";
+import { useI18n } from "../../i18n/I18nContext";
 import {
   activitiesService,
   enrollmentsService,
@@ -27,12 +28,9 @@ const metricIcons = {
   "users-active": "users"
 };
 
-function formatSessionCaption(activity) {
-  return `Monitor ${activity.teacher}`;
-}
-
 export function DashboardOverview() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [dashboardData, setDashboardData] = useState({
     activities: [],
     activeTeachers: [],
@@ -88,10 +86,7 @@ export function DashboardOverview() {
         }
 
         setErrorMessage(
-          getApiErrorMessage(
-            error,
-            "No se pudo construir el panel principal con los datos reales."
-          )
+          getApiErrorMessage(error, t("dashboard.errorFallback"))
         );
         setRequestState("error");
       }
@@ -130,12 +125,12 @@ export function DashboardOverview() {
               size="sm"
               variant="secondary"
             >
-              Reintentar
+              {t("dashboard.retry")}
             </Button>
           }
           description={errorMessage}
           icon="warning"
-          title="No se pudo cargar el panel principal"
+          title={t("dashboard.errorTitle")}
         />
       </SurfaceCard>
     );
@@ -145,8 +140,8 @@ export function DashboardOverview() {
     <div className="dashboard-view">
       <header className="dashboard-hero">
         <div className="dashboard-hero__copy">
-          <h1>El motor cinetico</h1>
-          <p>Vista operativa diaria del gimnasio en tiempo real.</p>
+          <h1>{t("dashboard.heroTitle")}</h1>
+          <p>{t("dashboard.heroSubtitle")}</p>
         </div>
       </header>
 
@@ -182,14 +177,14 @@ export function DashboardOverview() {
         <SurfaceCard className="dashboard-agenda">
           <div className="dashboard-panel__header">
             <div>
-              <h2>Proximas actividades</h2>
+              <h2>{t("dashboard.agendaTitle")}</h2>
             </div>
             <button
               className="dashboard-link-button"
               onClick={() => navigate("/actividades")}
               type="button"
             >
-              Ver actividades
+              {t("dashboard.agendaCta")}
             </button>
           </div>
 
@@ -203,7 +198,7 @@ export function DashboardOverview() {
                   </div>
                   <div className="dashboard-agenda__main">
                     <h3>{activity.name}</h3>
-                    <p>{formatSessionCaption(activity)}</p>
+                    <p>{t("dashboard.sessionTeacher", { name: activity.teacher })}</p>
                   </div>
                   <div className="dashboard-agenda__side">
                     <span className="dashboard-agenda__occupancy">
@@ -214,7 +209,7 @@ export function DashboardOverview() {
                     </span>
                   </div>
                   <button
-                    aria-label={`Abrir ${activity.name}`}
+                    aria-label={activity.name}
                     className="dashboard-agenda__cta"
                     onClick={() => navigate("/actividades")}
                     type="button"
@@ -226,8 +221,8 @@ export function DashboardOverview() {
             </div>
           ) : (
             <EmptyState
-              description="No hay actividades futuras disponibles en el backend."
-              title="Sin sesiones proximas"
+              description={t("dashboard.agendaEmptyDescription")}
+              title={t("dashboard.agendaEmptyTitle")}
             />
           )}
         </SurfaceCard>
@@ -236,8 +231,8 @@ export function DashboardOverview() {
           <SurfaceCard className="dashboard-quickactions">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Acciones rapidas</h2>
-                <p>Accede directamente a las secciones principales.</p>
+                <h2>{t("dashboard.quickactionsTitle")}</h2>
+                <p>{t("dashboard.quickactionsSubtitle")}</p>
               </div>
             </div>
             <div className="dashboard-quickactions__list">
@@ -250,8 +245,8 @@ export function DashboardOverview() {
                   <Icon name="users" size={18} />
                 </span>
                 <div>
-                  <strong>Nuevo socio</strong>
-                  <span>Registrar alta en el sistema</span>
+                  <strong>{t("dashboard.quickactionNewUser")}</strong>
+                  <span>{t("dashboard.quickactionNewUserDesc")}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -264,8 +259,8 @@ export function DashboardOverview() {
                   <Icon name="activities" size={18} />
                 </span>
                 <div>
-                  <strong>Nueva actividad</strong>
-                  <span>Publicar clase o taller</span>
+                  <strong>{t("dashboard.quickactionNewActivity")}</strong>
+                  <span>{t("dashboard.quickactionNewActivityDesc")}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -278,8 +273,8 @@ export function DashboardOverview() {
                   <Icon name="enrollments" size={18} />
                 </span>
                 <div>
-                  <strong>Inscripcion rapida</strong>
-                  <span>Apuntar socio a una clase</span>
+                  <strong>{t("dashboard.quickactionNewEnrollment")}</strong>
+                  <span>{t("dashboard.quickactionNewEnrollmentDesc")}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -292,8 +287,8 @@ export function DashboardOverview() {
                   <Icon name="teachers" size={18} />
                 </span>
                 <div>
-                  <strong>Nuevo monitor</strong>
-                  <span>Dar de alta a un profesor</span>
+                  <strong>{t("dashboard.quickactionNewTeacher")}</strong>
+                  <span>{t("dashboard.quickactionNewTeacherDesc")}</span>
                 </div>
                 <Icon name="chevron" size={14} />
               </button>
@@ -303,7 +298,7 @@ export function DashboardOverview() {
           <SurfaceCard className="dashboard-frontdesk">
             <div className="dashboard-panel__header dashboard-panel__header--compact">
               <div>
-                <h2>Ultimo socio registrado</h2>
+                <h2>{t("dashboard.frontdeskTitle")}</h2>
               </div>
             </div>
 
@@ -312,24 +307,34 @@ export function DashboardOverview() {
                 <div className="dashboard-frontdesk__entry">
                   <AvatarCell
                     imageUrl={receptionUser.imageUrl}
-                    subtitle={`Alta ${receptionUser.registrationYear ?? "reciente"}`}
+                    subtitle={
+                      receptionUser.registrationYear
+                        ? t("dashboard.frontdeskRegistration", { year: receptionUser.registrationYear })
+                        : t("dashboard.frontdeskRegistrationRecent")
+                    }
                     title={[receptionUser.firstName, receptionUser.lastName].filter(Boolean).join(" ")}
                   />
                   <StatusBadge
-                    label={receptionUser.active ? "Activo" : "Inactivo"}
+                    label={receptionUser.active ? t("dashboard.statusActive") : t("dashboard.statusInactive")}
                     tone={receptionUser.active ? "active" : "inactive"}
                   />
                 </div>
                 <p className="dashboard-frontdesk__note">
-                  {dashboardData.users.length}{" "}
-                  {dashboardData.users.length === 1 ? "socio registrado" : "socios registrados"} en total —{" "}
-                  {dashboardData.activeUsers.length} activos.
+                  {t(
+                    dashboardData.users.length === 1
+                      ? "dashboard.frontdeskNoteOne"
+                      : "dashboard.frontdeskNoteMany",
+                    {
+                      count: dashboardData.users.length,
+                      active: dashboardData.activeUsers.length
+                    }
+                  )}
                 </p>
               </>
             ) : (
               <EmptyState
-                description="Todavia no hay socios registrados en el sistema."
-                title="Sin socios"
+                description={t("dashboard.frontdeskEmptyDescription")}
+                title={t("dashboard.frontdeskEmptyTitle")}
               />
             )}
           </SurfaceCard>

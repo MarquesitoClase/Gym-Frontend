@@ -86,6 +86,61 @@
   background: transparent;
 }
 
+.config-language {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.config-language__label {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.config-language__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.config-language__option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  color: var(--ink-strong);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.config-language__option:hover {
+  border-color: var(--brand-primary);
+}
+
+.config-language__option[data-active="true"] {
+  border-color: var(--brand-primary);
+  background: color-mix(in oklab, var(--brand-primary) 10%, var(--surface-card));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-primary) 15%, transparent);
+}
+
+.config-language__code {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--brand-primary);
+}
+
+.config-language__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 @media (max-width: 880px) {
   .config-grid {
     grid-template-columns: 1fr;
@@ -93,5 +148,9 @@
 
   .config-header {
     flex-direction: column;
+  }
+
+  .config-language__options {
+    grid-template-columns: 1fr;
   }
 }
