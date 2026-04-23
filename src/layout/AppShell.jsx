@@ -25,7 +25,7 @@ export function AppShell() {
           admin={admin}
           onLogout={logout}
           onMenuOpen={() => setSidebarOpen(true)}
-          searchPlaceholder={activeHandle.searchPlaceholder}
+          searchPlaceholderKey={activeHandle.searchPlaceholderKey}
         />
         <main className="app-shell__content">
           <Outlet />

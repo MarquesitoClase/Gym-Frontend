@@ -1,28 +1,28 @@
 export const navigationItems = [
   {
     path: "/",
-    label: "Panel",
+    labelKey: "nav.dashboard",
     icon: "dashboard",
     end: true
   },
   {
     path: "/usuarios",
-    label: "Usuarios",
+    labelKey: "nav.users",
     icon: "users"
   },
   {
     path: "/profesores",
-    label: "Monitores",
+    labelKey: "nav.teachers",
     icon: "teachers"
   },
   {
     path: "/actividades",
-    label: "Actividades",
+    labelKey: "nav.activities",
     icon: "activities"
   },
   {
     path: "/configuracion",
-    label: "Configuración",
+    labelKey: "nav.config",
     icon: "settings"
   }
 ];

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/I18nContext";
 
 export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export function LoginPage() {
     if (success) {
       navigate("/", { replace: true });
     } else {
-      setError("Credenciales incorrectas. Revisa el correo y la contrasena.");
+      setError(t("login.error"));
       setIsSubmitting(false);
     }
   };
@@ -30,7 +32,7 @@ export function LoginPage() {
       <div className="login-card">
         <div className="login-card__brand">
           <img alt="TenFit" className="login-card__logo-img" src="/logo.png" />
-          <p className="login-card__subtitle">Panel de administracion</p>
+          <p className="login-card__subtitle">{t("login.subtitle")}</p>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
@@ -39,7 +41,7 @@ export function LoginPage() {
           ) : null}
 
           <label className="login-form__field">
-            <span className="login-form__label">Correo electronico</span>
+            <span className="login-form__label">{t("login.email")}</span>
             <input
               autoComplete="email"
               autoFocus
@@ -53,7 +55,7 @@ export function LoginPage() {
           </label>
 
           <label className="login-form__field">
-            <span className="login-form__label">Contrasena</span>
+            <span className="login-form__label">{t("login.password")}</span>
             <input
               autoComplete="current-password"
               className="login-form__input"
@@ -70,13 +72,11 @@ export function LoginPage() {
             disabled={isSubmitting}
             type="submit"
           >
-            {isSubmitting ? "Accediendo..." : "Iniciar sesion"}
+            {isSubmitting ? t("login.submitting") : t("login.submit")}
           </button>
         </form>
 
-        <p className="login-card__hint">
-          Acceso restringido al personal autorizado del gimnasio.
-        </p>
+        <p className="login-card__hint">{t("login.hint")}</p>
       </div>
     </div>
   );

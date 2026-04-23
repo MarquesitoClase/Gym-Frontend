@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/Icon/Icon";
+import { useI18n } from "../../i18n/I18nContext";
 
 const SETTINGS_STORAGE_KEY = "tenfit:settings";
 
@@ -14,13 +15,17 @@ function getStoredTheme() {
   }
 }
 
-export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
+export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholderKey }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [theme, setTheme] = useState(getStoredTheme);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useI18n();
   const query = new URLSearchParams(location.search).get("q") ?? "";
+  const searchPlaceholder = searchPlaceholderKey
+    ? t(searchPlaceholderKey)
+    : t("topbar.searchDefault");
 
   const handleSearch = (event) => {
     const value = event.target.value;
@@ -73,7 +78,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
     <header className="topbar">
       <div className="topbar__search-group">
         <button
-          aria-label="Abrir navegación"
+          aria-label={t("topbar.menuOpen")}
           className="topbar__menu-button"
           onClick={onMenuOpen}
           type="button"
@@ -87,7 +92,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
           </span>
           <input
             onChange={handleSearch}
-            placeholder={searchPlaceholder ?? "Buscar en TenFit..."}
+            placeholder={searchPlaceholder}
             type="search"
             value={query}
           />
@@ -95,13 +100,13 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
       </div>
 
       <div className="topbar__actions">
-        <div className="topbar__theme-toggle" role="group" aria-label="Tema">
+        <div className="topbar__theme-toggle" role="group" aria-label={t("topbar.themeGroup")}>
           <button
             type="button"
             className="topbar__theme-button"
             data-active={theme === "light"}
             aria-pressed={theme === "light"}
-            aria-label="Tema claro"
+            aria-label={t("topbar.themeLight")}
             onClick={() => setTheme("light")}
           >
             <Icon name="sun" size={18} />
@@ -111,7 +116,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
             className="topbar__theme-button"
             data-active={theme === "dark"}
             aria-pressed={theme === "dark"}
-            aria-label="Tema oscuro"
+            aria-label={t("topbar.themeDark")}
             onClick={() => setTheme("dark")}
           >
             <Icon name="moon" size={18} />
@@ -131,7 +136,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
             <div className="topbar__profile-text">
               <span className="topbar__profile-name">{admin?.name ?? "Admin"}</span>
               <span className="topbar__profile-role">
-                {admin?.role ?? "Administrador"}
+                {admin?.role ?? t("topbar.profileRole")}
               </span>
             </div>
             <Icon name="chevron" size={14} />
@@ -159,7 +164,7 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
                 type="button"
               >
                 <Icon name="logout" size={16} />
-                Cerrar sesión
+                {t("topbar.logout")}
               </button>
             </div>
           ) : null}

@@ -1,5 +1,6 @@
 import "./ConfigPage.css";
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "../../i18n/I18nContext";
 
 const SETTINGS_STORAGE_KEY = "tenfit:settings";
 
@@ -54,6 +55,7 @@ function safeParseSettings(value) {
 }
 
 export function ConfigPage() {
+  const { t, language, setLanguage, languages } = useI18n();
   const [settings, setSettings] = useState(() => {
     const defaults = {
       theme: "light", // light | dark | system
@@ -93,15 +95,42 @@ export function ConfigPage() {
     <div className="config-page">
       <div className="config-header">
         <div>
-          <h1 className="config-title">Configuración</h1>
-          <p className="config-subtitle">Personaliza la apariencia y tus preferencias.</p>
+          <h1 className="config-title">{t("config.title")}</h1>
+          <p className="config-subtitle">{t("config.subtitle")}</p>
         </div>
       </div>
 
       <section className="config-section">
         <div className="config-section__heading">
-          <h2>Apariencia</h2>
-          <p>El tema se cambia desde la barra superior.</p>
+          <h2>{t("config.appearanceTitle")}</h2>
+          <p>{t("config.appearanceNote")}</p>
+        </div>
+      </section>
+
+      <section className="config-section">
+        <div className="config-section__heading">
+          <h2>{t("config.languageTitle")}</h2>
+          <p>{t("config.languageNote")}</p>
+        </div>
+
+        <div className="config-language">
+          <span className="config-language__label">{t("config.languageLabel")}</span>
+          <div className="config-language__options" role="radiogroup" aria-label={t("config.languageLabel")}>
+            {languages.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                role="radio"
+                aria-checked={language === option.code}
+                className="config-language__option"
+                data-active={language === option.code}
+                onClick={() => setLanguage(option.code)}
+              >
+                <span className="config-language__code">{option.code.toUpperCase()}</span>
+                <span className="config-language__name">{option.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </section>
     </div>
