@@ -1,13 +1,47 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/Icon/Icon";
 
+const DATE_FORMATTER = new Intl.DateTimeFormat("es-ES", {
+  weekday: "long",
+  day: "2-digit",
+  month: "long"
+});
+
+const TIME_FORMATTER = new Intl.DateTimeFormat("es-ES", {
+  hour: "2-digit",
+  minute: "2-digit"
+});
+
+function capitalize(value) {
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
+
 export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("q") ?? "";
+
+  useEffect(() => {
+    let intervalId;
+    const timeoutId = setTimeout(() => {
+      setNow(new Date());
+      intervalId = setInterval(() => setNow(new Date()), 60000);
+    }, 60000 - (Date.now() % 60000));
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, []);
+
+  const formattedDate = useMemo(() => capitalize(DATE_FORMATTER.format(now)), [now]);
+  const formattedTime = useMemo(() => TIME_FORMATTER.format(now), [now]);
 
   const handleSearch = (event) => {
     const value = event.target.value;
@@ -69,6 +103,20 @@ export function TopBar({ admin, onLogout, onMenuOpen, searchPlaceholder }) {
       </div>
 
       <div className="topbar__actions">
+        <div aria-label="Fecha y hora" className="topbar__datetime" role="status">
+          <span className="topbar__datetime-item">
+            <Icon name="calendar" size={16} />
+            <span className="topbar__datetime-text">{formattedDate}</span>
+          </span>
+          <span className="topbar__datetime-divider" aria-hidden="true" />
+          <span className="topbar__datetime-item">
+            <Icon name="clock" size={16} />
+            <span className="topbar__datetime-text topbar__datetime-time">
+              {formattedTime}
+            </span>
+          </span>
+        </div>
+
         <div className="topbar__profile-wrapper" ref={dropdownRef}>
           <button
             aria-expanded={isProfileOpen}
