@@ -249,7 +249,7 @@ export function TeacherFormModal({ mode, onClose, onSuccess, teacherId }) {
             </label>
 
             <label className="entity-form__field">
-              <span className="entity-form__label">Ano de contratacion</span>
+              <span className="entity-form__label">Año de contratación</span>
               <input
                 className="entity-form__control"
                 min="2000"

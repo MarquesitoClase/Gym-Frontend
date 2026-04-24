@@ -163,7 +163,7 @@ export function TeachersTableSection({ onDeleteRequest, onEditRequest, refreshTo
     },
     {
       key: "contractYear",
-      label: "Ano de contratacion"
+      label: "Año de contratación"
     },
     {
       key: "assignedActivities",

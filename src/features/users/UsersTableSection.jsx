@@ -107,6 +107,37 @@ export function UsersTableSection({ onDeleteRequest, onEditRequest, refreshToken
     setReloadKey((currentValue) => currentValue + 1);
   };
 
+  const handleToggleActive = async (row) => {
+    const nextActive = !row.isEnabled;
+
+    setRows((current) =>
+      current.map((r) =>
+        r.id === row.id
+          ? { ...r, isEnabled: nextActive, status: nextActive ? "active" : "inactive" }
+          : r
+      )
+    );
+
+    try {
+      const payload = new FormData();
+      payload.append("firstName", row.firstName);
+      payload.append("lastName", row.lastName);
+      payload.append("dni", row.dni);
+      payload.append("registrationYear", row.registrationYear);
+      payload.append("active", String(nextActive));
+      payload.append("imageUrl", row.imageUrl);
+      await usersService.update(row.id, payload);
+    } catch {
+      setRows((current) =>
+        current.map((r) =>
+          r.id === row.id
+            ? { ...r, isEnabled: row.isEnabled, status: row.status }
+            : r
+        )
+      );
+    }
+  };
+
   const emptyState =
     requestState === "loading" ? (
       <EmptyState
@@ -164,7 +195,7 @@ export function UsersTableSection({ onDeleteRequest, onEditRequest, refreshToken
     },
     {
       key: "enrollmentYear",
-      label: "Ano de alta"
+      label: "Año de alta"
     },
     {
       key: "status",
@@ -183,9 +214,9 @@ export function UsersTableSection({ onDeleteRequest, onEditRequest, refreshToken
       render: (row) => (
         <div className="users-actions">
           <ToggleSwitch
-            disabled
             checked={row.isEnabled}
             label={row.isEnabled ? "Activo" : "Inactivo"}
+            onChange={() => handleToggleActive(row)}
           />
           <button
             aria-label={`Editar a ${row.name}`}

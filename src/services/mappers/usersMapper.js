@@ -51,11 +51,16 @@ export function mapUserDtoToRow(user) {
 
   return {
     avatarUrl: user.imageUrl ?? null,
+    dni: user.dni ?? "",
     enrollmentYear: user.registrationYear,
+    firstName: user.firstName ?? "",
     id: user.id,
     identifier: user.dni,
+    imageUrl: user.imageUrl ?? "",
     isEnabled: Boolean(user.active),
+    lastName: user.lastName ?? "",
     name,
+    registrationYear: user.registrationYear ? String(user.registrationYear) : "",
     status: user.active ? "active" : "inactive",
     subtitle: user.registrationYear
       ? `Alta ${user.registrationYear}`

@@ -368,7 +368,7 @@ export function UserFormModal({ mode, onClose, onSuccess, userId }) {
             </label>
 
             <label className="entity-form__field">
-              <span className="entity-form__label">Ano de alta</span>
+              <span className="entity-form__label">Año de alta</span>
               <input
                 className="entity-form__control"
                 min="2000"
