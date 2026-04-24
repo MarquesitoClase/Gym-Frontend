@@ -243,26 +243,6 @@ export function UsersTableSection({ onDeleteRequest, onEditRequest, refreshToken
         }
         header={
           <TableToolbar
-            actions={
-              <div className="users-toolbar-actions">
-                <Button
-                  disabled={requestState !== "success" || !rows.length}
-                  iconLeft={<Icon name="filter" size={16} />}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Filtros
-                </Button>
-                <Button
-                  disabled={requestState !== "success" || !rows.length}
-                  iconLeft={<Icon name="download" size={16} />}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Exportar
-                </Button>
-              </div>
-            }
             title="Directorio de socios"
           />
         }

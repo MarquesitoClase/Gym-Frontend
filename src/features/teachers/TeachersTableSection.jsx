@@ -250,26 +250,6 @@ export function TeachersTableSection({ onDeleteRequest, onEditRequest, refreshTo
         }
         header={
           <TableToolbar
-            actions={
-              <div className="teachers-toolbar-actions">
-                <Button
-                  disabled={requestState !== "success" || !rows.length}
-                  iconLeft={<Icon name="filter" size={16} />}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Filtros
-                </Button>
-                <Button
-                  disabled={requestState !== "success" || !rows.length}
-                  iconLeft={<Icon name="download" size={16} />}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Exportar
-                </Button>
-              </div>
-            }
             title="Directorio de monitores"
           />
         }
