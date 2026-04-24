@@ -347,6 +347,10 @@ export function DashboardOverview() {
         <ClassRosterModal
           activityId={rosterActivityId}
           onClose={() => setRosterActivityId(null)}
+          onSaved={() => {
+            setRosterActivityId(null);
+            setReloadKey((k) => k + 1);
+          }}
         />
       ) : null}
     </div>

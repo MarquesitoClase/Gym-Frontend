@@ -107,7 +107,7 @@ function PaymentEditor({ activity, row, onCancel, onSave, isSaving }) {
   );
 }
 
-export function ClassRosterModal({ activityId, onClose }) {
+export function ClassRosterModal({ activityId, onClose, onSaved }) {
   const [activity, setActivity] = useState(null);
   const [rows, setRows] = useState([]);
   const [loadState, setLoadState] = useState("loading");
@@ -115,6 +115,7 @@ export function ClassRosterModal({ activityId, onClose }) {
   const [busyKey, setBusyKey] = useState(null);
   const [actionError, setActionError] = useState("");
   const [payingUserId, setPayingUserId] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     if (!activityId) return;
@@ -156,6 +157,7 @@ export function ClassRosterModal({ activityId, onClose }) {
     setRows((current) =>
       current.map((row) => (row.userId === userId ? mapped : row))
     );
+    setHasChanges(true);
   };
 
   const handleAttendanceChange = async (row, nextStatus) => {
@@ -308,6 +310,22 @@ export function ClassRosterModal({ activityId, onClose }) {
             <div className="roster__error">
               <Icon name="warning" size={14} />
               {actionError}
+            </div>
+          ) : null}
+
+          {onSaved ? (
+            <div className="roster__footer">
+              <Button onClick={onClose} type="button" variant="ghost" size="sm">
+                Cerrar
+              </Button>
+              <Button
+                disabled={!hasChanges}
+                onClick={() => onSaved()}
+                size="sm"
+                type="button"
+              >
+                Guardar y actualizar panel
+              </Button>
             </div>
           ) : null}
 
